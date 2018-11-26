@@ -343,7 +343,11 @@ ticketContent =
                     ]
                     []
                 ]
-            , button [ css (styles.button ++ [ fontSize (rem 1) ]) ] [ text "Keep me posted!" ]
+            , button
+                [ Attr.type_ "submit"
+                , css (styles.button ++ [ fontSize (rem 1) ])
+                ]
+                [ text "Keep me posted!" ]
             ]
         ]
 
