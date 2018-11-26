@@ -6,7 +6,7 @@ import Css.Global exposing (body, global, html)
 import Html
 import Html.Styled exposing (..)
 import Html.Styled.Attributes as Attr exposing (css, href, id, src)
-import Html.Styled.Events exposing (onClick)
+import Html.Styled.Events exposing (onClick, onInput, onSubmit)
 
 
 styles =
@@ -200,13 +200,15 @@ colors =
 
 
 type alias Model =
-    Maybe Int
+    { name : String
+    , email : String
+    }
 
 
 main : Program () Model Msg
 main =
     Browser.element
-        { init = always ( Nothing, Cmd.none )
+        { init = always ( Model "" "", Cmd.none )
         , update = update
         , view = view >> toUnstyled
         , subscriptions = always Sub.none
@@ -217,8 +219,15 @@ main =
 -- UPDATE
 
 
+type Field
+    = Name
+    | Email
+
+
 type Msg
     = JumpTo String
+    | UpdateField Field String
+    | SubmitForm
 
 
 port outgoing : ( String, String ) -> Cmd msg
@@ -230,6 +239,21 @@ update msg model =
         JumpTo id ->
             ( model
             , outgoing ( "JUMP_TO", id )
+            )
+
+        UpdateField Name name ->
+            ( { model | name = name }
+            , Cmd.none
+            )
+
+        UpdateField Email email ->
+            ( { model | email = email }
+            , Cmd.none
+            )
+
+        SubmitForm ->
+            ( Model "" ""
+            , outgoing ( "SUBMIT_FORM", model.email )
             )
 
 
@@ -322,6 +346,7 @@ ticketContent =
             , Attr.attribute "data-netlify-honeypot" "name"
             , Attr.attribute "data-netlify" "true"
             , css styles.contactForm
+            , onSubmit SubmitForm
             ]
             [ p [ css styles.hidden ]
                 [ input
@@ -329,6 +354,7 @@ ticketContent =
                     , Attr.name "name"
                     , Attr.attribute "aria-label"
                         "Do not fill out this field, it's for spam bots."
+                    , onInput (UpdateField Name)
                     ]
                     []
                 ]
@@ -339,6 +365,7 @@ ticketContent =
                     , Attr.placeholder "Email address"
                     , Attr.attribute "aria-label" "Email address"
                     , css styles.input
+                    , onInput (UpdateField Email)
                     ]
                     []
                 ]

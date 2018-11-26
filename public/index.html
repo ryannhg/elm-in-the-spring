@@ -8,18 +8,18 @@
   <link rel="stylesheet" href="/style.css">
 </head>
 <body>
-  <div id="app">
-    <!-- For Netlify Forms -->
-    <form
-      name="mailing-list"
-      method="POST"
-      data-netlify-honeypot="name"
-      data-netlify="true">
-      <input type="text" name="name" />
-      <input type="email" name="email" />
-      <button>Submit</button>
-    </form>
-  </div>
+  <div id="app"></div>
+  <!-- For Netlify Forms -->
+  <form style="height: 0; overflow: hidden;"
+    id="mailing-list"
+    name="mailing-list"
+    method="POST"
+    data-netlify-honeypot="name"
+    data-netlify="true">
+    <input type="text" name="name" />
+    <input type="email" name="email" />
+    <button>Submit</button>
+  </form>
   <script src="/elm.js"></script>
   <script>
     var app = Elm.Main.init({
@@ -31,6 +31,11 @@
       switch (action) {
         case 'JUMP_TO':
           return scrollTo(data)
+        case 'SUBMIT_FORM':
+          var form = document.getElementById('mailing-list')
+          var email = document.querySelector('#mailing-list input[name=email]')
+          email.value = data
+          return form.submit()
       }
     })
     function scrollTo (id) {
