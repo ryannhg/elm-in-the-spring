@@ -8,7 +8,17 @@
   <link rel="stylesheet" href="/style.css">
 </head>
 <body>
-  <div id="app"></div>
+  <div id="app">
+    <!-- For Netlify Forms -->
+    <form style="height: 0; overflow: hidden;"
+      name="mailing-list"
+      netlify-honeypot="name"
+      netlify>
+      <input type="text" name="name" />
+      <input type="email" name="email" />
+      <button>Submit</button>
+    </form>
+  </div>
   <script src="/elm.js"></script>
   <script>
     var app = Elm.Main.init({
