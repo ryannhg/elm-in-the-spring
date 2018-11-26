@@ -97,9 +97,7 @@ styles =
         , textDecoration none
         ]
     , contactForm =
-        [ displayFlex
-        , alignItems center
-        ]
+        []
     , input =
         [ backgroundColor (rgba 0 0 0 0)
         , fontSize inherit
