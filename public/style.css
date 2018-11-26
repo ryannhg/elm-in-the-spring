@@ -1,0 +1,14 @@
+@font-face {
+    font-family: Biko;
+    src: url(/fonts/Biko_Regular.otf);
+}
+@font-face {
+    font-family: Biko;
+    font-weight: bold;
+    src: url(/fonts/Biko_Bold.otf);
+}
+@font-face {
+    font-family: Biko;
+    font-weight: 900;
+    src: url(/fonts/Biko_Black.otf);
+}

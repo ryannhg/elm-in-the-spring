@@ -1,0 +1,37 @@
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Elm in the Spring</title>
+  <meta name="description" content="A conference for Elm!">
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <div id="app"></div>
+  <script src="/elm.js"></script>
+  <script>
+    var app = Elm.Main.init({
+      node: document.getElementById('app')
+    })
+    app.ports.outgoing.subscribe(function (msg) {
+      var action = msg ? msg[0] : undefined
+      var data = msg ? msg[1] : undefined
+      switch (action) {
+        case 'JUMP_TO':
+          return scrollTo(data)
+      }
+    })
+    function scrollTo (id) {
+      var el = document.getElementById(id)
+      if (el && window.scroll) {
+        window.scroll({
+          top: el.getBoundingClientRect().top,
+          left: 0,
+          behavior: 'smooth'
+        })
+      }
+    }
+  </script>
+</body>
+</html>
