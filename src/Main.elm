@@ -319,6 +319,7 @@ ticketContent =
         , form
             [ Attr.name "mailing-list"
             , Attr.method "POST"
+            , Attr.action "/"
             , Attr.attribute "netlify-honeypot" "name"
             , Attr.attribute "netlify" ""
             , css styles.contactForm
