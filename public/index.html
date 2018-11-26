@@ -9,17 +9,17 @@
 </head>
 <body>
   <div id="app">
+    <!-- For Netlify Forms -->
+    <form
+      name="mailing-list"
+      method="POST"
+      data-netlify-honeypot="name"
+      data-netlify="true">
+      <input type="text" name="name" />
+      <input type="email" name="email" />
+      <button>Submit</button>
+    </form>
   </div>
-  <!-- For Netlify Forms -->
-  <form
-    name="mailing-list"
-    action="/"
-    netlify-honeypot="name"
-    netlify>
-    <input type="text" name="name" />
-    <input type="email" name="email" />
-    <button>Submit</button>
-  </form>
   <script src="/elm.js"></script>
   <script>
     var app = Elm.Main.init({
