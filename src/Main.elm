@@ -5,7 +5,7 @@ import Css exposing (..)
 import Css.Global exposing (body, global, html)
 import Html
 import Html.Styled exposing (..)
-import Html.Styled.Attributes exposing (css, href, id, src)
+import Html.Styled.Attributes as Attr exposing (css, href, id, src)
 import Html.Styled.Events exposing (onClick)
 
 
@@ -36,10 +36,16 @@ styles =
             , padding zero
             ]
         , link =
-            [ marginLeft (rem 1)
+            [ marginLeft (rem 1.5)
             , firstChild [ marginLeft zero ]
             ]
         }
+    , hidden =
+        [ height zero
+        , width zero
+        , margin zero
+        , overflow hidden
+        ]
     , link =
         [ backgroundColor transparent
         , color inherit
@@ -52,9 +58,54 @@ styles =
         , hover [ opacity (num 1) ]
         ]
     , hero =
-        [ padding2 (rem 4) zero
-        , displayFlex
-        , justifyContent center
+        { top =
+            [ padding2 (rem 4) zero
+            , displayFlex
+            , alignItems center
+            , flexDirection column
+            ]
+        , container =
+            [ backgroundColor colors.yellow
+            , color colors.navy
+            , padding (rem 1.5)
+            , maxWidth (pct 100)
+            , width (px 540)
+            , fontSize (px 20)
+            , lineHeight (num 1.4)
+            , marginTop (rem 1.5)
+            ]
+        }
+    , buttons =
+        { row =
+            [ displayFlex
+            , justifyContent center
+            , marginTop (rem 1.5)
+            ]
+        }
+    , button =
+        [ backgroundColor colors.navy
+        , color colors.yellow
+        , padding2 (px 12) (px 24)
+        , fontFamily inherit
+        , fontSize inherit
+        , textTransform uppercase
+        , border zero
+        , marginLeft (rem 1.5)
+        , firstChild [ marginLeft zero ]
+        , cursor pointer
+        , whiteSpace noWrap
+        , textDecoration none
+        ]
+    , contactForm =
+        [ displayFlex
+        , alignItems center
+        ]
+    , input =
+        [ backgroundColor (rgba 0 0 0 0)
+        , fontSize inherit
+        , fontFamily inherit
+        , border3 (px 1) solid colors.navy
+        , padding2 (rem 0.6) (rem 1)
         ]
     , pageSection =
         { top =
@@ -108,6 +159,21 @@ styles =
         , smallText =
             [ fontSize (Css.em (5 / 8))
             ]
+        }
+    , footer =
+        { top =
+            [ padding (rem 1.5)
+            , color colors.yellow
+            ]
+        , container =
+            [ width (pct 100)
+            , maxWidth (px 960)
+            , margin2 zero auto
+            , displayFlex
+            , justifyContent spaceBetween
+            ]
+        , left = []
+        , right = [ color colors.yellow ]
         }
     }
 
@@ -177,9 +243,13 @@ view _ =
         [ globalStyles
         , navbar
         , hero
-        , div [ id "tickets" ] [ pageSection "Tickets" ]
-        , div [ id "speakers" ] [ pageSection "Speakers" ]
-        , div [ id "sponsors" ] [ pageSection "Sponsors" ]
+        , div [ id "tickets" ]
+            [ pageSection "Tickets" ticketContent ]
+        , div [ id "speakers" ]
+            [ pageSection "Speakers" speakerContent ]
+        , div [ id "sponsors" ]
+            [ pageSection "Sponsors" sponsorContent ]
+        , siteFooter
         ]
 
 
@@ -210,13 +280,22 @@ headerJumpLink ( label_, id_ ) =
 
 hero : Html Msg
 hero =
-    div [ css styles.hero ]
+    div [ css styles.hero.top ]
         [ h1 [ css styles.logo.h1 ] [ logo ]
+        , div [ css styles.hero.container ]
+            [ p []
+                [ text "Let's all get together in Chicago and spend the day talking/teaching/learning all about Elm!"
+                ]
+            , div [ css styles.buttons.row ]
+                [ button [ css styles.button, onClick (JumpTo "tickets") ] [ text "Attend" ]
+                , button [ css styles.button, onClick (JumpTo "speakers") ] [ text "Speak" ]
+                ]
+            ]
         ]
 
 
-pageSection : String -> Html Msg
-pageSection title =
+pageSection : String -> Html Msg -> Html Msg
+pageSection title content =
     section [ css styles.pageSection.top ]
         [ div [ css styles.pageSection.container ]
             [ h3 [ css styles.pageSection.title ] [ text title ]
@@ -224,10 +303,85 @@ pageSection title =
         , div [ css styles.pageSection.contentWrapper ]
             [ div [ css styles.pageSection.container ]
                 [ div [ css styles.pageSection.content ]
-                    [ p []
-                        [ text "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam consectetur dui eget imperdiet rhoncus. Sed at mauris ac sapien finibus congue id non eros. Proin sit amet semper risus, a luctus tortor. Praesent eget porta purus. Ut velit tellus, euismod sit amet sollicitudin nec, congue a felis. Curabitur sit amet eleifend massa. Vivamus luctus rhoncus ornare. Pellentesque venenatis sapien sagittis velit iaculis, pulvinar vehicula nisi euismod. Praesent volutpat, neque eu scelerisque laoreet, purus velit fringilla nulla, eu pretium augue orci nec arcu." ]
+                    [ content
                     ]
                 ]
+            ]
+        ]
+
+
+ticketContent : Html Msg
+ticketContent =
+    div []
+        [ h4 [] [ text "Ticket sales will begin soon!" ]
+        , p [] [ text "For conference updates, join our mailing list." ]
+        , p [] [ text "No spam. Ever." ]
+        , form
+            [ Attr.name "mailing-list"
+            , Attr.method "POST"
+            , Attr.attribute "netlify-honeypot" "name"
+            , Attr.attribute "netlify" ""
+            , css styles.contactForm
+            ]
+            [ p [ css styles.hidden ]
+                [ input
+                    [ Attr.type_ "text"
+                    , Attr.name "name"
+                    , Attr.attribute "aria-label"
+                        "Do not fill out this field, it's for spam bots."
+                    ]
+                    []
+                ]
+            , p []
+                [ input
+                    [ Attr.type_ "email"
+                    , Attr.name "email"
+                    , Attr.placeholder "Email address"
+                    , Attr.attribute "aria-label" "Email address"
+                    , css styles.input
+                    ]
+                    []
+                ]
+            , button [ css (styles.button ++ [ fontSize (rem 1) ]) ] [ text "Keep me posted!" ]
+            ]
+        ]
+
+
+speakerContent : Html Msg
+speakerContent =
+    div []
+        [ p [] [ text "If you're interested in becoming a speaker, great!" ]
+        , p [] [ text "You can submit a Call for Proposal below:" ]
+        , p []
+            [ a
+                [ href "#cfp-link-goes-here"
+                , Attr.target "_blank"
+                , css styles.button
+                ]
+                [ text "Submit a CFP" ]
+            ]
+        ]
+
+
+sponsorContent : Html Msg
+sponsorContent =
+    div []
+        [ h4 [] [ text "Interested in supporting the community?" ]
+        , p []
+            [ text "You or your company can become a sponsor for Elm in the Spring 2019." ]
+        , p []
+            [ text "More details to come!" ]
+        ]
+
+
+siteFooter : Html Msg
+siteFooter =
+    footer
+        [ css styles.footer.top ]
+        [ div [ css styles.footer.container ]
+            [ div [ css styles.footer.left ] [ text "© Elm in the Spring 2019" ]
+            , a [ css styles.footer.right, href "https://github.com/ryannhg/elm-in-the-spring", Attr.target "_blank" ]
+                [ text "This site is open-source and written with Elm!" ]
             ]
         ]
 
