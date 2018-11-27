@@ -251,7 +251,11 @@ update msg model =
 
         SubmitForm ->
             ( Model "" ""
-            , outgoing ( "SUBMIT_FORM", model.email )
+            , if String.isEmpty model.name && not (String.isEmpty model.email) then
+                outgoing ( "SUBMIT_FORM", model.email )
+
+              else
+                Cmd.none
             )
 
 

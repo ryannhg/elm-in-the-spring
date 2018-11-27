@@ -40,12 +40,8 @@
     })
     function scrollTo (id) {
       var el = document.getElementById(id)
-      if (el && window.scroll) {
-        window.scroll({
-          top: el.getBoundingClientRect().top,
-          left: 0,
-          behavior: 'smooth'
-        })
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth' })
       }
     }
   </script>
