@@ -7,6 +7,8 @@ import Html
 import Html.Styled exposing (..)
 import Html.Styled.Attributes as Attr exposing (css, href, id, src)
 import Html.Styled.Events exposing (onClick, onInput, onSubmit)
+import Svg.Styled as Svg
+import Svg.Styled.Attributes as SvgAttr
 
 
 styles =
@@ -24,7 +26,7 @@ styles =
     , header =
         { top =
             [ fontSize (rem 1.5)
-            , padding (rem 1.5)
+            , padding2 (rem 2) (rem 1.5)
             ]
         , links =
             [ displayFlex
@@ -67,12 +69,13 @@ styles =
         , container =
             [ backgroundColor colors.yellow
             , color colors.navy
-            , padding (rem 1.5)
+            , padding2 (rem 2.5) (rem 2)
             , maxWidth (pct 100)
             , width (px 540)
             , fontSize (px 20)
             , lineHeight (num 1.4)
             , marginTop (rem 1.5)
+            , textAlign center
             ]
         }
     , buttons =
@@ -83,9 +86,10 @@ styles =
             ]
         }
     , button =
-        [ backgroundColor colors.navy
-        , color colors.yellow
-        , padding2 (px 12) (px 24)
+        [ backgroundColor colors.transparent
+        , color colors.navy
+        , padding zero
+        , paddingTop (px 2)
         , fontFamily inherit
         , fontSize inherit
         , textTransform uppercase
@@ -95,14 +99,70 @@ styles =
         , cursor pointer
         , whiteSpace noWrap
         , textDecoration none
+        , lineHeight (num 1)
+        , display inlineBlock
+        , position relative
+        ]
+    , buttonBackSpan =
+        [ position absolute
+        , top zero
+        , left zero
+        , right zero
+        , bottom zero
+        , zIndex (int 0)
+        , before
+            [ property "content" "''"
+            , position absolute
+            , top (px 15)
+            , left (px 15)
+            , right (px -15)
+            , bottom (px -15)
+            , backgroundColor (hex "#c9818c")
+            , zIndex (int 0)
+            ]
+        , after
+            [ property "content" "''"
+            , position absolute
+            , top (px 10)
+            , left (px 10)
+            , right (px -10)
+            , bottom (px -10)
+            , backgroundColor colors.navy
+            , zIndex (int 1)
+            ]
+        ]
+    , buttonSpan =
+        [ position relative
+        , zIndex (int 1)
+        , display inlineBlock
+        , padding2 (px 12) (px 24)
+        , before
+            [ property "content" "''"
+            , position absolute
+            , top (px 5)
+            , left (px 5)
+            , right (px -5)
+            , bottom (px -5)
+            , backgroundColor colors.pink
+            , zIndex (int -1)
+            ]
+        , after
+            [ property "content" "''"
+            , position absolute
+            , top zero
+            , left zero
+            , right zero
+            , bottom zero
+            , border3 (px 3) solid colors.navy
+            ]
         ]
     , contactForm =
         []
     , input =
-        [ backgroundColor (rgba 0 0 0 0)
+        [ backgroundColor (hex "#ffc8e0")
         , fontSize inherit
         , fontFamily inherit
-        , border3 (px 1) solid colors.navy
+        , border3 (px 2) solid colors.navy
         , padding2 (rem 0.6) (rem 1)
         ]
     , pageSection =
@@ -118,31 +178,49 @@ styles =
             ]
         , title =
             [ fontSize (rem 3)
+            , textTransform uppercase
+            , letterSpacing (px 4)
+            , textAlign center
             ]
         , contentWrapper =
-            [ position relative
-            , before
-                [ property "content" "''"
-                , position absolute
-                , top zero
-                , left zero
-                , right (pct 50)
-                , bottom zero
-                , backgroundColor colors.green
-                , zIndex (int -1)
+            \isLeftSide ->
+                [ position relative
+                , before
+                    [ property "content" "''"
+                    , position absolute
+                    , top zero
+                    , if isLeftSide then
+                        left zero
+
+                      else
+                        left (pct 50)
+                    , if isLeftSide then
+                        right (pct 50)
+
+                      else
+                        right zero
+                    , bottom zero
+                    , backgroundColor colors.green
+                    , zIndex (int -1)
+                    ]
                 ]
-            ]
         , content =
-            [ maxWidth (pct 100)
-            , width (px 540)
-            , marginTop (rem 2)
-            , fontSize (px 20)
-            , lineHeight (num 1.4)
-            , padding (rem 1.5)
-            , paddingLeft zero
-            , backgroundColor colors.green
-            , color colors.navy
-            ]
+            \isLeftSide ->
+                [ maxWidth (pct 100)
+                , width (px 540)
+                , margin2 zero auto
+                , marginTop (rem 2)
+                , fontSize (px 20)
+                , lineHeight (num 1.4)
+                , padding2 (rem 3) (rem 1.5)
+                , if isLeftSide then
+                    paddingLeft zero
+
+                  else
+                    paddingLeft (rem 1.5)
+                , backgroundColor colors.green
+                , color colors.navy
+                ]
         }
     , logo =
         { h1 =
@@ -151,8 +229,15 @@ styles =
             , whiteSpace noWrap
             , margin zero
             ]
+        , h2 =
+            [ backgroundColor colors.yellow
+            , color colors.navy
+            , padding (rem 2)
+            , textTransform uppercase
+            ]
         , bigText =
             [ fontSize (Css.em 1)
+            , letterSpacing (Css.em (1 / 16))
             ]
         , smallText =
             [ fontSize (Css.em (5 / 8))
@@ -182,14 +267,38 @@ globalStyles =
         [ html styles.html
         , body styles.body
         , Css.Global.selector "body *" [ boxSizing borderBox ]
+        , Css.Global.p
+            [ fontSize (rem 1.25)
+            , margin zero
+            , firstChild [ marginTop zero ]
+            , marginTop (rem 1.5)
+            , lineHeight (num 1.4)
+            ]
+        , Css.Global.h4
+            [ fontSize (rem 2)
+            , lineHeight (num 1)
+            , margin zero
+            , firstChild [ marginTop zero ]
+            , marginTop (rem 1.5)
+            ]
+        , Css.Global.form [ margin zero ]
         ]
 
 
+hexValues =
+    { teal = "#8bc7cb"
+    , navy = "#21377b"
+    , pink = "#eebad1"
+    }
+
+
 colors =
-    { navy = hex "#21377b"
+    { navy = hex hexValues.navy
     , yellow = hex "#fff98e"
-    , teal = hex "#8bc7cb"
+    , teal = hex hexValues.teal
     , green = hex "#d6fd8c"
+    , pink = hex hexValues.pink
+    , transparent = rgba 0 0 0 0
     }
 
 
@@ -269,14 +378,80 @@ view _ =
         [ globalStyles
         , navbar
         , hero
-        , div [ id "tickets" ]
-            [ pageSection "Tickets" ticketContent ]
-        , div [ id "speakers" ]
-            [ pageSection "Speakers" speakerContent ]
-        , div [ id "sponsors" ]
-            [ pageSection "Sponsors" sponsorContent ]
+        , pageSection Tickets
+
+        -- , speakerCta
+        , pageSection Speakers
+        , pageSection Sponsors
         , siteFooter
         ]
+
+
+speakerCta : Html Msg
+speakerCta =
+    div [ css [ backgroundColor colors.teal ] ]
+        [ div
+            [ css
+                [ maxWidth (pct 100)
+                , width (px 360)
+                , margin2 zero auto
+                , padding2 (rem 2) (rem 1)
+                , border3 (px 3) solid colors.navy
+                , backgroundColor colors.pink
+                , color colors.navy
+                , textAlign center
+                ]
+            ]
+            [ p [] [ text "Interested in speaking?" ]
+            , p [ css [ marginTop zero ] ]
+                [ strong []
+                    [ a [ href "#proposal-link", Attr.target "_blank", css [ color colors.navy ] ] [ text "Submit" ]
+                    , text " a proposal!"
+                    ]
+                ]
+            ]
+        ]
+
+
+
+-- Section
+
+
+type Section
+    = Tickets
+    | Speakers
+    | Sponsors
+
+
+titleOf : Section -> String
+titleOf section =
+    case section of
+        Tickets ->
+            "Tickets"
+
+        Speakers ->
+            "Speakers"
+
+        Sponsors ->
+            "Sponsors"
+
+
+idOf : Section -> String
+idOf =
+    titleOf >> String.toLower
+
+
+contentFor : Section -> Html Msg
+contentFor section =
+    case section of
+        Tickets ->
+            ticketContent
+
+        Speakers ->
+            speakerContent
+
+        Sponsors ->
+            sponsorContent
 
 
 navbar : Html Msg
@@ -285,16 +460,20 @@ navbar =
         [ ul [ css styles.header.links ]
             (List.map
                 headerJumpLink
-                [ ( "Tickets", "tickets" )
-                , ( "Speakers", "speakers" )
-                , ( "Sponsors", "sponsors" )
+                [ Tickets
+                , Speakers
+                , Sponsors
                 ]
             )
         ]
 
 
-headerJumpLink : ( String, String ) -> Html Msg
-headerJumpLink ( label_, id_ ) =
+headerJumpLink : Section -> Html Msg
+headerJumpLink section =
+    let
+        ( label_, id_ ) =
+            ( titleOf section, idOf section )
+    in
     li [ css styles.header.link ]
         [ button
             [ css styles.link
@@ -308,32 +487,164 @@ hero : Html Msg
 hero =
     div [ css styles.hero.top ]
         [ h1 [ css styles.logo.h1 ] [ logo ]
+        , h2 [ css styles.logo.h2 ] [ text "April 26th, 2019 | Chicago" ]
         , div [ css styles.hero.container ]
             [ p []
                 [ text "Let's all get together in Chicago and spend the day talking/teaching/learning all about Elm!"
                 ]
             , div [ css styles.buttons.row ]
-                [ button [ css styles.button, onClick (JumpTo "tickets") ] [ text "Attend" ]
-                , button [ css styles.button, onClick (JumpTo "speakers") ] [ text "Speak" ]
-                ]
-            ]
-        ]
-
-
-pageSection : String -> Html Msg -> Html Msg
-pageSection title content =
-    section [ css styles.pageSection.top ]
-        [ div [ css styles.pageSection.container ]
-            [ h3 [ css styles.pageSection.title ] [ text title ]
-            ]
-        , div [ css styles.pageSection.contentWrapper ]
-            [ div [ css styles.pageSection.container ]
-                [ div [ css styles.pageSection.content ]
-                    [ content
+                [ button [ css styles.button, onClick (JumpTo (idOf Tickets)) ]
+                    [ span [ css styles.buttonBackSpan ] []
+                    , span [ css styles.buttonSpan ] [ text "Attend" ]
+                    ]
+                , button [ css styles.button, onClick (JumpTo (idOf Speakers)) ]
+                    [ span [ css styles.buttonBackSpan ] []
+                    , span [ css styles.buttonSpan ] [ text "Speak" ]
                     ]
                 ]
             ]
         ]
+
+
+pageSection : Section -> Html Msg
+pageSection section_ =
+    let
+        title =
+            titleOf section_
+
+        id_ =
+            idOf section_
+
+        content =
+            contentFor section_
+
+        svg =
+            getSvg section_
+
+        isLeftSide =
+            section_ /= Speakers
+    in
+    div [ id id_ ]
+        [ section [ css styles.pageSection.top, css [ position relative ] ]
+            [ svg
+            , div [ css styles.pageSection.container ]
+                [ h3 [ css styles.pageSection.title ] [ text title ]
+                ]
+            , div [ css (styles.pageSection.contentWrapper isLeftSide) ]
+                [ div [ css styles.pageSection.container ]
+                    [ div [ css (styles.pageSection.content isLeftSide) ]
+                        [ content
+                        ]
+                    ]
+                ]
+            ]
+        ]
+
+
+getSvg : Section -> Html Msg
+getSvg title =
+    case title of
+        Tickets ->
+            div
+                [ css
+                    [ position absolute
+                    , top zero
+                    , left zero
+                    , right zero
+                    , bottom zero
+                    , zIndex (int -1)
+                    ]
+                ]
+                [ Svg.svg
+                    [ SvgAttr.viewBox "0 0 100 100"
+                    , SvgAttr.preserveAspectRatio "none"
+                    , SvgAttr.width "100%"
+                    , SvgAttr.height "100%"
+                    ]
+                    [ Svg.polygon
+                        [ SvgAttr.fill hexValues.teal
+                        , SvgAttr.points "100,0 100,100 0,100 0,75"
+                        ]
+                        []
+                    ]
+                ]
+
+        Speakers ->
+            div []
+                [ div
+                    [ css
+                        [ position absolute
+                        , top zero
+                        , left zero
+                        , right zero
+                        , bottom zero
+                        , zIndex (int -1)
+                        , backgroundColor colors.teal
+                        ]
+                    ]
+                    [ Svg.svg
+                        [ SvgAttr.viewBox "0 0 100 100"
+                        , SvgAttr.preserveAspectRatio "none"
+                        , SvgAttr.width "100%"
+                        , SvgAttr.height "100%"
+                        ]
+                        [ Svg.polygon
+                            [ SvgAttr.fill hexValues.pink
+                            , SvgAttr.points "0,0 50,100 0,100"
+                            ]
+                            []
+                        ]
+                    ]
+                , div
+                    [ css
+                        [ position absolute
+                        , top zero
+                        , left zero
+                        , right zero
+                        , bottom zero
+                        , zIndex (int -1)
+                        ]
+                    ]
+                    [ Svg.svg
+                        [ SvgAttr.viewBox "0 0 100 100"
+                        , SvgAttr.preserveAspectRatio "none"
+                        , SvgAttr.width "100%"
+                        , SvgAttr.height "100%"
+                        ]
+                        [ Svg.polygon
+                            [ SvgAttr.fill hexValues.navy
+                            , SvgAttr.points "0,100 100,80 100,100"
+                            ]
+                            []
+                        ]
+                    ]
+                ]
+
+        Sponsors ->
+            div
+                [ css
+                    [ position absolute
+                    , top zero
+                    , left zero
+                    , right zero
+                    , bottom zero
+                    , zIndex (int -1)
+                    , backgroundColor colors.navy
+                    ]
+                ]
+                [ Svg.svg
+                    [ SvgAttr.viewBox "0 0 100 100"
+                    , SvgAttr.preserveAspectRatio "none"
+                    , SvgAttr.width "100%"
+                    , SvgAttr.height "100%"
+                    ]
+                    [ Svg.polygon
+                        [ SvgAttr.fill hexValues.navy
+                        , SvgAttr.points "50,0 100,0 100,100 0,100 0,75"
+                        ]
+                        []
+                    ]
+                ]
 
 
 ticketContent : Html Msg
@@ -364,19 +675,14 @@ ticketContent =
                 [ input
                     [ Attr.type_ "email"
                     , Attr.name "email"
-                    , Attr.placeholder "Email address"
+                    , Attr.placeholder "email address"
                     , Attr.attribute "aria-label" "Email address"
                     , css styles.input
+                    , css
+                        []
                     , onInput (UpdateField Email)
                     ]
                     []
-                ]
-            , p []
-                [ button
-                    [ Attr.type_ "submit"
-                    , css (styles.button ++ [ fontSize (rem 1) ])
-                    ]
-                    [ text "Keep me posted!" ]
                 ]
             ]
         ]
@@ -385,15 +691,19 @@ ticketContent =
 speakerContent : Html Msg
 speakerContent =
     div []
-        [ p [] [ text "If you're interested in becoming a speaker, great!" ]
-        , p [] [ text "You can submit a Call for Proposal below:" ]
+        [ h4 [] [ text "Speaker Lineup" ]
+        , p []
+            [ text "The initial lineup is coming soon. If you'd like to speak, let us know!"
+            ]
         , p []
             [ a
                 [ href "#cfp-link-goes-here"
                 , Attr.target "_blank"
                 , css styles.button
                 ]
-                [ text "Submit a CFP" ]
+                [ span [ css styles.buttonBackSpan ] []
+                , span [ css styles.buttonSpan ] [ text "Become a speaker" ]
+                ]
             ]
         ]
 
@@ -412,10 +722,20 @@ sponsorContent =
 siteFooter : Html Msg
 siteFooter =
     footer
-        [ css styles.footer.top ]
+        [ css styles.footer.top
+        , css
+            [ lineHeight (num 1.4)
+            , paddingTop (rem 4)
+            ]
+        ]
         [ div [ css styles.footer.container ]
             [ div [ css styles.footer.left ] [ text "© Elm in the Spring 2019" ]
-            , a [ css styles.footer.right, href "https://github.com/ryannhg/elm-in-the-spring", Attr.target "_blank" ]
+            , a
+                [ css styles.footer.right
+                , css [ textAlign right ]
+                , href "https://github.com/ryannhg/elm-in-the-spring"
+                , Attr.target "_blank"
+                ]
                 [ text "This site is open-source and written with Elm!" ]
             ]
         ]

@@ -12,3 +12,16 @@
     font-weight: 900;
     src: url(/fonts/Biko_Black.otf);
 }
+
+input::-webkit-input-placeholder {
+  color: #c9818c !important;
+}
+input:-moz-placeholder {
+  color: #c9818c !important;
+}
+input::-moz-placeholder {
+  color: #c9818c !important;
+}
+input:-ms-input-placeholder {
+  color: #c9818c !important;
+}
