@@ -25,3 +25,6 @@ input::-moz-placeholder {
 input:-ms-input-placeholder {
   color: #c9818c !important;
 }
+a {
+  color: inherit;
+}

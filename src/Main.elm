@@ -5,10 +5,14 @@ import Css exposing (..)
 import Css.Global exposing (body, global, html)
 import Html
 import Html.Styled exposing (..)
-import Html.Styled.Attributes as Attr exposing (css, href, id, src)
+import Html.Styled.Attributes as Attr exposing (alt, css, href, id, src, target)
 import Html.Styled.Events exposing (onClick, onInput, onSubmit)
 import Svg.Styled as Svg
 import Svg.Styled.Attributes as SvgAttr
+
+
+
+-- STYLES
 
 
 styles =
@@ -65,6 +69,13 @@ styles =
             , displayFlex
             , alignItems center
             , flexDirection column
+            ]
+        , image =
+            [ width (px 480)
+            , maxWidth (pct 100)
+            , margin2 zero auto
+            , padding (rem 1)
+            , boxSizing borderBox
             ]
         , container =
             [ backgroundColor colors.yellow
@@ -281,6 +292,13 @@ globalStyles =
             , firstChild [ marginTop zero ]
             , marginTop (rem 1.5)
             ]
+        , Css.Global.h5
+            [ fontSize (rem 1.75)
+            , lineHeight (num 1)
+            , margin zero
+            , firstChild [ marginTop zero ]
+            , marginTop (rem 1.5)
+            ]
         , Css.Global.form [ margin zero ]
         ]
 
@@ -405,7 +423,12 @@ speakerCta =
             [ p [] [ text "Interested in speaking?" ]
             , p [ css [ marginTop zero ] ]
                 [ strong []
-                    [ a [ href "#proposal-link", Attr.target "_blank", css [ color colors.navy ] ] [ text "Submit" ]
+                    [ a
+                        [ href "#proposal-link"
+                        , Attr.target "_blank"
+                        , css [ color colors.navy ]
+                        ]
+                        [ text "Submit" ]
                     , text " a proposal!"
                     ]
                 ]
@@ -486,8 +509,13 @@ headerJumpLink section =
 hero : Html Msg
 hero =
     div [ css styles.hero.top ]
-        [ h1 [ css styles.logo.h1 ] [ logo ]
-        , h2 [ css styles.logo.h2 ] [ text "April 26th, 2019 | Chicago" ]
+        [ h1 [ css [ display none ] ] [ logo ]
+        , img
+            [ css styles.hero.image
+            , src "/images/flower+text.svg"
+            , alt "Elm in the Spring 2019"
+            ]
+            []
         , div [ css styles.hero.container ]
             [ p []
                 [ text "Let's all get together in Chicago and spend the day talking/teaching/learning all about Elm!"
@@ -650,7 +678,26 @@ getSvg title =
 ticketContent : Html Msg
 ticketContent =
     div []
-        [ h4 [] [ text "Ticket sales will begin soon!" ]
+        [ h4 [] [ text "Interested in attending?" ]
+        , p []
+            [ text "Elm in the Spring 2019 will take place on "
+            , strong [] [ text "Friday, April 26th" ]
+            , text " at the "
+            , a [ href "https://maps.google.com/?q=Newberry+Library+Chicago", target "_blank" ] [ text "Newberry Library" ]
+            , text ". We'd love to see you there!"
+            ]
+        , p []
+            [ a
+                [ href "https://ti.to/elm-in-the-spring/chicago-2019"
+                , Attr.target "_blank"
+                , css styles.button
+                ]
+                [ span [ css styles.buttonBackSpan ] []
+                , span [ css styles.buttonSpan ] [ text "Get your tickets" ]
+                ]
+            ]
+        , br [] []
+        , h4 [] [ text "Stay in touch" ]
         , p [] [ text "For conference updates, join our mailing list." ]
         , p [] [ text "No spam. Ever." ]
         , form
@@ -691,9 +738,9 @@ ticketContent =
 speakerContent : Html Msg
 speakerContent =
     div []
-        [ h4 [] [ text "Speaker Lineup" ]
+        [ h4 [] [ text "Become a speaker" ]
         , p []
-            [ text "The initial lineup is coming soon. If you'd like to speak, let us know!"
+            [ text "Have something to share with the Elm community? Please, let us know!"
             ]
         , p []
             [ a
@@ -702,20 +749,64 @@ speakerContent =
                 , css styles.button
                 ]
                 [ span [ css styles.buttonBackSpan ] []
-                , span [ css styles.buttonSpan ] [ text "Become a speaker" ]
+                , span [ css styles.buttonSpan ] [ text "Submit your talk" ]
                 ]
             ]
+        , br [] []
+        , h4 [] [ text "Speaker Lineup" ]
+        , div [ css [ marginTop (rem 2) ] ]
+            [ speaker
+                "Richard Feldman"
+                [ ( "twitter", "https://twitter.com/rtfeldman" )
+                , ( "github", "https://github.com/rtfeldman" )
+                ]
+                "/images/speakers/richard-feldman.jpg"
+                []
+            ]
         ]
+
+
+speaker : String -> List ( String, String ) -> String -> List (Html msg) -> Html msg
+speaker name socialLinks image bio =
+    div []
+        [ div [ css [ displayFlex, alignItems center ] ]
+            [ div [ css [ boxShadow3 (px 5) (px 5) (hex "#c9818c") ] ]
+                [ img [ css [ width (px 128) ], src image, alt name ] [] ]
+            , div
+                [ css
+                    [ flex (num 1)
+                    , paddingLeft (rem 2)
+                    ]
+                ]
+                [ h5 [ css [ fontSize (rem 2) ] ] [ text name ]
+                , if List.isEmpty socialLinks then
+                    text ""
+
+                  else
+                    p [ css [ fontSize (rem 1.75), marginTop (rem 1), marginLeft (rem -1) ] ]
+                        (List.map speakerSocialLink socialLinks)
+                ]
+            ]
+        , div [ css [ marginTop (rem 1) ] ] bio
+        ]
+
+
+speakerSocialLink : ( String, String ) -> Html msg
+speakerSocialLink ( icon, url ) =
+    a [ href url, target "_blank", css [ paddingLeft (rem 1) ] ]
+        [ i [ Attr.class ("fa fa-" ++ icon) ] [] ]
 
 
 sponsorContent : Html Msg
 sponsorContent =
     div []
-        [ h4 [] [ text "Interested in supporting the community?" ]
+        [ h4 [] [ text "Support the community" ]
         , p []
             [ text "You or your company can become a sponsor for Elm in the Spring 2019." ]
         , p []
-            [ text "More details to come!" ]
+            [ text "For more info, email "
+            , a [ href "mailto:hello@elminthespring.org" ] [ text "hello@elminthespring.org" ]
+            ]
         ]
 
 
@@ -729,7 +820,18 @@ siteFooter =
             ]
         ]
         [ div [ css styles.footer.container ]
-            [ div [ css styles.footer.left ] [ text "© Elm in the Spring 2019" ]
+            [ div [ css (styles.footer.left ++ [ displayFlex, alignItems center ]) ]
+                [ text "© Elm in the Spring 2019"
+                , div [ css [ fontSize (rem 1.5) ] ]
+                    [ a
+                        [ css [ color colors.yellow, marginLeft (rem 1) ]
+                        , href "https://twitter.com/ElmInTheSpring"
+                        , target "_blank"
+                        ]
+                        [ i [ Attr.class "fa fa-twitter-square" ] []
+                        ]
+                    ]
+                ]
             , a
                 [ css styles.footer.right
                 , css [ textAlign right ]
