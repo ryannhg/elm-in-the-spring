@@ -9,6 +9,7 @@ import Html.Styled.Attributes as Attr exposing (alt, css, href, id, src, target)
 import Html.Styled.Events exposing (onClick, onInput, onSubmit)
 import Svg.Styled as Svg
 import Svg.Styled.Attributes as SvgAttr
+import Ui
 
 
 
@@ -87,12 +88,13 @@ styles =
             , lineHeight (num 1.4)
             , marginTop (rem 1.5)
             , textAlign center
+            , zIndex (int 1)
             ]
         }
     , buttons =
         { row =
             [ displayFlex
-            , justifyContent center
+            , justifyContent spaceAround
             , marginTop (rem 1.5)
             ]
         }
@@ -521,14 +523,8 @@ hero =
                 [ text "Let's all get together in Chicago and spend the day talking/teaching/learning all about Elm!"
                 ]
             , div [ css styles.buttons.row ]
-                [ button [ css styles.button, onClick (JumpTo (idOf Tickets)) ]
-                    [ span [ css styles.buttonBackSpan ] []
-                    , span [ css styles.buttonSpan ] [ text "Attend" ]
-                    ]
-                , button [ css styles.button, onClick (JumpTo (idOf Speakers)) ]
-                    [ span [ css styles.buttonBackSpan ] []
-                    , span [ css styles.buttonSpan ] [ text "Speak" ]
-                    ]
+                [ Ui.btn button [ onClick (JumpTo (idOf Tickets)) ] [ text "Attend" ]
+                , Ui.btn button [ onClick (JumpTo (idOf Speakers)) ] [ text "Speak" ]
                 ]
             ]
         ]
