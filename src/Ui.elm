@@ -68,4 +68,11 @@ btn element =
                 , transform (translate2 zero zero)
                 ]
             ]
+        , active
+            [ transform (translateY (px 3))
+            , before
+                [ width (pct 100)
+                , height (pct 100)
+                ]
+            ]
         ]
