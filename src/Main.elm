@@ -24,8 +24,8 @@ styles =
         [ height (pct 100)
         , margin zero
         , fontFamilies [ "Biko", "sans-serif" ]
-        , backgroundColor colors.navy
-        , color colors.yellow
+        , backgroundColor Ui.theme.navy
+        , color Ui.theme.yellow
         ]
     , view = []
     , header =
@@ -79,8 +79,8 @@ styles =
             , boxSizing borderBox
             ]
         , container =
-            [ backgroundColor colors.yellow
-            , color colors.navy
+            [ backgroundColor Ui.theme.yellow
+            , color Ui.theme.navy
             , padding2 (rem 2.5) (rem 2)
             , maxWidth (pct 100)
             , width (px 540)
@@ -99,8 +99,8 @@ styles =
             ]
         }
     , button =
-        [ backgroundColor colors.transparent
-        , color colors.navy
+        [ backgroundColor transparent
+        , color Ui.theme.navy
         , padding zero
         , paddingTop (px 2)
         , fontFamily inherit
@@ -130,7 +130,7 @@ styles =
             , left (px 15)
             , right (px -15)
             , bottom (px -15)
-            , backgroundColor (hex "#c9818c")
+            , backgroundColor Ui.theme.pink
             , zIndex (int 0)
             ]
         , after
@@ -140,7 +140,7 @@ styles =
             , left (px 10)
             , right (px -10)
             , bottom (px -10)
-            , backgroundColor colors.navy
+            , backgroundColor Ui.theme.navy
             , zIndex (int 1)
             ]
         ]
@@ -156,7 +156,7 @@ styles =
             , left (px 5)
             , right (px -5)
             , bottom (px -5)
-            , backgroundColor colors.pink
+            , backgroundColor Ui.theme.pink
             , zIndex (int -1)
             ]
         , after
@@ -166,22 +166,22 @@ styles =
             , left zero
             , right zero
             , bottom zero
-            , border3 (px 3) solid colors.navy
+            , border3 (px 3) solid Ui.theme.navy
             ]
         ]
     , contactForm =
         []
     , input =
-        [ backgroundColor (hex "#ffc8e0")
+        [ backgroundColor Ui.theme.lightestPink
         , fontSize inherit
         , fontFamily inherit
-        , border3 (px 2) solid colors.navy
+        , border3 (px 2) solid Ui.theme.navy
         , padding2 (rem 0.6) (rem 1)
         ]
     , pageSection =
         { top =
             [ padding2 (rem 4) zero
-            , color colors.green
+            , color Ui.theme.green
             ]
         , container =
             [ margin2 zero auto
@@ -213,7 +213,7 @@ styles =
                       else
                         right zero
                     , bottom zero
-                    , backgroundColor colors.green
+                    , backgroundColor Ui.theme.green
                     , zIndex (int -1)
                     ]
                 ]
@@ -231,8 +231,8 @@ styles =
 
                   else
                     paddingLeft (rem 1.5)
-                , backgroundColor colors.green
-                , color colors.navy
+                , backgroundColor Ui.theme.green
+                , color Ui.theme.navy
                 ]
         }
     , logo =
@@ -243,8 +243,8 @@ styles =
             , margin zero
             ]
         , h2 =
-            [ backgroundColor colors.yellow
-            , color colors.navy
+            [ backgroundColor Ui.theme.yellow
+            , color Ui.theme.navy
             , padding (rem 2)
             , textTransform uppercase
             ]
@@ -259,7 +259,7 @@ styles =
     , footer =
         { top =
             [ padding (rem 1.5)
-            , color colors.yellow
+            , color Ui.theme.yellow
             ]
         , container =
             [ width (pct 100)
@@ -269,7 +269,7 @@ styles =
             , justifyContent spaceBetween
             ]
         , left = []
-        , right = [ color colors.yellow ]
+        , right = [ color Ui.theme.yellow ]
         }
     }
 
@@ -303,23 +303,6 @@ globalStyles =
             ]
         , Css.Global.form [ margin zero ]
         ]
-
-
-hexValues =
-    { teal = "#8bc7cb"
-    , navy = "#21377b"
-    , pink = "#eebad1"
-    }
-
-
-colors =
-    { navy = hex hexValues.navy
-    , yellow = hex "#fff98e"
-    , teal = hex hexValues.teal
-    , green = hex "#d6fd8c"
-    , pink = hex hexValues.pink
-    , transparent = rgba 0 0 0 0
-    }
 
 
 
@@ -409,16 +392,16 @@ view _ =
 
 speakerCta : Html Msg
 speakerCta =
-    div [ css [ backgroundColor colors.teal ] ]
+    div [ css [ backgroundColor Ui.theme.teal ] ]
         [ div
             [ css
                 [ maxWidth (pct 100)
                 , width (px 360)
                 , margin2 zero auto
                 , padding2 (rem 2) (rem 1)
-                , border3 (px 3) solid colors.navy
-                , backgroundColor colors.pink
-                , color colors.navy
+                , border3 (px 3) solid Ui.theme.navy
+                , backgroundColor Ui.theme.pink
+                , color Ui.theme.navy
                 , textAlign center
                 ]
             ]
@@ -428,7 +411,7 @@ speakerCta =
                     [ a
                         [ href "#proposal-link"
                         , Attr.target "_blank"
-                        , css [ color colors.navy ]
+                        , css [ color Ui.theme.navy ]
                         ]
                         [ text "Submit" ]
                     , text " a proposal!"
@@ -586,7 +569,7 @@ getSvg title =
                     , SvgAttr.height "100%"
                     ]
                     [ Svg.polygon
-                        [ SvgAttr.fill hexValues.teal
+                        [ SvgAttr.fill Ui.hexValues.teal
                         , SvgAttr.points "100,0 100,100 0,100 0,75"
                         ]
                         []
@@ -603,7 +586,7 @@ getSvg title =
                         , right zero
                         , bottom zero
                         , zIndex (int -1)
-                        , backgroundColor colors.teal
+                        , backgroundColor Ui.theme.teal
                         ]
                     ]
                     [ Svg.svg
@@ -613,7 +596,7 @@ getSvg title =
                         , SvgAttr.height "100%"
                         ]
                         [ Svg.polygon
-                            [ SvgAttr.fill hexValues.pink
+                            [ SvgAttr.fill Ui.hexValues.pink
                             , SvgAttr.points "0,0 50,100 0,100"
                             ]
                             []
@@ -636,7 +619,7 @@ getSvg title =
                         , SvgAttr.height "100%"
                         ]
                         [ Svg.polygon
-                            [ SvgAttr.fill hexValues.navy
+                            [ SvgAttr.fill Ui.hexValues.navy
                             , SvgAttr.points "0,100 100,80 100,100"
                             ]
                             []
@@ -653,7 +636,7 @@ getSvg title =
                     , right zero
                     , bottom zero
                     , zIndex (int -1)
-                    , backgroundColor colors.navy
+                    , backgroundColor Ui.theme.navy
                     ]
                 ]
                 [ Svg.svg
@@ -663,7 +646,7 @@ getSvg title =
                     , SvgAttr.height "100%"
                     ]
                     [ Svg.polygon
-                        [ SvgAttr.fill hexValues.navy
+                        [ SvgAttr.fill Ui.hexValues.navy
                         , SvgAttr.points "50,0 100,0 100,100 0,100 0,75"
                         ]
                         []
@@ -766,7 +749,7 @@ speaker : String -> List ( String, String ) -> String -> List (Html msg) -> Html
 speaker name socialLinks image bio =
     div []
         [ div [ css [ displayFlex, alignItems center ] ]
-            [ div [ css [ boxShadow3 (px 5) (px 5) (hex "#c9818c") ] ]
+            [ div [ css [ boxShadow3 (px 5) (px 5) Ui.theme.pink ] ]
                 [ img [ css [ width (px 128) ], src image, alt name ] [] ]
             , div
                 [ css
@@ -820,7 +803,7 @@ siteFooter =
                 [ text "© Elm in the Spring 2019"
                 , div [ css [ fontSize (rem 1.5) ] ]
                     [ a
-                        [ css [ color colors.yellow, marginLeft (rem 1) ]
+                        [ css [ color Ui.theme.yellow, marginLeft (rem 1) ]
                         , href "https://twitter.com/ElmInTheSpring"
                         , target "_blank"
                         ]

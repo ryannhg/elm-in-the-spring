@@ -1,4 +1,4 @@
-module Ui exposing (btn)
+module Ui exposing (btn, hexValues, theme)
 
 import Css exposing (..)
 import Css.Transitions exposing (transition)
@@ -6,11 +6,24 @@ import Html
 import Html.Styled exposing (..)
 
 
-theme : { navy : Color, pink : Color, darkPink : Color }
+hexValues =
+    { lightPink = "#ff93a6"
+    , lightestPink = "#eebbd1"
+    , navy = "#24357b"
+    , teal = "#8bc7cb"
+    , pink = "#ffc7e0"
+    }
+
+
 theme =
-    { navy = hex "24357B"
-    , pink = hex "ffc7e0"
-    , darkPink = hex "CA808F"
+    { navy = hex hexValues.navy
+    , lightestPink = hex hexValues.lightestPink
+    , lightPink = hex hexValues.lightPink
+    , pink = hex hexValues.pink
+    , darkPink = hex "#ca808f"
+    , teal = hex hexValues.teal
+    , yellow = hex "#fff98e"
+    , green = hex "#d6fd8c"
     }
 
 
@@ -33,7 +46,9 @@ btn element =
         , before
             [ property "content" "''"
             , backgroundColor theme.pink
-            , property "box-shadow" "-5px 5px 0 #ff93a6, -10px 10px 0 #EEBBD1"
+
+            -- can't do multiple box shadows directly with elm-css, as far as I can determine.
+            , property "box-shadow" ("-5px 5px 0 " ++ hexValues.lightPink ++ ", -10px 10px 0 " ++ hexValues.lightestPink)
             , position absolute
             , top zero
             , left zero
