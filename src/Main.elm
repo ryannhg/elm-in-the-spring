@@ -279,7 +279,7 @@ globalStyles =
     global
         [ html styles.html
         , body styles.body
-        , Css.Global.selector "body *" [ boxSizing borderBox ]
+        , Css.Global.selector "body *" [ boxSizing borderBox, outline none ]
         , Css.Global.p
             [ fontSize (rem 1.25)
             , margin zero
