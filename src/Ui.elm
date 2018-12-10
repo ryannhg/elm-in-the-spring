@@ -10,29 +10,39 @@ import Html.Styled.Attributes as Attr exposing (css)
 hexValues =
     { pinkLight = "#ff93a6"
     , pinkLightest = "#eebbd1"
-    , navy = "#24357b"
-    , teal = "#17B6D9"
-    , pink = "#ffc7e0"
+    , pinkDarkest = "#A56783"
+    , pink = "#E57C79"
+    , tealLightest = "#A7DBD6"
+    , tealLight = "#75D3BE"
+    , teal = "#5BC1B3"
+    , green = "#ACD67B"
+    , white = "#ffffff"
+    , navy = "#284F86"
     }
 
 
 theme =
-    { navy = hex hexValues.navy
+    { teal = hex hexValues.teal
     , pinkLightest = hex hexValues.pinkLightest
     , pinkLight = hex hexValues.pinkLight
     , pink = hex hexValues.pink
     , pinkDark = hex "#ca808f"
-    , teal = hex hexValues.teal
     , yellow = hex "#fff98e"
-    , green = hex "#d6fd8c"
+    , green = hex hexValues.green
+    , greenLight = hex "#d6fd8c"
+    , tealLight = hex hexValues.tealLight
+    , tealLightest = hex hexValues.tealLightest
+    , white = hex hexValues.white
+    , navy = hex hexValues.navy
+    , pinkDarkest = hex hexValues.pinkDarkest
     }
 
 
 btn : (List (Attribute msg) -> List (Html msg) -> Html msg) -> List (Attribute msg) -> List (Html msg) -> Html msg
 btn element =
     styled element
-        [ border3 (px 5) solid theme.navy
-        , color theme.navy
+        [ border3 (px 5) solid theme.greenLight
+        , color theme.greenLight
         , display inlineBlock
         , fontSize (rem 1.5)
         , textAlign center
@@ -70,7 +80,7 @@ btn element =
             , left (px -5)
             , height (pct 100)
             , width (pct 100)
-            , border3 (px 5) solid theme.navy
+            , border3 (px 5) solid theme.greenLight
             , position absolute
             , zIndex (int 0)
             ]

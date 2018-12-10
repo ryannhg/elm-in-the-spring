@@ -24,8 +24,8 @@ styles =
         [ height (pct 100)
         , margin zero
         , fontFamilies [ "Biko", "sans-serif" ]
-        , backgroundColor Ui.theme.navy
-        , color Ui.theme.yellow
+        , backgroundColor Ui.theme.teal
+        , color Ui.theme.navy
         ]
     , view = []
     , header =
@@ -34,7 +34,6 @@ styles =
             , top zero
             , zIndex (int 10)
             , width (pct 100)
-            -- , backgroundColor Ui.theme.pinkDark
             ]
         , top =
             [ fontSize (rem 1.5)
@@ -86,11 +85,10 @@ styles =
             , boxSizing borderBox
             ]
         , container =
-            [ backgroundColor Ui.theme.yellow
-            , color Ui.theme.navy
+            [ color Ui.theme.navy
             , padding2 (rem 2.5) (rem 2)
             , maxWidth (pct 100)
-            , width (px 540)
+            , width (px 640)
             , fontSize (px 20)
             , lineHeight (num 1.4)
             , marginTop (rem 1.5)
@@ -111,13 +109,13 @@ styles =
         [ backgroundColor Ui.theme.pinkLightest
         , fontSize inherit
         , fontFamily inherit
-        , border3 (px 2) solid Ui.theme.navy
+        , border3 (px 2) solid Ui.theme.teal
         , padding2 (rem 0.6) (rem 1)
         ]
     , pageSection =
         { top =
             [ padding2 (rem 4) zero
-            , color Ui.theme.green
+            , color Ui.theme.greenLight
             ]
         , container =
             [ margin2 zero auto
@@ -149,7 +147,7 @@ styles =
                       else
                         right zero
                     , bottom zero
-                    , backgroundColor Ui.theme.green
+                    , backgroundColor Ui.theme.navy
                     , zIndex (int -1)
                     ]
                 ]
@@ -166,8 +164,8 @@ styles =
 
                   else
                     paddingLeft (rem 1.5)
-                , backgroundColor Ui.theme.green
-                , color Ui.theme.navy
+                , backgroundColor Ui.theme.navy
+                , color Ui.theme.teal
                 ]
         }
     , logo =
@@ -178,8 +176,8 @@ styles =
             , margin zero
             ]
         , h2 =
-            [ backgroundColor Ui.theme.yellow
-            , color Ui.theme.navy
+            [ backgroundColor Ui.theme.green
+            , color Ui.theme.teal
             , padding (rem 2)
             , textTransform uppercase
             ]
@@ -194,7 +192,7 @@ styles =
     , footer =
         { top =
             [ padding (rem 1.5)
-            , color Ui.theme.yellow
+            , color Ui.theme.green
             ]
         , container =
             [ width (pct 100)
@@ -204,7 +202,7 @@ styles =
             , justifyContent spaceBetween
             ]
         , left = []
-        , right = [ color Ui.theme.yellow ]
+        , right = [ color Ui.theme.greenLight ]
         }
     }
 
@@ -216,7 +214,7 @@ globalStyles =
         , body styles.body
         , Css.Global.selector "body *" [ boxSizing borderBox, outline none ]
         , Css.Global.p
-            [ fontSize (rem 1.25)
+            [ fontSize (rem 1.65)
             , margin zero
             , firstChild [ marginTop zero ]
             , marginTop (rem 1.5)
@@ -327,14 +325,14 @@ view _ =
 
 speakerCta : Html Msg
 speakerCta =
-    div [ css [ backgroundColor Ui.theme.teal ] ]
+    div [ css [ backgroundColor Ui.theme.green ] ]
         [ div
             [ css
                 [ maxWidth (pct 100)
                 , width (px 360)
                 , margin2 zero auto
                 , padding2 (rem 2) (rem 1)
-                , border3 (px 3) solid Ui.theme.navy
+                , border3 (px 3) solid Ui.theme.teal
                 , backgroundColor Ui.theme.pink
                 , color Ui.theme.navy
                 , textAlign center
@@ -451,9 +449,9 @@ hero =
                     ]
                 ]
     in
-    { backgroundColor_ = Ui.theme.navy
-    , afterShape = Ui.SectionBgShapeData Ui.theme.pink "polygon(0 0, 44% 100%, 0% 100%)"
-    , beforeShape = Ui.SectionBgShapeData Ui.theme.teal "polygon(100% 68%, 100% 100%, 0% 100%)"
+    { backgroundColor_ = Ui.theme.teal
+    , afterShape = Ui.SectionBgShapeData Ui.theme.tealLight "polygon(0 0, 44% 100%, 0% 100%)"
+    , beforeShape = Ui.SectionBgShapeData Ui.theme.green "polygon(100% 68%, 100% 100%, 0% 100%)"
     }
         |> Ui.angledSection content
 
@@ -462,15 +460,15 @@ getSectionBg : Section -> { backgroundColor_ : Color, beforeShape : Ui.SectionBg
 getSectionBg section_ =
     case section_ of
         Tickets ->
-            { backgroundColor_ = Ui.theme.teal
-            , beforeShape = Ui.SectionBgShapeData Ui.theme.teal "polygon(80% 0, 100% 40%, 0 84%, 0% 0%)"
-            , afterShape = Ui.SectionBgShapeData Ui.theme.navy "polygon(100% 100%, 0 100%, 0 75%)"
+            { backgroundColor_ = Ui.theme.green
+            , beforeShape = Ui.SectionBgShapeData Ui.theme.green "polygon(80% 0, 100% 40%, 0 84%, 0% 0%)"
+            , afterShape = Ui.SectionBgShapeData Ui.theme.teal "polygon(100% 100%, 0 100%, 0 75%)"
             }
 
         _ ->
-            { backgroundColor_ = Ui.theme.navy
-            , beforeShape = Ui.SectionBgShapeData Ui.theme.navy "polygon(80% 0, 100% 40%, 0 84%, 0% 0%)"
-            , afterShape = Ui.SectionBgShapeData Ui.theme.navy "polygon(100% 100%, 0 100%, 0 75%)"
+            { backgroundColor_ = Ui.theme.teal
+            , beforeShape = Ui.SectionBgShapeData Ui.theme.teal "polygon(80% 0, 100% 40%, 0 84%, 0% 0%)"
+            , afterShape = Ui.SectionBgShapeData Ui.theme.teal "polygon(100% 100%, 0 100%, 0 75%)"
             }
 
 
@@ -652,7 +650,7 @@ siteFooter =
                 [ text "© Elm in the Spring 2019"
                 , div [ css [ fontSize (rem 1.5) ] ]
                     [ a
-                        [ css [ color Ui.theme.yellow, marginLeft (rem 1) ]
+                        [ css [ color Ui.theme.green, marginLeft (rem 1) ]
                         , href "https://twitter.com/ElmInTheSpring"
                         , target "_blank"
                         ]
