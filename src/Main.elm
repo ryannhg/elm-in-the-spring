@@ -29,7 +29,14 @@ styles =
         ]
     , view = []
     , header =
-        { top =
+        { wrapper =
+            [ position absolute
+            , top zero
+            , zIndex (int 10)
+            , width (pct 100)
+            -- , backgroundColor Ui.theme.pinkDark
+            ]
+        , top =
             [ fontSize (rem 1.5)
             , padding2 (rem 2) (rem 1.5)
             ]
@@ -66,7 +73,7 @@ styles =
         ]
     , hero =
         { top =
-            [ padding2 (rem 4) zero
+            [ padding2 (rem 8) zero
             , displayFlex
             , alignItems center
             , flexDirection column
@@ -98,81 +105,10 @@ styles =
             , marginTop (rem 1.5)
             ]
         }
-    , button =
-        [ backgroundColor transparent
-        , color Ui.theme.navy
-        , padding zero
-        , paddingTop (px 2)
-        , fontFamily inherit
-        , fontSize inherit
-        , textTransform uppercase
-        , border zero
-        , marginLeft (rem 1.5)
-        , firstChild [ marginLeft zero ]
-        , cursor pointer
-        , whiteSpace noWrap
-        , textDecoration none
-        , lineHeight (num 1)
-        , display inlineBlock
-        , position relative
-        ]
-    , buttonBackSpan =
-        [ position absolute
-        , top zero
-        , left zero
-        , right zero
-        , bottom zero
-        , zIndex (int 0)
-        , before
-            [ property "content" "''"
-            , position absolute
-            , top (px 15)
-            , left (px 15)
-            , right (px -15)
-            , bottom (px -15)
-            , backgroundColor Ui.theme.pink
-            , zIndex (int 0)
-            ]
-        , after
-            [ property "content" "''"
-            , position absolute
-            , top (px 10)
-            , left (px 10)
-            , right (px -10)
-            , bottom (px -10)
-            , backgroundColor Ui.theme.navy
-            , zIndex (int 1)
-            ]
-        ]
-    , buttonSpan =
-        [ position relative
-        , zIndex (int 1)
-        , display inlineBlock
-        , padding2 (px 12) (px 24)
-        , before
-            [ property "content" "''"
-            , position absolute
-            , top (px 5)
-            , left (px 5)
-            , right (px -5)
-            , bottom (px -5)
-            , backgroundColor Ui.theme.pink
-            , zIndex (int -1)
-            ]
-        , after
-            [ property "content" "''"
-            , position absolute
-            , top zero
-            , left zero
-            , right zero
-            , bottom zero
-            , border3 (px 3) solid Ui.theme.navy
-            ]
-        ]
     , contactForm =
         []
     , input =
-        [ backgroundColor Ui.theme.lightestPink
+        [ backgroundColor Ui.theme.pinkLightest
         , fontSize inherit
         , fontFamily inherit
         , border3 (px 2) solid Ui.theme.navy
@@ -220,7 +156,6 @@ styles =
         , content =
             \isLeftSide ->
                 [ maxWidth (pct 100)
-                , width (px 540)
                 , margin2 zero auto
                 , marginTop (rem 2)
                 , fontSize (px 20)
@@ -464,15 +399,17 @@ contentFor section =
 
 navbar : Html Msg
 navbar =
-    header [ css styles.header.top ]
-        [ ul [ css styles.header.links ]
-            (List.map
-                headerJumpLink
-                [ Tickets
-                , Speakers
-                , Sponsors
-                ]
-            )
+    header [ css styles.header.wrapper ]
+        [ nav [ css styles.header.top ]
+            [ ul [ css styles.header.links ]
+                (List.map
+                    headerJumpLink
+                    [ Tickets
+                    , Speakers
+                    , Sponsors
+                    ]
+                )
+            ]
         ]
 
 
@@ -493,24 +430,48 @@ headerJumpLink section =
 
 hero : Html Msg
 hero =
-    div [ css styles.hero.top ]
-        [ h1 [ css [ display none ] ] [ logo ]
-        , img
-            [ css styles.hero.image
-            , src "/images/flower+text.svg"
-            , alt "Elm in the Spring 2019"
-            ]
-            []
-        , div [ css styles.hero.container ]
-            [ p []
-                [ text "Let's all get together in Chicago and spend the day talking/teaching/learning all about Elm!"
+    let
+        content =
+            div [ css styles.hero.top ]
+                [ h1 [ css [ display none ] ] [ logo ]
+                , img
+                    [ css styles.hero.image
+                    , src "/images/flower+text.svg"
+                    , alt "Elm in the Spring 2019"
+                    ]
+                    []
+                , div [ css styles.hero.container ]
+                    [ p []
+                        [ text "Let's all get together in Chicago and spend the day talking/teaching/learning all about Elm!"
+                        ]
+                    , div [ css styles.buttons.row ]
+                        [ Ui.btn button [ onClick (JumpTo (idOf Tickets)) ] [ text "Attend" ]
+                        , Ui.btn button [ onClick (JumpTo (idOf Speakers)) ] [ text "Speak" ]
+                        ]
+                    ]
                 ]
-            , div [ css styles.buttons.row ]
-                [ Ui.btn button [ onClick (JumpTo (idOf Tickets)) ] [ text "Attend" ]
-                , Ui.btn button [ onClick (JumpTo (idOf Speakers)) ] [ text "Speak" ]
-                ]
-            ]
-        ]
+    in
+    { backgroundColor_ = Ui.theme.navy
+    , afterShape = Ui.SectionBgShapeData Ui.theme.pink "polygon(0 0, 44% 100%, 0% 100%)"
+    , beforeShape = Ui.SectionBgShapeData Ui.theme.teal "polygon(100% 68%, 100% 100%, 0% 100%)"
+    }
+        |> Ui.angledSection content
+
+
+getSectionBg : Section -> { backgroundColor_ : Color, beforeShape : Ui.SectionBgShapeData, afterShape : Ui.SectionBgShapeData }
+getSectionBg section_ =
+    case section_ of
+        Tickets ->
+            { backgroundColor_ = Ui.theme.teal
+            , beforeShape = Ui.SectionBgShapeData Ui.theme.teal "polygon(80% 0, 100% 40%, 0 84%, 0% 0%)"
+            , afterShape = Ui.SectionBgShapeData Ui.theme.navy "polygon(100% 100%, 0 100%, 0 75%)"
+            }
+
+        _ ->
+            { backgroundColor_ = Ui.theme.navy
+            , beforeShape = Ui.SectionBgShapeData Ui.theme.navy "polygon(80% 0, 100% 40%, 0 84%, 0% 0%)"
+            , afterShape = Ui.SectionBgShapeData Ui.theme.navy "polygon(100% 100%, 0 100%, 0 75%)"
+            }
 
 
 pageSection : Section -> Html Msg
@@ -522,136 +483,30 @@ pageSection section_ =
         id_ =
             idOf section_
 
-        content =
+        innerContent =
             contentFor section_
-
-        svg =
-            getSvg section_
 
         isLeftSide =
             section_ /= Speakers
+
+        content =
+            div [ id id_ ]
+                [ section [ css styles.pageSection.top, css [ position relative ] ]
+                    [ div [ css styles.pageSection.container ]
+                        [ h3 [ css styles.pageSection.title ] [ text title ]
+                        ]
+                    , div [ css (styles.pageSection.contentWrapper isLeftSide) ]
+                        [ div [ css styles.pageSection.container ]
+                            [ div [ css (styles.pageSection.content isLeftSide) ]
+                                [ innerContent
+                                ]
+                            ]
+                        ]
+                    ]
+                ]
     in
-    div [ id id_ ]
-        [ section [ css styles.pageSection.top, css [ position relative ] ]
-            [ svg
-            , div [ css styles.pageSection.container ]
-                [ h3 [ css styles.pageSection.title ] [ text title ]
-                ]
-            , div [ css (styles.pageSection.contentWrapper isLeftSide) ]
-                [ div [ css styles.pageSection.container ]
-                    [ div [ css (styles.pageSection.content isLeftSide) ]
-                        [ content
-                        ]
-                    ]
-                ]
-            ]
-        ]
-
-
-getSvg : Section -> Html Msg
-getSvg title =
-    case title of
-        Tickets ->
-            div
-                [ css
-                    [ position absolute
-                    , top zero
-                    , left zero
-                    , right zero
-                    , bottom zero
-                    , zIndex (int -1)
-                    ]
-                ]
-                [ Svg.svg
-                    [ SvgAttr.viewBox "0 0 100 100"
-                    , SvgAttr.preserveAspectRatio "none"
-                    , SvgAttr.width "100%"
-                    , SvgAttr.height "100%"
-                    ]
-                    [ Svg.polygon
-                        [ SvgAttr.fill Ui.hexValues.teal
-                        , SvgAttr.points "100,0 100,100 0,100 0,75"
-                        ]
-                        []
-                    ]
-                ]
-
-        Speakers ->
-            div []
-                [ div
-                    [ css
-                        [ position absolute
-                        , top zero
-                        , left zero
-                        , right zero
-                        , bottom zero
-                        , zIndex (int -1)
-                        , backgroundColor Ui.theme.teal
-                        ]
-                    ]
-                    [ Svg.svg
-                        [ SvgAttr.viewBox "0 0 100 100"
-                        , SvgAttr.preserveAspectRatio "none"
-                        , SvgAttr.width "100%"
-                        , SvgAttr.height "100%"
-                        ]
-                        [ Svg.polygon
-                            [ SvgAttr.fill Ui.hexValues.pink
-                            , SvgAttr.points "0,0 50,100 0,100"
-                            ]
-                            []
-                        ]
-                    ]
-                , div
-                    [ css
-                        [ position absolute
-                        , top zero
-                        , left zero
-                        , right zero
-                        , bottom zero
-                        , zIndex (int -1)
-                        ]
-                    ]
-                    [ Svg.svg
-                        [ SvgAttr.viewBox "0 0 100 100"
-                        , SvgAttr.preserveAspectRatio "none"
-                        , SvgAttr.width "100%"
-                        , SvgAttr.height "100%"
-                        ]
-                        [ Svg.polygon
-                            [ SvgAttr.fill Ui.hexValues.navy
-                            , SvgAttr.points "0,100 100,80 100,100"
-                            ]
-                            []
-                        ]
-                    ]
-                ]
-
-        Sponsors ->
-            div
-                [ css
-                    [ position absolute
-                    , top zero
-                    , left zero
-                    , right zero
-                    , bottom zero
-                    , zIndex (int -1)
-                    , backgroundColor Ui.theme.navy
-                    ]
-                ]
-                [ Svg.svg
-                    [ SvgAttr.viewBox "0 0 100 100"
-                    , SvgAttr.preserveAspectRatio "none"
-                    , SvgAttr.width "100%"
-                    , SvgAttr.height "100%"
-                    ]
-                    [ Svg.polygon
-                        [ SvgAttr.fill Ui.hexValues.navy
-                        , SvgAttr.points "50,0 100,0 100,100 0,100 0,75"
-                        ]
-                        []
-                    ]
-                ]
+    getSectionBg section_
+        |> Ui.angledSection content
 
 
 ticketContent : Html Msg
@@ -665,15 +520,12 @@ ticketContent =
             , a [ href "https://maps.google.com/?q=Newberry+Library+Chicago", target "_blank" ] [ text "Newberry Library" ]
             , text ". We'd love to see you there!"
             ]
-        , p []
-            [ a
+        , p [ css [ textAlign center ] ]
+            [ Ui.btn a
                 [ href "https://ti.to/elm-in-the-spring/chicago-2019"
                 , Attr.target "_blank"
-                , css styles.button
                 ]
-                [ span [ css styles.buttonBackSpan ] []
-                , span [ css styles.buttonSpan ] [ text "Get your tickets" ]
-                ]
+                [ text "Get your tickets" ]
             ]
         , br [] []
         , h4 [] [ text "Stay in touch" ]
@@ -721,15 +573,12 @@ speakerContent =
         , p []
             [ text "Have something to share with the Elm community? Please, let us know!"
             ]
-        , p []
-            [ a
+        , p [ css [ textAlign center ] ]
+            [ Ui.btn a
                 [ href "#cfp-link-goes-here"
                 , Attr.target "_blank"
-                , css styles.button
                 ]
-                [ span [ css styles.buttonBackSpan ] []
-                , span [ css styles.buttonSpan ] [ text "Submit your talk" ]
-                ]
+                [ text "Submit your talk" ]
             ]
         , br [] []
         , h4 [] [ text "Speaker Lineup" ]
