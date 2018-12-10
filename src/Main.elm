@@ -121,10 +121,10 @@ styles =
             [ margin2 zero auto
             , maxWidth (px 960)
             , width (pct 100)
-            , padding2 zero (rem 1.5)
+            , padding2 zero (rem 3)
             ]
         , title =
-            [ fontSize (rem 3)
+            [ fontSize (rem 5)
             , textTransform uppercase
             , letterSpacing (px 4)
             , textAlign center
@@ -158,12 +158,12 @@ styles =
                 , marginTop (rem 2)
                 , fontSize (px 20)
                 , lineHeight (num 1.4)
-                , padding2 (rem 3) (rem 1.5)
+                , padding2 (rem 3) (rem 2)
                 , if isLeftSide then
                     paddingLeft zero
 
                   else
-                    paddingLeft (rem 1.5)
+                    paddingLeft (rem 2)
                 , backgroundColor Ui.theme.navy
                 , color Ui.theme.teal
                 ]
@@ -472,6 +472,22 @@ getSectionBg section_ =
             }
 
 
+getTitle : Section -> Html Msg
+getTitle section =
+    case section of
+        Tickets ->
+            { textContent = "Tickets", outlineColorString = Ui.hexValues.navy, fillColor = Ui.theme.tealLight, shadowColor = Ui.theme.greenLight }
+                |> Ui.textOffsetShadow
+
+        Speakers ->
+            { textContent = "Speakers", outlineColorString = Ui.hexValues.navy, shadowColor = Ui.theme.greenLight }
+                |> Ui.textOffsetStroke
+
+        Sponsors ->
+            { textContent = "Sponsors", outlineColorString = Ui.hexValues.tealLight, fillColor = Ui.theme.greenLight, shadowColor = Ui.theme.tealLight }
+                |> Ui.textOffsetShadow
+
+
 pageSection : Section -> Html Msg
 pageSection section_ =
     let
@@ -491,7 +507,7 @@ pageSection section_ =
             div [ id id_ ]
                 [ section [ css styles.pageSection.top, css [ position relative ] ]
                     [ div [ css styles.pageSection.container ]
-                        [ h3 [ css styles.pageSection.title ] [ text title ]
+                        [ h3 [ css styles.pageSection.title ] [ getTitle section_ ]
                         ]
                     , div [ css (styles.pageSection.contentWrapper isLeftSide) ]
                         [ div [ css styles.pageSection.container ]

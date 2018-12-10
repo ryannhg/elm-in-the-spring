@@ -1,4 +1,4 @@
-module Ui exposing (SectionBgShapeData, angledSection, btn, hexValues, theme)
+module Ui exposing (SectionBgShapeData, angledSection, btn, hexValues, textOffsetShadow, textOffsetStroke, theme)
 
 import Css exposing (..)
 import Css.Transitions exposing (transition)
@@ -153,3 +153,28 @@ angledSection content { backgroundColor_, beforeShape, afterShape } =
                 ]
     in
     sectionWrapper [] [ sectionBg [] [], wrappedContent ]
+
+
+textOffsetStroke : { textContent : String, outlineColorString : String, shadowColor : Color } -> Html msg
+textOffsetStroke { textContent, outlineColorString, shadowColor } =
+    styled span
+        [ property "-webkit-text-stroke-width" "2px"
+        , property "-webkit-text-stroke-color" outlineColorString
+        , textShadow3 (px 7) (px 7) shadowColor
+        , color transparent
+        ]
+        []
+        [ text textContent ]
+
+
+textOffsetShadow : { textContent : String, outlineColorString : String, fillColor : Color, shadowColor : Color } -> Html msg
+textOffsetShadow { textContent, outlineColorString, shadowColor, fillColor } =
+    styled span
+        [ property "-webkit-text-stroke-width" "3px"
+        , property "-webkit-text-stroke-color" outlineColorString
+        , textShadow3 (px 7) (px 7) shadowColor
+        , color fillColor
+        , property "background-clip" "text"
+        ]
+        []
+        [ text textContent ]
