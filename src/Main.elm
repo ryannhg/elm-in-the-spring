@@ -559,7 +559,7 @@ ticketContent model =
                     , onInput (UpdateField Email)
                     ]
                     []
-                , Ui.btn input [ Attr.type_ "submit", css [ marginLeft (rem 1.5) ], Attr.value "Sign Up" ] []
+                , Ui.btn button [ Attr.type_ "submit", css [ marginLeft (rem 2.5) ] ] [ text "Sign Up" ]
                 ]
             ]
         , p []
