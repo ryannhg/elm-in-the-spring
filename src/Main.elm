@@ -77,13 +77,42 @@ styles =
             , alignItems center
             , flexDirection column
             ]
-        , image =
-            [ width (px 480)
-            , maxWidth (pct 100)
-            , margin2 zero auto
-            , padding (rem 1)
-            , boxSizing borderBox
+        , wrapper =
+            [ displayFlex
+            , justifyContent center
+            , width (pct 100)
+            , maxWidth (px 960)
+            , alignItems center
+            , flexWrap wrap
             ]
+        , topRow = [ width (pct 100), displayFlex ] -- flower and logo (separate)
+        , bottomRow = [ width (pct 50) ]
+        , leftSide =
+            [ width (pct 30)
+            ]
+        , rightSide =
+            [ width (pct 50) ]
+
+        , buttons =
+            [ displayFlex
+            , width (pct 50)
+            , alignSelf center
+            , justifyContent spaceAround
+            , marginTop (rem 1.5)
+            ]
+        , flowerImage = [ margin (px 20) ]
+        -- , logoText =
+        --     [ width (pct 50) ]
+        -- , introText =
+        --     []
+        -- , image =
+        --     [ width (pct 30)
+
+            -- , maxWidth (pct 100)
+            -- , margin2 zero auto
+            -- , padding (rem 1)
+            -- , boxSizing borderBox
+            -- ]
         , container =
             [ color Ui.theme.navy
             , padding2 (rem 2.5) (rem 2)
@@ -96,13 +125,7 @@ styles =
             , zIndex (int 1)
             ]
         }
-    , buttons =
-        { row =
-            [ displayFlex
-            , justifyContent spaceAround
-            , marginTop (rem 1.5)
-            ]
-        }
+
     , contactForm =
         []
     , input =
@@ -432,43 +455,63 @@ hero =
         content =
             div [ css styles.hero.top ]
                 [ h1 [ css [ display none ] ] [ logo ]
-                , img
-                    [ css styles.hero.image
-                    , src "/images/flower+text.svg"
-                    , alt "Elm in the Spring 2019"
-                    ]
-                    []
-                , div [ css styles.hero.container ]
-                    [ p []
-                        [ text "Let's all get together in Chicago and spend the day talking/teaching/learning all about Elm!"
+                , div
+                    [ css styles.hero.wrapper ]
+                    [ div [ css styles.hero.leftSide ]
+                        [ img
+                            [ css styles.hero.flowerImage
+                            , src "/images/flower.svg"
+                            , alt "Elm in the Spring 2019"
+                            ]
+                            []
                         ]
-                    , div [ css styles.buttons.row ]
+                    , div [ css styles.hero.rightSide ]
+                        [ img
+                            [ src "/images/text.svg"
+                            , alt "Elm in the Spring 2019"
+                            ]
+                            []
+                        , p [] [ text "Let's all get together in Chicago and spend the day talking/teaching/learning all about Elm!" ]
+                        ]
+                    , div [ css styles.hero.buttons ]
                         [ Ui.btn button [ onClick (JumpTo (idOf Tickets)) ] [ text "Attend" ]
                         , Ui.btn button [ onClick (JumpTo (idOf Speakers)) ] [ text "Speak" ]
                         ]
                     ]
+
+                -- , img
+                --     [ css styles.hero.image
+                --     , src "/images/flower+text.svg"
+                --     , alt "Elm in the Spring 2019"
+                --     ]
+                --     []
+                -- , div [ css styles.hero.container ]
+                --     [ p []
+                --         [ text "Let's all get together in Chicago and spend the day talking/teaching/learning all about Elm!"
+                --         ]
+                --     ]
                 ]
     in
-    { backgroundColor_ = Ui.theme.teal
-    , afterShape = Ui.SectionBgShapeData Ui.theme.tealLight "polygon(0 0, 44% 100%, 0% 100%)"
-    , beforeShape = Ui.SectionBgShapeData Ui.theme.green "polygon(100% 68%, 100% 100%, 0% 100%)"
+    { baseFillStyle = Ui.fillStyle <| Ui.SolidFill Ui.hexValues.teal
+    , afterShape = Ui.SectionBgShapeData (Ui.fillStyle <| Ui.FlowerFill Ui.hexValues.tealLight) "polygon(0 0, 44% 100%, 0% 100%)"
+    , beforeShape = Ui.SectionBgShapeData (Ui.fillStyle <| Ui.LeafFill Ui.hexValues.green) "polygon(100% 68%, 100% 100%, 0% 100%)"
     }
         |> Ui.angledSection content
 
 
-getSectionBg : Section -> { backgroundColor_ : Color, beforeShape : Ui.SectionBgShapeData, afterShape : Ui.SectionBgShapeData }
+getSectionBg : Section -> { baseFillStyle : Css.Style, beforeShape : Ui.SectionBgShapeData, afterShape : Ui.SectionBgShapeData }
 getSectionBg section_ =
     case section_ of
         Tickets ->
-            { backgroundColor_ = Ui.theme.green
-            , beforeShape = Ui.SectionBgShapeData Ui.theme.green "polygon(80% 0, 100% 40%, 0 84%, 0% 0%)"
-            , afterShape = Ui.SectionBgShapeData Ui.theme.teal "polygon(100% 100%, 0 100%, 0 75%)"
+            { baseFillStyle = Ui.fillStyle <| Ui.LeafFill Ui.hexValues.green
+            , beforeShape = Ui.SectionBgShapeData (Ui.fillStyle <| Ui.LeafFill Ui.hexValues.green) "polygon(80% 0, 100% 40%, 0 84%, 0% 0%)"
+            , afterShape = Ui.SectionBgShapeData (Ui.fillStyle <| Ui.SolidFill Ui.hexValues.teal) "polygon(100% 100%, 0 100%, 0 75%)"
             }
 
         _ ->
-            { backgroundColor_ = Ui.theme.teal
-            , beforeShape = Ui.SectionBgShapeData Ui.theme.teal "polygon(80% 0, 100% 40%, 0 84%, 0% 0%)"
-            , afterShape = Ui.SectionBgShapeData Ui.theme.teal "polygon(100% 100%, 0 100%, 0 75%)"
+            { baseFillStyle = Ui.fillStyle <| Ui.SolidFill Ui.hexValues.teal
+            , beforeShape = Ui.SectionBgShapeData (Ui.fillStyle <| Ui.SolidFill Ui.hexValues.teal) "polygon(80% 0, 100% 40%, 0 84%, 0% 0%)"
+            , afterShape = Ui.SectionBgShapeData (Ui.fillStyle <| Ui.SolidFill Ui.hexValues.teal) "polygon(100% 100%, 0 100%, 0 75%)"
             }
 
 
