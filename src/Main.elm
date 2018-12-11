@@ -109,6 +109,8 @@ styles =
     , input =
         [ backgroundColor Ui.theme.pinkLightest
         , fontSize inherit
+        , lineHeight (rem 1)
+        , height (rem 3.25)
         , fontFamily inherit
         , border3 (px 2) solid Ui.theme.teal
         , padding2 (rem 0.6) (rem 1)
@@ -518,8 +520,7 @@ ticketContent model =
             ]
         , br [] []
         , h4 [] [ text "Stay in touch" ]
-        , p [] [ text "For conference updates, join our mailing list." ]
-        , p [] [ text "No spam. Ever." ]
+        , p [] [ text "For conference updates, join our mailing list. No spam. Ever." ]
         , form
             [ Attr.name "mailing-list"
             , Attr.method "POST"
@@ -554,8 +555,20 @@ ticketContent model =
                     , onInput (UpdateField Email)
                     ]
                     []
-                , input [ Attr.type_ "submit", css [ marginLeft (rem 1.5), border3 (px 3) solid colors.navy ], css styles.buttonSpan, css styles.button, Attr.value "Sign Up" ] []
+                , Ui.btn input [ Attr.type_ "submit", css [ marginLeft (rem 1.5) ], Attr.value "Sign Up" ] []
                 ]
+            ]
+        , p []
+            [ text "Or, follow us at "
+            , a
+                [ css [ color Ui.theme.green, marginLeft (rem 1) ]
+                , href "https://twitter.com/ElmInTheSpring"
+                , target "_blank"
+                ]
+                [ i [ Attr.class "fa fa-twitter-square" ] []
+                , text "@elminthespring"
+                ]
+            , text " on Twitter."
             ]
         ]
 
@@ -565,11 +578,11 @@ speakerContent =
     div []
         [ h4 [] [ text "Become a speaker" ]
         , p []
-            [ text "Have something to share with the Elm community? Please, let us know!"
+            [ text "Have a great idea y you want to share with the Elm community?"
             ]
         , p [ css [ textAlign center ] ]
             [ Ui.btn a
-                [ href "#cfp-link-goes-here"
+                [ href "https://www.papercall.io/elm-in-the-spring-2019"
                 , Attr.target "_blank"
                 ]
                 [ text "Submit your talk" ]
