@@ -87,7 +87,7 @@ styles =
                 , property "grid-template-columns" "30% auto"
                 , paddingBottom (px 50)
                 ]
-            , mobile = [ property "grid-gap" "10px" ]
+            , mobile = [ property "grid-gap" "20px" ]
             }
         , logoText = [ property "justify-self" "center", property "grid-column" "2 / span 2" ]
         , logoFlower =
@@ -99,10 +99,10 @@ styles =
             , mobile = [ property "grid-row" "1" ]
             }
         , textContent =
-            { base = [ textAlign center, fontSize (rem 1.6), lineHeight (rem 2) ], mobile = [ property "grid-column" "1 / span 3" ] }
+            { base = [ textAlign center, fontSize (rem 1.6), lineHeight (rem 2) ], mobile = [ property "grid-row" "2", property "grid-column" "1 / span 3" ] }
         , buttonWrapper =
-            { mobile = [ property "grid-column" "1 / span 3" ] }
-        , buttons = [ displayFlex, alignSelf center, justifyContent spaceAround ]
+            { desktop = [ property "grid-column" "2 / span 2" ], mobile = [ property "grid-column" "1 / span 3" ] }
+        , buttons = [ displayFlex, alignSelf center, justifyContent center ]
         }
     , contactForm =
         []
@@ -424,7 +424,7 @@ hero =
                             [ css styles.hero.textContent.base, css [ Media.withMedia [ Media.only Media.screen [ Media.maxWidth (px 800) ] ] styles.hero.textContent.mobile ] ]
                             [ text "Let's all get together in Chicago and spend the day talking/teaching/learning all about Elm!" ]
                         , div
-                            [ css [ Media.withMedia [ Media.only Media.screen [ Media.maxWidth (px 800) ] ] styles.hero.buttonWrapper.mobile ] ]
+                            [ css styles.hero.buttonWrapper.desktop, css [ Media.withMedia [ Media.only Media.screen [ Media.maxWidth (px 800) ] ] styles.hero.buttonWrapper.mobile ] ]
                             [ div [ css styles.hero.buttons ]
                                 [ Ui.btn button [ onClick (JumpTo (idOf Tickets)) ] [ text "Attend" ]
                                 , Ui.btn button [ onClick (JumpTo (idOf Speakers)) ] [ text "Speak" ]

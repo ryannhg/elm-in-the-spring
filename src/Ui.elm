@@ -85,6 +85,7 @@ btn element =
         , position relative
         , textDecoration none
         , textTransform uppercase
+        , margin (px 10) -- move me i dont go here
         , backgroundColor transparent
         , cursor pointer
         , zIndex (int 10)
