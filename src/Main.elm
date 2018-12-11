@@ -582,7 +582,7 @@ speakerContent =
     div []
         [ h4 [] [ text "Become a speaker" ]
         , p []
-            [ text "Have a great idea y you want to share with the Elm community?"
+            [ text "Have a great idea you want to share with the Elm community?"
             ]
         , p [ css [ textAlign center ] ]
             [ Ui.btn a
