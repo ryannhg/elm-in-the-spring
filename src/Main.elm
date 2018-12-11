@@ -7,7 +7,7 @@ import Css.Media as Media
 import Html
 import Html.Styled exposing (..)
 import Html.Styled.Attributes as Attr exposing (alt, css, href, id, src, target)
-import Html.Styled.Events exposing (onClick, onInput, onSubmit)
+import Html.Styled.Events exposing (onClick, onInput)
 import Svg.Styled as Svg
 import Svg.Styled.Attributes as SvgAttr
 import Ui
@@ -111,6 +111,8 @@ styles =
     , input =
         [ backgroundColor Ui.theme.pinkLightest
         , fontSize inherit
+        , lineHeight (rem 1)
+        , height (rem 3.25)
         , fontFamily inherit
         , border3 (px 2) solid Ui.theme.teal
         , padding2 (rem 0.6) (rem 1)
@@ -274,7 +276,7 @@ type Field
 type Msg
     = JumpTo String
     | UpdateField Field String
-    | SubmitForm
+    | ClearForm
 
 
 port outgoing : ( String, String ) -> Cmd msg
@@ -298,14 +300,8 @@ update msg model =
             , Cmd.none
             )
 
-        SubmitForm ->
-            ( Model "" ""
-            , if String.isEmpty model.name && not (String.isEmpty model.email) then
-                outgoing ( "SUBMIT_FORM", model.email )
-
-              else
-                Cmd.none
-            )
+        ClearForm ->
+            ( { model | name = "", email = "" }, Cmd.none )
 
 
 
@@ -313,14 +309,14 @@ update msg model =
 
 
 view : Model -> Html Msg
-view _ =
+view model =
     div [ css styles.view ]
         [ globalStyles
         , navbar
         , hero
-        , pageSection Tickets
-        , pageSection Speakers
-        , pageSection Sponsors
+        , pageSection Tickets model
+        , pageSection Speakers model
+        , pageSection Sponsors model
         , siteFooter
         ]
 
@@ -353,11 +349,11 @@ idOf =
     titleOf >> String.toLower
 
 
-contentFor : Section -> Html Msg
-contentFor section =
+contentFor : Section -> Model -> Html Msg
+contentFor section model =
     case section of
         Tickets ->
-            ticketContent
+            ticketContent model
 
         Speakers ->
             speakerContent
@@ -475,8 +471,8 @@ getTitle section =
                 |> Ui.textOffsetShadow
 
 
-pageSection : Section -> Html Msg
-pageSection section_ =
+pageSection : Section -> Model -> Html Msg
+pageSection section_ model =
     let
         title =
             titleOf section_
@@ -485,7 +481,7 @@ pageSection section_ =
             idOf section_
 
         innerContent =
-            contentFor section_
+            contentFor section_ model
 
         isLeftSide =
             section_ /= Speakers
@@ -510,8 +506,8 @@ pageSection section_ =
         |> Ui.angledSection content
 
 
-ticketContent : Html Msg
-ticketContent =
+ticketContent : Model -> Html Msg
+ticketContent model =
     div []
         [ h4 [] [ text "Interested in attending?" ]
         , p []
@@ -519,7 +515,7 @@ ticketContent =
             , strong [] [ text "Friday, April 26th" ]
             , text " at the "
             , a [ href "https://maps.google.com/?q=Newberry+Library+Chicago", target "_blank" ] [ text "Newberry Library" ]
-            , text ". We'd love to see you there!"
+            , text " in Chicago. We'd love to see you there!"
             ]
         , p [ css [ textAlign center ] ]
             [ Ui.btn a
@@ -528,32 +524,39 @@ ticketContent =
                 ]
                 [ text "Get your tickets" ]
             ]
+        , p []
+            [ text "All attendees are expected to observe the conference "
+            , a [ Attr.href "http://confcodeofconduct.com/", Attr.target "blank" ] [ text "Code of Conduct." ]
+            ]
         , br [] []
         , h4 [] [ text "Stay in touch" ]
-        , p [] [ text "For conference updates, join our mailing list." ]
-        , p [] [ text "No spam. Ever." ]
+        , p [] [ text "For conference updates, join our mailing list. No spam. Ever." ]
         , form
             [ Attr.name "mailing-list"
             , Attr.method "POST"
-            , Attr.attribute "data-netlify-honeypot" "name"
-            , Attr.attribute "data-netlify" "true"
+            , Attr.target "_blank"
+            , Attr.action "https://elminthespring.us19.list-manage.com/subscribe/post?u=7f1c2d8a3cd0f3008803845ad&amp;id=0a8d03f3de"
             , css styles.contactForm
-            , onSubmit SubmitForm
             ]
             [ p [ css styles.hidden ]
                 [ input
                     [ Attr.type_ "text"
                     , Attr.name "name"
-                    , Attr.attribute "aria-label"
-                        "Do not fill out this field, it's for spam bots."
+
+                    -- real people should not fill this in and expect good things - do not remove this or risk form bot signups
+                    , Attr.id "b_7f1c2d8a3cd0f3008803845ad_0a8d03f3de"
                     , onInput (UpdateField Name)
+                    , Attr.value model.name
+                    , Attr.tabindex -1
                     ]
                     []
                 ]
             , p []
                 [ input
                     [ Attr.type_ "email"
-                    , Attr.name "email"
+                    , Attr.name "EMAIL"
+                    , Attr.id "mce-EMAIL"
+                    , Attr.value model.email
                     , Attr.placeholder "email address"
                     , Attr.attribute "aria-label" "Email address"
                     , css styles.input
@@ -562,7 +565,20 @@ ticketContent =
                     , onInput (UpdateField Email)
                     ]
                     []
+                , Ui.btn button [ Attr.type_ "submit", onClick ClearForm, css [ marginLeft (rem 2.5) ] ] [ text "Sign Up" ]
                 ]
+            ]
+        , p []
+            [ text "Or, follow us at"
+            , a
+                [ css [ color Ui.theme.green, marginLeft (rem 1) ]
+                , href "https://twitter.com/ElmInTheSpring"
+                , target "_blank"
+                ]
+                [ --i [ Attr.class "fa fa-twitter-square" ] [],
+                  text "@elminthespring"
+                ]
+            , text " on Twitter."
             ]
         ]
 
@@ -572,11 +588,11 @@ speakerContent =
     div []
         [ h4 [] [ text "Become a speaker" ]
         , p []
-            [ text "Have something to share with the Elm community? Please, let us know!"
+            [ text "Have a great idea you want to share with the Elm community?"
             ]
         , p [ css [ textAlign center ] ]
             [ Ui.btn a
-                [ href "#cfp-link-goes-here"
+                [ href "https://www.papercall.io/elm-in-the-spring-2019"
                 , Attr.target "_blank"
                 ]
                 [ text "Submit your talk" ]
