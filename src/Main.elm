@@ -78,7 +78,7 @@ styles =
             , alignItems center
             , flexDirection column
             ]
-        , wrapper = { base = [ margin3 (px 200) auto zero, maxWidth (pct 95) ], desktop = [ maxWidth (pct 60) ], mobile = [ maxWidth (pct 100) ] }
+        , wrapper = { base = [ margin3 (px 200) auto zero, maxWidth (px 960) ], desktop = [ maxWidth (pct 60) ], mobile = [ maxWidth (pct 100) ] }
         , grid =
             { desktop =
                 [ property "display" "grid"
@@ -86,6 +86,8 @@ styles =
                 , property "grid-template-rows" "auto auto auto"
                 , property "grid-template-columns" "30% auto"
                 , paddingBottom (px 50)
+                , maxWidth (pct 95)
+                , margin2 zero auto
                 ]
             , mobile = [ property "grid-gap" "20px" ]
             }
