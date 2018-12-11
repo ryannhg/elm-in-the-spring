@@ -567,14 +567,14 @@ ticketContent model =
                 ]
             ]
         , p []
-            [ text "Or, follow us at "
+            [ text "Or, follow us at"
             , a
                 [ css [ color Ui.theme.green, marginLeft (rem 1) ]
                 , href "https://twitter.com/ElmInTheSpring"
                 , target "_blank"
                 ]
-                [ i [ Attr.class "fa fa-twitter-square" ] []
-                , text "@elminthespring"
+                [ --i [ Attr.class "fa fa-twitter-square" ] [],
+                  text "@elminthespring"
                 ]
             , text " on Twitter."
             ]
