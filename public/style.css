@@ -34,3 +34,8 @@ input:-ms-input-placeholder {
 a {
   color: inherit;
 }
+
+/*FIXME*/
+input {
+  width: 250px;
+}

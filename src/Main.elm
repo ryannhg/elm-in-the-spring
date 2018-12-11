@@ -3,6 +3,7 @@ port module Main exposing (main)
 import Browser
 import Css exposing (..)
 import Css.Global exposing (body, global, html)
+import Css.Media as Media
 import Html
 import Html.Styled exposing (..)
 import Html.Styled.Attributes as Attr exposing (alt, css, href, id, src, target)
@@ -77,55 +78,32 @@ styles =
             , alignItems center
             , flexDirection column
             ]
-        , wrapper =
-            [ displayFlex
-            , justifyContent center
-            , width (pct 100)
-            , maxWidth (px 960)
-            , alignItems center
-            , flexWrap wrap
-            ]
-        , topRow = [ width (pct 100), displayFlex ] -- flower and logo (separate)
-        , bottomRow = [ width (pct 50) ]
-        , leftSide =
-            [ width (pct 30)
-            ]
-        , rightSide =
-            [ width (pct 50) ]
-
-        , buttons =
-            [ displayFlex
-            , width (pct 50)
-            , alignSelf center
-            , justifyContent spaceAround
-            , marginTop (rem 1.5)
-            ]
-        , flowerImage = [ margin (px 20) ]
-        -- , logoText =
-        --     [ width (pct 50) ]
-        -- , introText =
-        --     []
-        -- , image =
-        --     [ width (pct 30)
-
-            -- , maxWidth (pct 100)
-            -- , margin2 zero auto
-            -- , padding (rem 1)
-            -- , boxSizing borderBox
-            -- ]
-        , container =
-            [ color Ui.theme.navy
-            , padding2 (rem 2.5) (rem 2)
-            , maxWidth (pct 100)
-            , width (px 640)
-            , fontSize (px 20)
-            , lineHeight (num 1.4)
-            , marginTop (rem 1.5)
-            , textAlign center
-            , zIndex (int 1)
-            ]
+        , wrapper = { base = [ margin3 (px 200) auto zero, maxWidth (pct 95) ], desktop = [ maxWidth (pct 60) ], mobile = [ maxWidth (pct 100) ] }
+        , grid =
+            { desktop =
+                [ property "display" "grid"
+                , property "grid-gap" "30px 20px"
+                , property "grid-template-rows" "auto auto auto"
+                , property "grid-template-columns" "30% auto"
+                , paddingBottom (px 50)
+                ]
+            , mobile = [ property "grid-gap" "10px" ]
+            }
+        , logoText = [ property "justify-self" "center", property "grid-column" "2 / span 2" ]
+        , logoFlower =
+            { image = [ width (px 400), maxWidth (pct 100) ]
+            , desktop =
+                [ property "grid-row" "1 / span 3"
+                , property "grid-column" "1"
+                ]
+            , mobile = [ property "grid-row" "1" ]
+            }
+        , textContent =
+            { base = [ textAlign center, fontSize (rem 1.6), lineHeight (rem 2) ], mobile = [ property "grid-column" "1 / span 3" ] }
+        , buttonWrapper =
+            { mobile = [ property "grid-column" "1 / span 3" ] }
+        , buttons = [ displayFlex, alignSelf center, justifyContent spaceAround ]
         }
-
     , contactForm =
         []
     , input =
@@ -147,10 +125,11 @@ styles =
             , padding2 zero (rem 3)
             ]
         , title =
-            [ fontSize (rem 5)
+            [ fontSize (rem 4)
             , textTransform uppercase
             , letterSpacing (px 4)
             , textAlign center
+            , margin2 zero (rem -3)
             ]
         , contentWrapper =
             \isLeftSide ->
@@ -338,42 +317,9 @@ view _ =
         , navbar
         , hero
         , pageSection Tickets
-
-        -- , speakerCta
         , pageSection Speakers
         , pageSection Sponsors
         , siteFooter
-        ]
-
-
-speakerCta : Html Msg
-speakerCta =
-    div [ css [ backgroundColor Ui.theme.green ] ]
-        [ div
-            [ css
-                [ maxWidth (pct 100)
-                , width (px 360)
-                , margin2 zero auto
-                , padding2 (rem 2) (rem 1)
-                , border3 (px 3) solid Ui.theme.teal
-                , backgroundColor Ui.theme.pink
-                , color Ui.theme.navy
-                , textAlign center
-                ]
-            ]
-            [ p [] [ text "Interested in speaking?" ]
-            , p [ css [ marginTop zero ] ]
-                [ strong []
-                    [ a
-                        [ href "#proposal-link"
-                        , Attr.target "_blank"
-                        , css [ color Ui.theme.navy ]
-                        ]
-                        [ text "Submit" ]
-                    , text " a proposal!"
-                    ]
-                ]
-            ]
         ]
 
 
@@ -453,43 +399,39 @@ hero : Html Msg
 hero =
     let
         content =
-            div [ css styles.hero.top ]
+            div []
                 [ h1 [ css [ display none ] ] [ logo ]
                 , div
-                    [ css styles.hero.wrapper ]
-                    [ div [ css styles.hero.leftSide ]
-                        [ img
-                            [ css styles.hero.flowerImage
-                            , src "/images/flower.svg"
-                            , alt "Elm in the Spring 2019"
+                    [ css styles.hero.wrapper.base, css styles.hero.wrapper.desktop, css [ Media.withMedia [ Media.only Media.screen [ Media.maxWidth (px 800) ] ] styles.hero.wrapper.mobile ] ]
+                    [ div
+                        [ css styles.hero.grid.desktop, css [ Media.withMedia [ Media.only Media.screen [ Media.maxWidth (px 800) ] ] styles.hero.grid.mobile ] ]
+                        [ div
+                            [ css styles.hero.logoFlower.desktop, css [ Media.withMedia [ Media.only Media.screen [ Media.maxWidth (px 800) ] ] styles.hero.logoFlower.mobile ] ]
+                            [ img
+                                [ src "/images/flower.svg"
+                                ]
+                                []
                             ]
-                            []
-                        ]
-                    , div [ css styles.hero.rightSide ]
-                        [ img
-                            [ src "/images/text.svg"
-                            , alt "Elm in the Spring 2019"
+                        , div [ css styles.hero.logoText ]
+                            [ img
+                                [ src "/images/text.svg"
+                                , css styles.hero.logoFlower.image
+                                , alt "Elm in the Spring 2019"
+                                ]
+                                []
                             ]
-                            []
-                        , p [] [ text "Let's all get together in Chicago and spend the day talking/teaching/learning all about Elm!" ]
-                        ]
-                    , div [ css styles.hero.buttons ]
-                        [ Ui.btn button [ onClick (JumpTo (idOf Tickets)) ] [ text "Attend" ]
-                        , Ui.btn button [ onClick (JumpTo (idOf Speakers)) ] [ text "Speak" ]
+                        , div
+                            [ css styles.hero.textContent.base, css [ Media.withMedia [ Media.only Media.screen [ Media.maxWidth (px 800) ] ] styles.hero.textContent.mobile ] ]
+                            [ text "Let's all get together in Chicago and spend the day talking/teaching/learning all about Elm!" ]
+                        , div
+                            [ css [ Media.withMedia [ Media.only Media.screen [ Media.maxWidth (px 800) ] ] styles.hero.buttonWrapper.mobile ] ]
+                            [ div [ css styles.hero.buttons ]
+                                [ Ui.btn button [ onClick (JumpTo (idOf Tickets)) ] [ text "Attend" ]
+                                , Ui.btn button [ onClick (JumpTo (idOf Speakers)) ] [ text "Speak" ]
+                                ]
+                            ]
                         ]
                     ]
-
-                -- , img
-                --     [ css styles.hero.image
-                --     , src "/images/flower+text.svg"
-                --     , alt "Elm in the Spring 2019"
-                --     ]
-                --     []
-                -- , div [ css styles.hero.container ]
-                --     [ p []
-                --         [ text "Let's all get together in Chicago and spend the day talking/teaching/learning all about Elm!"
-                --         ]
-                --     ]
                 ]
     in
     { baseFillStyle = Ui.fillStyle <| Ui.SolidFill Ui.hexValues.teal
