@@ -3,12 +3,14 @@ port module Main exposing (main)
 import Browser
 import Css exposing (..)
 import Css.Global exposing (body, global, html)
+import Css.Media as Media
 import Html
 import Html.Styled exposing (..)
 import Html.Styled.Attributes as Attr exposing (alt, css, href, id, src, target)
 import Html.Styled.Events exposing (onClick, onInput)
 import Svg.Styled as Svg
 import Svg.Styled.Attributes as SvgAttr
+import Ui
 
 
 
@@ -23,12 +25,18 @@ styles =
         [ height (pct 100)
         , margin zero
         , fontFamilies [ "Biko", "sans-serif" ]
-        , backgroundColor colors.navy
-        , color colors.yellow
+        , backgroundColor Ui.theme.teal
+        , color Ui.theme.navy
         ]
     , view = []
     , header =
-        { top =
+        { wrapper =
+            [ position absolute
+            , top zero
+            , zIndex (int 10)
+            , width (pct 100)
+            ]
+        , top =
             [ fontSize (rem 1.5)
             , padding2 (rem 2) (rem 1.5)
             ]
@@ -65,133 +73,63 @@ styles =
         ]
     , hero =
         { top =
-            [ padding2 (rem 4) zero
+            [ padding2 (rem 8) zero
             , displayFlex
             , alignItems center
             , flexDirection column
             ]
-        , image =
-            [ width (px 480)
-            , maxWidth (pct 100)
-            , margin2 zero auto
-            , padding (rem 1)
-            , boxSizing borderBox
-            ]
-        , container =
-            [ backgroundColor colors.yellow
-            , color colors.navy
-            , padding2 (rem 2.5) (rem 2)
-            , maxWidth (pct 100)
-            , width (px 540)
-            , fontSize (px 20)
-            , lineHeight (num 1.4)
-            , marginTop (rem 1.5)
-            , textAlign center
-            ]
+        , wrapper = { base = [ margin3 (px 200) auto zero, maxWidth (pct 95) ], desktop = [ maxWidth (pct 60) ], mobile = [ maxWidth (pct 100) ] }
+        , grid =
+            { desktop =
+                [ property "display" "grid"
+                , property "grid-gap" "30px 20px"
+                , property "grid-template-rows" "auto auto auto"
+                , property "grid-template-columns" "30% auto"
+                , paddingBottom (px 50)
+                ]
+            , mobile = [ property "grid-gap" "20px" ]
+            }
+        , logoText = [ property "justify-self" "center", property "grid-column" "2 / span 2" ]
+        , logoFlower =
+            { image = [ width (px 400), maxWidth (pct 100) ]
+            , desktop =
+                [ property "grid-row" "1 / span 3"
+                , property "grid-column" "1"
+                ]
+            , mobile = [ property "grid-row" "1" ]
+            }
+        , textContent =
+            { base = [ textAlign center, fontSize (rem 1.6), lineHeight (rem 2) ], mobile = [ property "grid-row" "2", property "grid-column" "1 / span 3" ] }
+        , buttonWrapper =
+            { desktop = [ property "grid-column" "2 / span 2" ], mobile = [ property "grid-column" "1 / span 3" ] }
+        , buttons = [ displayFlex, alignSelf center, justifyContent center ]
         }
-    , buttons =
-        { row =
-            [ displayFlex
-            , justifyContent center
-            , marginTop (rem 1.5)
-            ]
-        }
-    , button =
-        [ backgroundColor colors.transparent
-        , color colors.navy
-        , padding zero
-        , paddingTop (px 2)
-        , fontFamily inherit
-        , fontSize inherit
-        , textTransform uppercase
-        , border zero
-        , marginLeft (rem 1.5)
-        , firstChild [ marginLeft zero ]
-        , cursor pointer
-        , whiteSpace noWrap
-        , textDecoration none
-        , lineHeight (num 1)
-        , display inlineBlock
-        , position relative
-        ]
-    , buttonBackSpan =
-        [ position absolute
-        , top zero
-        , left zero
-        , right zero
-        , bottom zero
-        , zIndex (int 0)
-        , before
-            [ property "content" "''"
-            , position absolute
-            , top (px 15)
-            , left (px 15)
-            , right (px -15)
-            , bottom (px -15)
-            , backgroundColor (hex "#c9818c")
-            , zIndex (int 0)
-            ]
-        , after
-            [ property "content" "''"
-            , position absolute
-            , top (px 10)
-            , left (px 10)
-            , right (px -10)
-            , bottom (px -10)
-            , backgroundColor colors.navy
-            , zIndex (int 1)
-            ]
-        ]
-    , buttonSpan =
-        [ position relative
-        , zIndex (int 1)
-        , display inlineBlock
-        , padding2 (px 12) (px 24)
-        , before
-            [ property "content" "''"
-            , position absolute
-            , top (px 5)
-            , left (px 5)
-            , right (px -5)
-            , bottom (px -5)
-            , backgroundColor colors.pink
-            , zIndex (int -1)
-            ]
-        , after
-            [ property "content" "''"
-            , position absolute
-            , top zero
-            , left zero
-            , right zero
-            , bottom zero
-            , border3 (px 3) solid colors.navy
-            ]
-        ]
     , contactForm =
         []
     , input =
-        [ backgroundColor (hex "#ffc8e0")
+        [ backgroundColor Ui.theme.pinkLightest
         , fontSize inherit
         , fontFamily inherit
-        , border3 (px 2) solid colors.navy
+        , border3 (px 2) solid Ui.theme.teal
         , padding2 (rem 0.6) (rem 1)
         ]
     , pageSection =
         { top =
             [ padding2 (rem 4) zero
-            , color colors.green
+            , color Ui.theme.greenLight
             ]
         , container =
             [ margin2 zero auto
             , maxWidth (px 960)
             , width (pct 100)
-            , padding2 zero (rem 1.5)
+            , padding2 zero (rem 3)
             ]
         , title =
-            [ fontSize (rem 3)
+            [ fontSize (rem 4)
             , textTransform uppercase
             , letterSpacing (px 4)
             , textAlign center
+            , margin2 zero (rem -3)
             ]
         , contentWrapper =
             \isLeftSide ->
@@ -211,26 +149,25 @@ styles =
                       else
                         right zero
                     , bottom zero
-                    , backgroundColor colors.green
+                    , backgroundColor Ui.theme.navy
                     , zIndex (int -1)
                     ]
                 ]
         , content =
             \isLeftSide ->
                 [ maxWidth (pct 100)
-                , width (px 540)
                 , margin2 zero auto
                 , marginTop (rem 2)
                 , fontSize (px 20)
                 , lineHeight (num 1.4)
-                , padding2 (rem 3) (rem 1.5)
+                , padding2 (rem 3) (rem 2)
                 , if isLeftSide then
                     paddingLeft zero
 
                   else
-                    paddingLeft (rem 1.5)
-                , backgroundColor colors.green
-                , color colors.navy
+                    paddingLeft (rem 2)
+                , backgroundColor Ui.theme.navy
+                , color Ui.theme.teal
                 ]
         }
     , logo =
@@ -241,8 +178,8 @@ styles =
             , margin zero
             ]
         , h2 =
-            [ backgroundColor colors.yellow
-            , color colors.navy
+            [ backgroundColor Ui.theme.green
+            , color Ui.theme.teal
             , padding (rem 2)
             , textTransform uppercase
             ]
@@ -257,7 +194,7 @@ styles =
     , footer =
         { top =
             [ padding (rem 1.5)
-            , color colors.yellow
+            , color Ui.theme.green
             ]
         , container =
             [ width (pct 100)
@@ -267,7 +204,7 @@ styles =
             , justifyContent spaceBetween
             ]
         , left = []
-        , right = [ color colors.yellow ]
+        , right = [ color Ui.theme.greenLight ]
         }
     }
 
@@ -277,9 +214,9 @@ globalStyles =
     global
         [ html styles.html
         , body styles.body
-        , Css.Global.selector "body *" [ boxSizing borderBox ]
+        , Css.Global.selector "body *" [ boxSizing borderBox, outline none ]
         , Css.Global.p
-            [ fontSize (rem 1.25)
+            [ fontSize (rem 1.65)
             , margin zero
             , firstChild [ marginTop zero ]
             , marginTop (rem 1.5)
@@ -301,23 +238,6 @@ globalStyles =
             ]
         , Css.Global.form [ margin zero ]
         ]
-
-
-hexValues =
-    { teal = "#8bc7cb"
-    , navy = "#21377b"
-    , pink = "#eebad1"
-    }
-
-
-colors =
-    { navy = hex hexValues.navy
-    , yellow = hex "#fff98e"
-    , teal = hex hexValues.teal
-    , green = hex "#d6fd8c"
-    , pink = hex hexValues.pink
-    , transparent = rgba 0 0 0 0
-    }
 
 
 
@@ -387,42 +307,9 @@ view model =
         , navbar
         , hero
         , pageSection Tickets model
-
-        -- , speakerCta
         , pageSection Speakers model
         , pageSection Sponsors model
         , siteFooter
-        ]
-
-
-speakerCta : Html Msg
-speakerCta =
-    div [ css [ backgroundColor colors.teal ] ]
-        [ div
-            [ css
-                [ maxWidth (pct 100)
-                , width (px 360)
-                , margin2 zero auto
-                , padding2 (rem 2) (rem 1)
-                , border3 (px 3) solid colors.navy
-                , backgroundColor colors.pink
-                , color colors.navy
-                , textAlign center
-                ]
-            ]
-            [ p [] [ text "Interested in speaking?" ]
-            , p [ css [ marginTop zero ] ]
-                [ strong []
-                    [ a
-                        [ href "#proposal-link"
-                        , Attr.target "_blank"
-                        , css [ color colors.navy ]
-                        ]
-                        [ text "Submit" ]
-                    , text " a proposal!"
-                    ]
-                ]
-            ]
         ]
 
 
@@ -469,15 +356,17 @@ contentFor section model =
 
 navbar : Html Msg
 navbar =
-    header [ css styles.header.top ]
-        [ ul [ css styles.header.links ]
-            (List.map
-                headerJumpLink
-                [ Tickets
-                , Speakers
-                , Sponsors
-                ]
-            )
+    header [ css styles.header.wrapper ]
+        [ nav [ css styles.header.top ]
+            [ ul [ css styles.header.links ]
+                (List.map
+                    headerJumpLink
+                    [ Tickets
+                    , Speakers
+                    , Sponsors
+                    ]
+                )
+            ]
         ]
 
 
@@ -498,30 +387,80 @@ headerJumpLink section =
 
 hero : Html Msg
 hero =
-    div [ css styles.hero.top ]
-        [ h1 [ css [ display none ] ] [ logo ]
-        , img
-            [ css styles.hero.image
-            , src "/images/flower+text.svg"
-            , alt "Elm in the Spring 2019"
-            ]
-            []
-        , div [ css styles.hero.container ]
-            [ p []
-                [ text "Let's all get together in Chicago and spend the day talking/teaching/learning all about Elm!"
-                ]
-            , div [ css styles.buttons.row ]
-                [ button [ css styles.button, onClick (JumpTo (idOf Tickets)) ]
-                    [ span [ css styles.buttonBackSpan ] []
-                    , span [ css styles.buttonSpan ] [ text "Attend" ]
+    let
+        content =
+            div []
+                [ h1 [ css [ display none ] ] [ logo ]
+                , div
+                    [ css styles.hero.wrapper.base, css styles.hero.wrapper.desktop, css [ Media.withMedia [ Media.only Media.screen [ Media.maxWidth (px 800) ] ] styles.hero.wrapper.mobile ] ]
+                    [ div
+                        [ css styles.hero.grid.desktop, css [ Media.withMedia [ Media.only Media.screen [ Media.maxWidth (px 800) ] ] styles.hero.grid.mobile ] ]
+                        [ div
+                            [ css styles.hero.logoFlower.desktop, css [ Media.withMedia [ Media.only Media.screen [ Media.maxWidth (px 800) ] ] styles.hero.logoFlower.mobile ] ]
+                            [ img
+                                [ src "/images/flower.svg"
+                                ]
+                                []
+                            ]
+                        , div [ css styles.hero.logoText ]
+                            [ img
+                                [ src "/images/text.svg"
+                                , css styles.hero.logoFlower.image
+                                , alt "Elm in the Spring 2019"
+                                ]
+                                []
+                            ]
+                        , div
+                            [ css styles.hero.textContent.base, css [ Media.withMedia [ Media.only Media.screen [ Media.maxWidth (px 800) ] ] styles.hero.textContent.mobile ] ]
+                            [ text "Let's all get together in Chicago and spend the day talking/teaching/learning all about Elm!" ]
+                        , div
+                            [ css styles.hero.buttonWrapper.desktop, css [ Media.withMedia [ Media.only Media.screen [ Media.maxWidth (px 800) ] ] styles.hero.buttonWrapper.mobile ] ]
+                            [ div [ css styles.hero.buttons ]
+                                [ Ui.btn button [ onClick (JumpTo (idOf Tickets)) ] [ text "Attend" ]
+                                , Ui.btn button [ onClick (JumpTo (idOf Speakers)) ] [ text "Speak" ]
+                                ]
+                            ]
+                        ]
                     ]
-                , button [ css styles.button, onClick (JumpTo (idOf Speakers)) ]
-                    [ span [ css styles.buttonBackSpan ] []
-                    , span [ css styles.buttonSpan ] [ text "Speak" ]
-                    ]
                 ]
-            ]
-        ]
+    in
+    { baseFillStyle = Ui.fillStyle <| Ui.SolidFill Ui.hexValues.teal
+    , afterShape = Ui.SectionBgShapeData (Ui.fillStyle <| Ui.FlowerFill Ui.hexValues.tealLight) "polygon(0 0, 44% 100%, 0% 100%)"
+    , beforeShape = Ui.SectionBgShapeData (Ui.fillStyle <| Ui.LeafFill Ui.hexValues.green) "polygon(100% 68%, 100% 100%, 0% 100%)"
+    }
+        |> Ui.angledSection content
+
+
+getSectionBg : Section -> { baseFillStyle : Css.Style, beforeShape : Ui.SectionBgShapeData, afterShape : Ui.SectionBgShapeData }
+getSectionBg section_ =
+    case section_ of
+        Tickets ->
+            { baseFillStyle = Ui.fillStyle <| Ui.LeafFill Ui.hexValues.green
+            , beforeShape = Ui.SectionBgShapeData (Ui.fillStyle <| Ui.LeafFill Ui.hexValues.green) "polygon(80% 0, 100% 40%, 0 84%, 0% 0%)"
+            , afterShape = Ui.SectionBgShapeData (Ui.fillStyle <| Ui.SolidFill Ui.hexValues.teal) "polygon(100% 100%, 0 100%, 0 75%)"
+            }
+
+        _ ->
+            { baseFillStyle = Ui.fillStyle <| Ui.SolidFill Ui.hexValues.teal
+            , beforeShape = Ui.SectionBgShapeData (Ui.fillStyle <| Ui.SolidFill Ui.hexValues.teal) "polygon(80% 0, 100% 40%, 0 84%, 0% 0%)"
+            , afterShape = Ui.SectionBgShapeData (Ui.fillStyle <| Ui.SolidFill Ui.hexValues.teal) "polygon(100% 100%, 0 100%, 0 75%)"
+            }
+
+
+getTitle : Section -> Html Msg
+getTitle section =
+    case section of
+        Tickets ->
+            { textContent = "Tickets", outlineColorString = Ui.hexValues.navy, fillColor = Ui.theme.tealLight, shadowColor = Ui.theme.greenLight }
+                |> Ui.textOffsetShadow
+
+        Speakers ->
+            { textContent = "Speakers", outlineColorString = Ui.hexValues.navy, shadowColor = Ui.theme.greenLight }
+                |> Ui.textOffsetStroke
+
+        Sponsors ->
+            { textContent = "Sponsors", outlineColorString = Ui.hexValues.tealLight, fillColor = Ui.theme.greenLight, shadowColor = Ui.theme.tealLight }
+                |> Ui.textOffsetShadow
 
 
 pageSection : Section -> Model -> Html Msg
@@ -533,136 +472,30 @@ pageSection section_ model =
         id_ =
             idOf section_
 
-        content =
+        innerContent =
             contentFor section_ model
-
-        svg =
-            getSvg section_
 
         isLeftSide =
             section_ /= Speakers
+
+        content =
+            div [ id id_ ]
+                [ section [ css styles.pageSection.top, css [ position relative ] ]
+                    [ div [ css styles.pageSection.container ]
+                        [ h3 [ css styles.pageSection.title ] [ getTitle section_ ]
+                        ]
+                    , div [ css (styles.pageSection.contentWrapper isLeftSide) ]
+                        [ div [ css styles.pageSection.container ]
+                            [ div [ css (styles.pageSection.content isLeftSide) ]
+                                [ innerContent
+                                ]
+                            ]
+                        ]
+                    ]
+                ]
     in
-    div [ id id_ ]
-        [ section [ css styles.pageSection.top, css [ position relative ] ]
-            [ svg
-            , div [ css styles.pageSection.container ]
-                [ h3 [ css styles.pageSection.title ] [ text title ]
-                ]
-            , div [ css (styles.pageSection.contentWrapper isLeftSide) ]
-                [ div [ css styles.pageSection.container ]
-                    [ div [ css (styles.pageSection.content isLeftSide) ]
-                        [ content
-                        ]
-                    ]
-                ]
-            ]
-        ]
-
-
-getSvg : Section -> Html Msg
-getSvg title =
-    case title of
-        Tickets ->
-            div
-                [ css
-                    [ position absolute
-                    , top zero
-                    , left zero
-                    , right zero
-                    , bottom zero
-                    , zIndex (int -1)
-                    ]
-                ]
-                [ Svg.svg
-                    [ SvgAttr.viewBox "0 0 100 100"
-                    , SvgAttr.preserveAspectRatio "none"
-                    , SvgAttr.width "100%"
-                    , SvgAttr.height "100%"
-                    ]
-                    [ Svg.polygon
-                        [ SvgAttr.fill hexValues.teal
-                        , SvgAttr.points "100,0 100,100 0,100 0,75"
-                        ]
-                        []
-                    ]
-                ]
-
-        Speakers ->
-            div []
-                [ div
-                    [ css
-                        [ position absolute
-                        , top zero
-                        , left zero
-                        , right zero
-                        , bottom zero
-                        , zIndex (int -1)
-                        , backgroundColor colors.teal
-                        ]
-                    ]
-                    [ Svg.svg
-                        [ SvgAttr.viewBox "0 0 100 100"
-                        , SvgAttr.preserveAspectRatio "none"
-                        , SvgAttr.width "100%"
-                        , SvgAttr.height "100%"
-                        ]
-                        [ Svg.polygon
-                            [ SvgAttr.fill hexValues.pink
-                            , SvgAttr.points "0,0 50,100 0,100"
-                            ]
-                            []
-                        ]
-                    ]
-                , div
-                    [ css
-                        [ position absolute
-                        , top zero
-                        , left zero
-                        , right zero
-                        , bottom zero
-                        , zIndex (int -1)
-                        ]
-                    ]
-                    [ Svg.svg
-                        [ SvgAttr.viewBox "0 0 100 100"
-                        , SvgAttr.preserveAspectRatio "none"
-                        , SvgAttr.width "100%"
-                        , SvgAttr.height "100%"
-                        ]
-                        [ Svg.polygon
-                            [ SvgAttr.fill hexValues.navy
-                            , SvgAttr.points "0,100 100,80 100,100"
-                            ]
-                            []
-                        ]
-                    ]
-                ]
-
-        Sponsors ->
-            div
-                [ css
-                    [ position absolute
-                    , top zero
-                    , left zero
-                    , right zero
-                    , bottom zero
-                    , zIndex (int -1)
-                    , backgroundColor colors.navy
-                    ]
-                ]
-                [ Svg.svg
-                    [ SvgAttr.viewBox "0 0 100 100"
-                    , SvgAttr.preserveAspectRatio "none"
-                    , SvgAttr.width "100%"
-                    , SvgAttr.height "100%"
-                    ]
-                    [ Svg.polygon
-                        [ SvgAttr.fill hexValues.navy
-                        , SvgAttr.points "50,0 100,0 100,100 0,100 0,75"
-                        ]
-                        []
-                    ]
-                ]
+    getSectionBg section_
+        |> Ui.angledSection content
 
 
 ticketContent : Model -> Html Msg
@@ -676,15 +509,12 @@ ticketContent model =
             , a [ href "https://maps.google.com/?q=Newberry+Library+Chicago", target "_blank" ] [ text "Newberry Library" ]
             , text ". We'd love to see you there!"
             ]
-        , p []
-            [ a
+        , p [ css [ textAlign center ] ]
+            [ Ui.btn a
                 [ href "https://ti.to/elm-in-the-spring/chicago-2019"
                 , Attr.target "_blank"
-                , css styles.button
                 ]
-                [ span [ css styles.buttonBackSpan ] []
-                , span [ css styles.buttonSpan ] [ text "Get your tickets" ]
-                ]
+                [ text "Get your tickets" ]
             ]
         , br [] []
         , h4 [] [ text "Stay in touch" ]
@@ -737,15 +567,12 @@ speakerContent =
         , p []
             [ text "Have something to share with the Elm community? Please, let us know!"
             ]
-        , p []
-            [ a
+        , p [ css [ textAlign center ] ]
+            [ Ui.btn a
                 [ href "#cfp-link-goes-here"
                 , Attr.target "_blank"
-                , css styles.button
                 ]
-                [ span [ css styles.buttonBackSpan ] []
-                , span [ css styles.buttonSpan ] [ text "Submit your talk" ]
-                ]
+                [ text "Submit your talk" ]
             ]
         , br [] []
         , h4 [] [ text "Speaker Lineup" ]
@@ -765,7 +592,7 @@ speaker : String -> List ( String, String ) -> String -> List (Html msg) -> Html
 speaker name socialLinks image bio =
     div []
         [ div [ css [ displayFlex, alignItems center ] ]
-            [ div [ css [ boxShadow3 (px 5) (px 5) (hex "#c9818c") ] ]
+            [ div [ css [ boxShadow3 (px 5) (px 5) Ui.theme.pink ] ]
                 [ img [ css [ width (px 128) ], src image, alt name ] [] ]
             , div
                 [ css
@@ -819,7 +646,7 @@ siteFooter =
                 [ text "© Elm in the Spring 2019"
                 , div [ css [ fontSize (rem 1.5) ] ]
                     [ a
-                        [ css [ color colors.yellow, marginLeft (rem 1) ]
+                        [ css [ color Ui.theme.green, marginLeft (rem 1) ]
                         , href "https://twitter.com/ElmInTheSpring"
                         , target "_blank"
                         ]
