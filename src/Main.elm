@@ -6,7 +6,7 @@ import Css.Global exposing (body, global, html)
 import Html
 import Html.Styled exposing (..)
 import Html.Styled.Attributes as Attr exposing (alt, css, href, id, src, target)
-import Html.Styled.Events exposing (onClick, onInput, onSubmit)
+import Html.Styled.Events exposing (onClick, onInput)
 import Svg.Styled as Svg
 import Svg.Styled.Attributes as SvgAttr
 
@@ -352,7 +352,6 @@ type Field
 type Msg
     = JumpTo String
     | UpdateField Field String
-    | SubmitForm
 
 
 port outgoing : ( String, String ) -> Cmd msg
@@ -376,31 +375,22 @@ update msg model =
             , Cmd.none
             )
 
-        SubmitForm ->
-            ( Model "" ""
-            , if String.isEmpty model.name && not (String.isEmpty model.email) then
-                outgoing ( "SUBMIT_FORM", model.email )
-
-              else
-                Cmd.none
-            )
-
 
 
 -- VIEW
 
 
 view : Model -> Html Msg
-view _ =
+view model =
     div [ css styles.view ]
         [ globalStyles
         , navbar
         , hero
-        , pageSection Tickets
+        , pageSection Tickets model
 
         -- , speakerCta
-        , pageSection Speakers
-        , pageSection Sponsors
+        , pageSection Speakers model
+        , pageSection Sponsors model
         , siteFooter
         ]
 
@@ -464,11 +454,11 @@ idOf =
     titleOf >> String.toLower
 
 
-contentFor : Section -> Html Msg
-contentFor section =
+contentFor : Section -> Model -> Html Msg
+contentFor section model =
     case section of
         Tickets ->
-            ticketContent
+            ticketContent model
 
         Speakers ->
             speakerContent
@@ -534,8 +524,8 @@ hero =
         ]
 
 
-pageSection : Section -> Html Msg
-pageSection section_ =
+pageSection : Section -> Model -> Html Msg
+pageSection section_ model =
     let
         title =
             titleOf section_
@@ -544,7 +534,7 @@ pageSection section_ =
             idOf section_
 
         content =
-            contentFor section_
+            contentFor section_ model
 
         svg =
             getSvg section_
@@ -675,8 +665,8 @@ getSvg title =
                 ]
 
 
-ticketContent : Html Msg
-ticketContent =
+ticketContent : Model -> Html Msg
+ticketContent model =
     div []
         [ h4 [] [ text "Interested in attending?" ]
         , p []
@@ -703,25 +693,29 @@ ticketContent =
         , form
             [ Attr.name "mailing-list"
             , Attr.method "POST"
-            , Attr.attribute "data-netlify-honeypot" "name"
-            , Attr.attribute "data-netlify" "true"
+            , Attr.target "_blank"
+            , Attr.action "https://elminthespring.us19.list-manage.com/subscribe/post?u=7f1c2d8a3cd0f3008803845ad&amp;id=0a8d03f3de"
             , css styles.contactForm
-            , onSubmit SubmitForm
             ]
             [ p [ css styles.hidden ]
                 [ input
                     [ Attr.type_ "text"
                     , Attr.name "name"
-                    , Attr.attribute "aria-label"
-                        "Do not fill out this field, it's for spam bots."
+
+                    -- real people should not fill this in and expect good things - do not remove this or risk form bot signups
+                    , Attr.id "b_7f1c2d8a3cd0f3008803845ad_0a8d03f3de"
                     , onInput (UpdateField Name)
+                    , Attr.value model.name
+                    , Attr.tabindex -1
                     ]
                     []
                 ]
             , p []
                 [ input
                     [ Attr.type_ "email"
-                    , Attr.name "email"
+                    , Attr.name "EMAIL"
+                    , Attr.id "mce-EMAIL"
+                    , Attr.value model.email
                     , Attr.placeholder "email address"
                     , Attr.attribute "aria-label" "Email address"
                     , css styles.input
@@ -730,7 +724,7 @@ ticketContent =
                     , onInput (UpdateField Email)
                     ]
                     []
-                , span [ css styles.buttonSpan, onClick SubmitForm, css [ marginLeft (rem 1.5) ] ] [ text "Sign Up" ]
+                , input [ Attr.type_ "submit", css [ marginLeft (rem 1.5), border3 (px 3) solid colors.navy ], css styles.buttonSpan, css styles.button, Attr.value "Sign Up" ] []
                 ]
             ]
         ]
