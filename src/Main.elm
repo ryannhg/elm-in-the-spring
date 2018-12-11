@@ -274,6 +274,7 @@ type Field
 type Msg
     = JumpTo String
     | UpdateField Field String
+    | ClearForm
 
 
 port outgoing : ( String, String ) -> Cmd msg
@@ -296,6 +297,9 @@ update msg model =
             ( { model | email = email }
             , Cmd.none
             )
+
+        ClearForm ->
+            ( { model | name = "", email = "" }, Cmd.none )
 
 
 
@@ -509,7 +513,7 @@ ticketContent model =
             , strong [] [ text "Friday, April 26th" ]
             , text " at the "
             , a [ href "https://maps.google.com/?q=Newberry+Library+Chicago", target "_blank" ] [ text "Newberry Library" ]
-            , text ". We'd love to see you there!"
+            , text " in Chicago. We'd love to see you there!"
             ]
         , p [ css [ textAlign center ] ]
             [ Ui.btn a
@@ -559,7 +563,7 @@ ticketContent model =
                     , onInput (UpdateField Email)
                     ]
                     []
-                , Ui.btn button [ Attr.type_ "submit", css [ marginLeft (rem 2.5) ] ] [ text "Sign Up" ]
+                , Ui.btn button [ Attr.type_ "submit", onClick ClearForm, css [ marginLeft (rem 2.5) ] ] [ text "Sign Up" ]
                 ]
             ]
         , p []
