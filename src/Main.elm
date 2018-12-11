@@ -730,6 +730,7 @@ ticketContent =
                     , onInput (UpdateField Email)
                     ]
                     []
+                , span [ css styles.buttonSpan, onClick SubmitForm, css [ marginLeft (rem 1.5) ] ] [ text "Sign Up" ]
                 ]
             ]
         ]
