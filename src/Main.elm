@@ -561,11 +561,11 @@ ticketContent model =
                     , Attr.attribute "aria-label" "Email address"
                     , css styles.input
                     , css
-                        []
+                        [ position relative, bottom (px 4) ]
                     , onInput (UpdateField Email)
                     ]
                     []
-                , Ui.btn button [ Attr.type_ "submit", onClick ClearForm, css [ marginLeft (rem 2.5) ] ] [ text "Sign Up" ]
+                , Ui.btn input [ Attr.type_ "submit", onClick ClearForm, css [ marginLeft (rem 2.5) ], Attr.value "Sign Up" ] []
                 ]
             ]
         , p []
