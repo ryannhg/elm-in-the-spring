@@ -518,6 +518,10 @@ ticketContent model =
                 ]
                 [ text "Get your tickets" ]
             ]
+        , p []
+            [ text "All attendees are expected to observe the conference "
+            , a [ Attr.href "http://confcodeofconduct.com/", Attr.target "blank" ] [ text "Code of Conduct." ]
+            ]
         , br [] []
         , h4 [] [ text "Stay in touch" ]
         , p [] [ text "For conference updates, join our mailing list. No spam. Ever." ]
