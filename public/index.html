@@ -48,13 +48,52 @@
     }
   </script>
   <script type="application/ld+json">
-  {
-    "@context": "http://schema.org",
-    "@type": "Organization",
-    "url": "https://www.elminthespring.org/",
-    "name": "Elm in the Spring",
-    "logo": "https://www.elminthespring.org/images/flower+text-fb.png"
-  }
-</script>
+    {
+      "@context": "http://schema.org",
+      "@type": "Organization",
+      "url": "https://www.elminthespring.org/",
+      "name": "Elm in the Spring",
+      "logo": "https://www.elminthespring.org/images/flower+text-fb.png",
+      "sameAs": "https://twitter.com/elminthespring",
+      "email": "hello@elminthespring.org"
+    }
+  </script>
+  <script type="application/ld+json">
+    {
+      "@context": "http://schema.org",
+      "@type": "Event",
+      "name": "Elm in the Spring",
+      "startDate": "2019-04-26",
+      "location": {
+        "@type": "Place",
+        "name": "The Newberry: Chicago's Independent Research Library",
+        "address": {
+          "@type": "PostalAddress",
+          "streetAddress": "60 W Walton St",
+          "addressLocality": "Chicago",
+          "postalCode": "60610",
+          "addressRegion": "IL",
+          "addressCountry": "US"
+        }
+      },
+      "image": "https://www.elminthespring.org/images/flower+text-fb.png",
+      "description": "A new one-day, single-track Elm conference. Join us for a great day of learning, teaching, and community!",
+      "endDate": "2019-04-26",
+      "offers": {
+        "@type": "Offer",
+        "url": "https://ti.to/elm-in-the-spring/chicago-2019",
+        "price": "95",
+        "priceCurrency": "USD",
+        "availability": "http://schema.org/InStock",
+        "validFrom": "2018-12-13",
+        "validThrough": "2019-04-26"
+      },
+      "performer": {
+        "@type": "Person",
+        "name": "Richard Feldman",
+        "sameAs": "https://twitter.com/rtfeldman"
+      }
+    }
+  </script>
 </body>
 </html>
