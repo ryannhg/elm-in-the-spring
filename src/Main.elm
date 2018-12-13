@@ -606,7 +606,7 @@ speakerContent =
                 [ text "Submit your talk" ]
             ]
         , p []
-            [ text "Never spoken at a conference before? We're excited to announce that we're reserving two (2) spots for first-time speakers."
+            [ text "Never spoken at a conference before? We're reserving two spots for first-time speakers!"
             ]
         , br [] []
         , h4 [] [ text "Speaker Lineup" ]
