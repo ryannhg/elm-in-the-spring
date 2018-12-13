@@ -198,7 +198,7 @@ styles =
     , footer =
         { top =
             [ padding (rem 1.5)
-            , color Ui.theme.green
+            , color Ui.theme.greenLight
             ]
         , container =
             [ width (pct 100)
@@ -424,8 +424,10 @@ hero =
                         , div
                             [ css styles.hero.buttonWrapper.desktop, css [ Media.withMedia [ Media.only Media.screen [ Media.maxWidth (px 800) ] ] styles.hero.buttonWrapper.mobile ] ]
                             [ div [ css styles.hero.buttons ]
-                                [ Ui.btn button [ onClick (JumpTo (idOf Tickets)) ] [ text "Attend" ]
-                                , Ui.btn button [ onClick (JumpTo (idOf Speakers)) ] [ text "Speak" ]
+                                [ div []
+                                    [ Ui.btn button [ onClick (JumpTo (idOf Tickets)) ] [ text "Attend" ] ]
+                                , div [ css [ marginLeft (px 24) ] ]
+                                    [ Ui.btn button [ onClick (JumpTo (idOf Speakers)) ] [ text "Speak" ] ]
                                 ]
                             ]
                         ]
@@ -561,11 +563,17 @@ ticketContent model =
                     , Attr.attribute "aria-label" "Email address"
                     , css styles.input
                     , css
-                        [ position relative, bottom (px 4) ]
+                        [ position relative, bottom (px 4), marginRight (rem 2.5) ]
                     , onInput (UpdateField Email)
                     ]
                     []
-                , Ui.btn input [ Attr.type_ "submit", onClick ClearForm, css [ marginLeft (rem 2.5) ], Attr.value "Sign Up" ] []
+                , Ui.btn input
+                    [ Attr.type_ "submit"
+                    , onClick ClearForm
+                    , css [ marginTop (rem 0.5) ]
+                    , Attr.value "Sign Up"
+                    ]
+                    []
                 ]
             ]
         , p []
@@ -597,6 +605,9 @@ speakerContent =
                 ]
                 [ text "Submit your talk" ]
             ]
+        , p []
+            [ text "Never spoken at a conference before? We're excited to announce that we're reserving two (2) spots for first-time speakers."
+            ]
         , br [] []
         , h4 [] [ text "Speaker Lineup" ]
         , div [ css [ marginTop (rem 2) ] ]
@@ -605,7 +616,12 @@ speakerContent =
                 [ ( "twitter", "https://twitter.com/rtfeldman" )
                 , ( "github", "https://github.com/rtfeldman" )
                 ]
-                "/images/speakers/richard-feldman.jpg"
+                "/images/speakers/richard-feldman.jpeg"
+                []
+            , speaker
+                "You??"
+                []
+                "/images/speakers/you.jpeg"
                 []
             ]
         ]
@@ -613,7 +629,7 @@ speakerContent =
 
 speaker : String -> List ( String, String ) -> String -> List (Html msg) -> Html msg
 speaker name socialLinks image bio =
-    div []
+    div [ css [ marginTop (rem 2) ] ]
         [ div [ css [ displayFlex, alignItems center ] ]
             [ div [ css [ boxShadow3 (px 5) (px 5) Ui.theme.pink ] ]
                 [ img [ css [ width (px 128) ], src image, alt name ] [] ]
@@ -669,7 +685,7 @@ siteFooter =
                 [ text "© Elm in the Spring 2019"
                 , div [ css [ fontSize (rem 1.5) ] ]
                     [ a
-                        [ css [ color Ui.theme.green, marginLeft (rem 1) ]
+                        [ css [ marginLeft (rem 1) ]
                         , href "https://twitter.com/ElmInTheSpring"
                         , target "_blank"
                         ]

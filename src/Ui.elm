@@ -1,4 +1,14 @@
-module Ui exposing (BackgroundFill(..), SectionBgShapeData, angledSection, btn, fillStyle, hexValues, textOffsetShadow, textOffsetStroke, theme)
+module Ui exposing
+    ( BackgroundFill(..)
+    , SectionBgShapeData
+    , angledSection
+    , btn
+    , fillStyle
+    , hexValues
+    , textOffsetShadow
+    , textOffsetStroke
+    , theme
+    )
 
 import Css exposing (..)
 import Css.Transitions exposing (transition)
@@ -79,13 +89,12 @@ btn element =
         , display inlineBlock
         , fontSize (rem 1.5)
         , textAlign center
-        , padding3 (rem 1.2) (rem 1) (rem 1)
+        , padding3 (rem 1) (rem 1) (rem 1)
         , letterSpacing (rem 0.1)
-        , lineHeight (rem 1)
+        , lineHeight (num 1)
         , position relative
         , textDecoration none
         , textTransform uppercase
-        , margin (px 10) -- move me i dont go here
         , backgroundColor transparent
         , cursor pointer
         , zIndex (int 10)
@@ -98,7 +107,7 @@ btn element =
             , position absolute
             , top zero
             , left zero
-            , height (rem 3.25)
+            , bottom zero
             , width (pct 102)
             , transform (translate2 (px -12) (px 7))
             , transition
