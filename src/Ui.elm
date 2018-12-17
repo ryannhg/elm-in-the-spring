@@ -5,6 +5,7 @@ module Ui exposing
     , btn
     , fillStyle
     , hexValues
+    , hide
     , textOffsetShadow
     , textOffsetStroke
     , theme
@@ -223,3 +224,12 @@ textOffsetShadow { textContent, outlineColorString, shadowColor, fillColor } =
         ]
         []
         [ text textContent ]
+
+
+hide el =
+    styled el
+        [ height zero
+        , width zero
+        , margin zero
+        , overflow hidden
+        ]
