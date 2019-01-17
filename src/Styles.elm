@@ -9,16 +9,59 @@ import Ui
 
 html =
     [ height (pct 100)
+    , fontSize (px 16)
     ]
 
 
 body =
     [ height (pct 100)
     , margin zero
-    , fontFamilies [ "Biko", "sans-serif" ]
+    , fontFamilies [ "Hind Madurai", "sans-serif" ]
+    , fontWeight (int 300)
     , backgroundColor Ui.theme.teal
     , color Ui.theme.navy
     ]
+
+
+global : Html.Styled.Html msg
+global =
+    Css.Global.global
+        [ Css.Global.html html
+        , Css.Global.body body
+        , Css.Global.selector "body *" [ boxSizing borderBox, outline none ]
+        , Css.Global.h1 [ fontFamilies [ "Biko", "Hind Madurai", "sans-serif" ] ]
+        , Css.Global.h2 [ fontFamilies [ "Biko", "Hind Madurai", "sans-serif" ] ]
+        , Css.Global.h3 [ fontFamilies [ "Biko", "Hind Madurai", "sans-serif" ] ]
+        , Css.Global.h4 [ fontFamilies [ "Biko", "Hind Madurai", "sans-serif" ] ]
+        , Css.Global.h5 [ fontFamilies [ "Biko", "Hind Madurai", "sans-serif" ] ]
+        , Css.Global.h6 [ fontFamilies [ "Biko", "Hind Madurai", "sans-serif" ] ]
+        , Css.Global.p
+            [ fontSize (rem 1.45)
+            , margin zero
+            , firstChild [ marginTop zero ]
+            , marginTop (rem 1.5)
+            , lineHeight (num 1.4)
+            ]
+        , Css.Global.h4
+            [ fontSize (rem 2)
+            , lineHeight (num 1)
+            , margin zero
+            , firstChild [ marginTop zero ]
+            , marginTop (rem 1.5)
+            ]
+        , Css.Global.h5
+            [ fontSize (rem 1.75)
+            , lineHeight (num 1)
+            , margin zero
+            , firstChild [ marginTop zero ]
+            , marginTop (rem 1.5)
+            ]
+        , Css.Global.form [ margin zero ]
+        ]
+
+
+
+-- , fontFamilies [ "Biko", "sans-serif" ]
 
 
 view =
@@ -223,34 +266,3 @@ footer =
     , left = []
     , right = [ color Ui.theme.greenLight ]
     }
-
-
-global : Html.Styled.Html msg
-global =
-    Css.Global.global
-        [ Css.Global.html html
-        , Css.Global.body body
-        , Css.Global.selector "body *" [ boxSizing borderBox, outline none ]
-        , Css.Global.p
-            [ fontSize (rem 1.65)
-            , margin zero
-            , firstChild [ marginTop zero ]
-            , marginTop (rem 1.5)
-            , lineHeight (num 1.4)
-            ]
-        , Css.Global.h4
-            [ fontSize (rem 2)
-            , lineHeight (num 1)
-            , margin zero
-            , firstChild [ marginTop zero ]
-            , marginTop (rem 1.5)
-            ]
-        , Css.Global.h5
-            [ fontSize (rem 1.75)
-            , lineHeight (num 1)
-            , margin zero
-            , firstChild [ marginTop zero ]
-            , marginTop (rem 1.5)
-            ]
-        , Css.Global.form [ margin zero ]
-        ]

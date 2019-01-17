@@ -15,6 +15,9 @@
   src: url(/fonts/Biko_Black.otf);
 }
 
+@import url('https://fonts.googleapis.com/css?family=Hind+Madurai:300,400,500,600,700');
+/* font-family: 'Hind Madurai' */
+
 input::-webkit-input-placeholder {
   color: #c9818c !important;
 }
@@ -39,3 +42,26 @@ a {
 input {
   width: 250px;
 }
+
+
+.grid-container-left {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  grid-template-rows: 0.5fr 1.5fr;
+  grid-template-areas: "Section-Title Section-Title Section-Title Section-Title" "Section-Content-Left Section-Content-Left Section-Content-Left .";
+}
+
+.Section-Title { grid-area: Section-Title; }
+
+.Section-Content-Left { grid-area: Section-Content-Left; }
+
+.grid-container-right {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  grid-template-rows: 0.5fr 1.5fr;
+  grid-template-areas: "Section-Title Section-Title Section-Title Section-Title" ". Section-Content-Right Section-Content-Right Section-Content-Right";
+}
+
+.Section-Title { grid-area: Section-Title; }
+
+.Section-Content-Right { grid-area: Section-Content-Right; }

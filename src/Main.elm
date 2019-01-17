@@ -84,7 +84,7 @@ view model =
         [ Styles.global
         , navbar
         , hero
-        , pageSection Tickets model
+        , pageSection Details model
         , pageSection Speakers model
         , pageSection Sponsors model
         , siteFooter
@@ -96,7 +96,7 @@ view model =
 
 
 type Section
-    = Tickets
+    = Details
     | Speakers
     | Sponsors
 
@@ -104,8 +104,8 @@ type Section
 titleOf : Section -> String
 titleOf section =
     case section of
-        Tickets ->
-            "Tickets"
+        Details ->
+            "Learn"
 
         Speakers ->
             "Speakers"
@@ -122,7 +122,7 @@ idOf =
 contentFor : Section -> Model -> Html Msg
 contentFor section model =
     case section of
-        Tickets ->
+        Details ->
             ticketContent model
 
         Speakers ->
@@ -139,7 +139,7 @@ navbar =
             [ ul [ css Styles.header.links ]
                 (List.map
                     headerJumpLink
-                    [ Tickets
+                    [ Details
                     , Speakers
                     , Sponsors
                     ]
@@ -206,7 +206,7 @@ hero =
                             ]
                             [ div [ css Styles.hero.buttons ]
                                 [ div []
-                                    [ Ui.btn button [ onClick (JumpTo (idOf Tickets)) ] [ text "Attend" ] ]
+                                    [ Ui.btn button [ onClick (JumpTo (idOf Details)) ] [ text "Attend" ] ]
                                 , div [ css [ marginLeft (px 24) ] ]
                                     [ Ui.btn button [ onClick (JumpTo (idOf Speakers)) ] [ text "Speak" ] ]
                                 ]
@@ -225,8 +225,8 @@ hero =
 getTitle : Section -> Html Msg
 getTitle section =
     case section of
-        Tickets ->
-            { textContent = "Tickets"
+        Details ->
+            { textContent = "Learn"
             , outlineColorString = Ui.hexValues.navy
             , fillColor = Ui.theme.tealLight
             , shadowColor = Ui.theme.greenLight
@@ -281,7 +281,7 @@ pageSection section_ model =
                 ]
     in
     case section_ of
-        Tickets ->
+        Details ->
             { baseFillStyle = Ui.fillStyle <| Ui.LeafFill Ui.hexValues.green
             , beforeShape = Ui.SectionBgShapeData (Ui.fillStyle <| Ui.LeafFill Ui.hexValues.green) "polygon(80% 0, 100% 40%, 0 84%, 0% 0%)"
             , afterShape = Ui.SectionBgShapeData (Ui.fillStyle <| Ui.SolidFill Ui.hexValues.teal) "polygon(100% 100%, 0 100%, 0 75%)"
@@ -299,8 +299,7 @@ pageSection section_ model =
 ticketContent : Model -> Html Msg
 ticketContent model =
     div []
-        [ h4 [] [ text "Interested in attending?" ]
-        , p []
+        [ p []
             [ text "Elm in the Spring 2019 will take place on "
             , strong [] [ text "Friday, April 26th" ]
             , text " at the "
@@ -312,7 +311,7 @@ ticketContent model =
                 [ href "https://ti.to/elm-in-the-spring/chicago-2019"
                 , Attr.target "_blank"
                 ]
-                [ text "Get your tickets" ]
+                [ text "Get your Details" ]
             ]
         , p []
             [ text "All attendees are expected to observe the conference "
