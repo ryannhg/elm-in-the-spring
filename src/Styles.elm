@@ -1,7 +1,8 @@
-module Styles exposing (body, contactForm, footer, global, header, hero, html, input, link, logo, pageSection, view)
+module Styles exposing (body, buttonInput, contactForm, footer, global, header, hero, html, input, link, logo, pageSection, view)
 
 import Css exposing (..)
 import Css.Global
+import Css.Media as Media
 import Html exposing (Html)
 import Html.Styled exposing (..)
 import Ui
@@ -9,7 +10,9 @@ import Ui
 
 html =
     [ height (pct 100)
-    , fontSize (px 16)
+    , Css.batch [ Media.withMedia [ Media.only Media.screen [ Media.minWidth (px 720) ] ] [ fontSize (px 18) ] ]
+    , Css.batch [ Media.withMedia [ Media.only Media.screen [ Media.minWidth (px 481) ] ] [ fontSize (px 17) ] ]
+    , Css.batch [ Media.withMedia [ Media.only Media.screen [ Media.maxWidth (px 480) ] ] [ fontSize (px 15) ] ]
     ]
 
 
@@ -56,12 +59,12 @@ global =
             , firstChild [ marginTop zero ]
             , marginTop (rem 1.5)
             ]
+        , Css.Global.h3
+            [ fontSize (rem 3.5)
+            , lineHeight (num 1)
+            ]
         , Css.Global.form [ margin zero ]
         ]
-
-
-
--- , fontFamilies [ "Biko", "sans-serif" ]
 
 
 view =
@@ -93,15 +96,6 @@ header =
         , firstChild [ marginLeft zero ]
         ]
     }
-
-
-
---hide =
---    [ height zero
---    , width zero
---    , margin zero
---    , overflow hidden
---    ]
 
 
 link =
@@ -147,7 +141,7 @@ hero =
         , mobile = [ property "grid-row" "1" ]
         }
     , textContent =
-        { base = [ textAlign center, fontSize (rem 1.6), lineHeight (rem 2) ], mobile = [ property "grid-row" "2", property "grid-column" "1 / span 3" ] }
+        { base = [ fontWeight (int 400), textAlign center, fontSize (rem 1.6), lineHeight (rem 2) ], mobile = [ property "grid-row" "2", property "grid-column" "1 / span 3" ] }
     , buttonWrapper =
         { desktop = [ property "grid-column" "2 / span 2" ], mobile = [ property "grid-column" "1 / span 3" ] }
     , buttons = [ displayFlex, alignSelf center, justifyContent center ]
@@ -155,17 +149,42 @@ hero =
 
 
 contactForm =
-    []
+    [ property "display" "grid"
+    , property "grid-gap" "10px"
+    , property "grid-template-columns" "1fr 1fr"
+    , Css.batch
+        [ Media.withMedia [ Media.only Media.screen [ Media.maxWidth (px 720) ] ]
+            [ property "grid-template-columns" "1fr" ]
+        ]
+    , maxWidth (px 610)
+    , marginTop (px 20)
+    ]
 
 
 input =
-    [ backgroundColor Ui.theme.pinkLightest
-    , fontSize inherit
-    , lineHeight (rem 1)
-    , height (rem 3.25)
+    [ backgroundColor Ui.theme.pinkLight
+    , fontSize (rem 1.5)
+    , lineHeight (int 1)
     , fontFamily inherit
-    , border3 (px 2) solid Ui.theme.teal
+    , height (px 66)
+    , border3 (px 5) solid Ui.theme.pink
     , padding2 (rem 0.6) (rem 1)
+    , maxWidth (px 300)
+    ]
+
+
+buttonInput =
+    [ fontSize (rem 1.5)
+    , lineHeight (int 1)
+    , height (px 66)
+    , fontFamily inherit
+    , border3 (px 5) solid Ui.theme.greenLight
+    , padding2 (rem 0.6) (rem 1)
+    , textTransform uppercase
+    , color Ui.theme.greenLight
+    , active [ transform (translateY (px 3)) ]
+    , backgroundColor transparent
+    , maxWidth (px 300)
     ]
 
 
@@ -179,13 +198,14 @@ pageSection =
         , maxWidth (px 960)
         , width (pct 100)
         , padding2 zero (rem 3)
+        , Css.batch [ Media.withMedia [ Media.only Media.screen [ Media.maxWidth (px 480) ] ] [ padding zero ] ]
         ]
     , title =
-        [ fontSize (rem 4)
-        , textTransform uppercase
+        [ textTransform uppercase
         , letterSpacing (px 4)
         , textAlign center
         , margin2 zero (rem -3)
+        , Css.batch [ Media.withMedia [ Media.only Media.screen [ Media.maxWidth (px 480) ] ] [ margin zero ] ]
         ]
     , contentWrapper =
         \isLeftSide ->
@@ -216,12 +236,16 @@ pageSection =
             , marginTop (rem 2)
             , fontSize (px 20)
             , lineHeight (num 1.4)
-            , padding2 (rem 3) (rem 2)
-            , if isLeftSide then
-                paddingLeft zero
+            , padding2 (rem 3) (rem 1)
+            , Css.batch
+                [ Media.withMedia [ Media.only Media.screen [ Media.minWidth (px 481) ] ]
+                    [ if isLeftSide then
+                        paddingLeft zero
 
-              else
-                paddingLeft (rem 2)
+                      else
+                        paddingLeft (rem 2)
+                    ]
+                ]
             , backgroundColor Ui.theme.navy
             , color Ui.theme.teal
             ]

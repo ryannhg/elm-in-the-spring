@@ -29,7 +29,7 @@ hexValues =
     , teal = "#5BC1B3"
     , green = "#99D653"
     , white = "#ffffff"
-    , navy = "#284F86"
+    , navy = "#20326a"
     }
 
 
@@ -89,6 +89,7 @@ btn element =
         , color theme.greenLight
         , display inlineBlock
         , fontSize (rem 1.5)
+        , fontWeight (int 400)
         , textAlign center
         , padding3 (rem 1) (rem 1) (rem 1)
         , letterSpacing (rem 0.1)
@@ -232,4 +233,5 @@ hide el =
         , width zero
         , margin zero
         , overflow hidden
+        , display none
         ]

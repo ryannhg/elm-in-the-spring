@@ -46,7 +46,7 @@ type Field
 type Msg
     = JumpTo String
     | UpdateField Field String
-    | ClearForm
+    | SubmitForm
 
 
 port outgoing : ( String, String ) -> Cmd msg
@@ -70,8 +70,10 @@ update msg model =
             , Cmd.none
             )
 
-        ClearForm ->
-            ( { model | name = "", email = "" }, Cmd.none )
+        SubmitForm ->
+            ( Model "" ""
+            , outgoing ( "SUBMIT_FORM", model.email )
+            )
 
 
 
@@ -105,7 +107,7 @@ titleOf : Section -> String
 titleOf section =
     case section of
         Details ->
-            "Learn"
+            "Details"
 
         Speakers ->
             "Speakers"
@@ -226,7 +228,7 @@ getTitle : Section -> Html Msg
 getTitle section =
     case section of
         Details ->
-            { textContent = "Learn"
+            { textContent = "Details"
             , outlineColorString = Ui.hexValues.navy
             , fillColor = Ui.theme.tealLight
             , shadowColor = Ui.theme.greenLight
@@ -299,21 +301,26 @@ pageSection section_ model =
 ticketContent : Model -> Html Msg
 ticketContent model =
     div []
-        [ p []
-            [ text "Elm in the Spring 2019 will take place on "
-            , strong [] [ text "Friday, April 26th" ]
-            , text " at the "
-            , a [ href "https://maps.google.com/?q=Newberry+Library+Chicago", target "_blank" ] [ text "Newberry Library" ]
-            , text " in Chicago. We'd love to see you there!"
+        [ h4 [] [ text "All Elm, all day!" ]
+        , p []
+            [ strong [] [ text "Elm in the Spring" ]
+            , text " is a single-track, single-day conference for developers who love the programming language Elm. We put on this conference because we're too excited about Elm to wait a full year for elm-conf. If you feel the same way, join us this spring!"
+            , p []
+                [ text "Elm in the Spring 2019 will take place on "
+                , strong [] [ text "Friday, April 26th" ]
+                , text " at the "
+                , a [ href "https://maps.google.com/?q=Newberry+Library+Chicago", target "_blank" ] [ text "Newberry Library" ]
+                , text " in Chicago. We'd love to see you there!"
+                ]
             ]
         , p [ css [ textAlign center ] ]
             [ Ui.btn a
                 [ href "https://ti.to/elm-in-the-spring/chicago-2019"
                 , Attr.target "_blank"
                 ]
-                [ text "Get your Details" ]
+                [ text "Get your Tickets!" ]
             ]
-        , p []
+        , p [ css [ marginTop (rem 1.9) ] ]
             [ text "All attendees are expected to observe the conference "
             , a [ Attr.href "http://confcodeofconduct.com/", Attr.target "blank" ] [ text "Code of Conduct." ]
             ]
@@ -323,44 +330,38 @@ ticketContent model =
         , form
             [ Attr.name "mailing-list"
             , Attr.method "POST"
+            , Attr.id "mailing-list"
             , Attr.target "_blank"
             , Attr.action "https://elminthespring.us19.list-manage.com/subscribe/post?u=7f1c2d8a3cd0f3008803845ad&amp;id=0a8d03f3de"
             , css Styles.contactForm
             ]
-            [ Ui.hide p
+            [ Ui.hide input
+                [ Attr.type_ "text"
+                , Attr.name "name"
+                , Attr.id "b_7f1c2d8a3cd0f3008803845ad_0a8d03f3de" -- real people should not fill this in and expect good things - do not remove this or risk form bot signups
+                , onInput (UpdateField Name)
+                , Attr.value model.name
+                , Attr.tabindex -1
+                ]
                 []
-                [ input
-                    [ Attr.type_ "text"
-                    , Attr.name "name"
-                    , Attr.id "b_7f1c2d8a3cd0f3008803845ad_0a8d03f3de" -- real people should not fill this in and expect good things - do not remove this or risk form bot signups
-                    , onInput (UpdateField Name)
-                    , Attr.value model.name
-                    , Attr.tabindex -1
-                    ]
-                    []
+            , input
+                [ Attr.type_ "email"
+                , Attr.name "EMAIL"
+                , Attr.id "mce-EMAIL"
+                , Attr.value model.email
+                , Attr.placeholder "email address"
+                , Attr.attribute "aria-label" "Email address"
+                , css Styles.input
+                , onInput (UpdateField Email)
                 ]
-            , p []
-                [ input
-                    [ Attr.type_ "email"
-                    , Attr.name "EMAIL"
-                    , Attr.id "mce-EMAIL"
-                    , Attr.value model.email
-                    , Attr.placeholder "email address"
-                    , Attr.attribute "aria-label" "Email address"
-                    , css Styles.input
-                    , css
-                        [ position relative, bottom (px 4), marginRight (rem 2.5) ]
-                    , onInput (UpdateField Email)
-                    ]
-                    []
-                , Ui.btn input
-                    [ Attr.type_ "submit"
-                    , onClick ClearForm
-                    , css [ marginTop (rem 0.5) ]
-                    , Attr.value "Sign Up"
-                    ]
-                    []
+                []
+            , input
+                [ Attr.type_ "submit"
+                , onClick SubmitForm
+                , css Styles.buttonInput
+                , Attr.value "Sign Up"
                 ]
+                []
             ]
         , p []
             [ text "Or, follow us at"
@@ -369,9 +370,7 @@ ticketContent model =
                 , href "https://twitter.com/ElmInTheSpring"
                 , target "_blank"
                 ]
-                [ --i [ Attr.class "fa fa-twitter-square" ] [],
-                  text "@elminthespring"
-                ]
+                [ text "@elminthespring" ]
             , text " on Twitter."
             ]
         ]
