@@ -124,7 +124,7 @@ hero =
             [ property "display" "grid"
             , property "grid-gap" "30px 20px"
             , property "grid-template-rows" "auto auto auto"
-            , property "grid-template-columns" "30% auto"
+            , property "grid-template-columns" "30% auto 0%"
             , paddingBottom (px 50)
             , maxWidth (pct 95)
             , margin2 zero auto
