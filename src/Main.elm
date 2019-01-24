@@ -94,7 +94,6 @@ view model =
 
 
 
-
 -- Section
 
 
@@ -202,7 +201,7 @@ hero =
                             [ css Styles.hero.textContent.base
                             , css [ Media.withMedia [ Media.only Media.screen [ Media.maxWidth (px 800) ] ] Styles.hero.textContent.mobile ]
                             ]
-                            [ text "Let's all get together in Chicago and spend the day talking/teaching/learning all about Elm!" ]
+                            [ text "A day to learn, teach, and share about Elm!" ]
                         , div
                             [ css Styles.hero.buttonWrapper.desktop
                             , css [ Media.withMedia [ Media.only Media.screen [ Media.maxWidth (px 800) ] ] Styles.hero.buttonWrapper.mobile ]
@@ -274,7 +273,7 @@ pageSection section_ extra model =
                     [ div
                         [ css Styles.pageSection.container ]
                         [ h3 [ css Styles.pageSection.title ] [ getTitle section_ ] ]
-                    , Maybe.withDefault ( Html.Styled.text "" ) extra
+                    , Maybe.withDefault (Html.Styled.text "") extra
                     , div [ css (Styles.pageSection.contentWrapper isLeftSide) ]
                         [ div [ Attr.class "blah", css Styles.pageSection.container ]
                             [ div [ css (Styles.pageSection.content isLeftSide) ]
@@ -307,13 +306,13 @@ ticketContent model =
         [ h4 [] [ text "All Elm, all day!" ]
         , p []
             [ strong [] [ text "Elm in the Spring" ]
-            , text " is a single-track, single-day conference for developers who love the programming language Elm. We put on this conference because we're too excited about Elm to wait a full year for elm-conf. If you feel the same way, join us this spring!"
+            , text " is a single-track, single-day conference for developers who love Elm. Whether you’re an Elm expert scaling up your production app or you're just starting out with your first Elm project, join us for a great day of learning, teaching, and community!"
             , p []
                 [ text "Elm in the Spring 2019 will take place on "
                 , strong [] [ text "Friday, April 26th" ]
                 , text " at the "
                 , a [ href "https://maps.google.com/?q=Newberry+Library+Chicago", target "_blank" ] [ text "Newberry Library" ]
-                , text " in Chicago. We'd love to see you there!"
+                , text " in Chicago."
                 ]
             ]
         , p [ css [ textAlign center ] ]
@@ -408,7 +407,7 @@ speakerContent =
                 "/images/speakers/richard-feldman.jpeg"
                 []
             , speaker
-                "You??"
+                "You?"
                 []
                 "/images/speakers/you.jpeg"
                 []
@@ -459,12 +458,14 @@ sponsorContent =
             ]
         ]
 
+
 sponsorLogos : Html msg
 sponsorLogos =
-    div [ css [displayFlex, alignItems baseline, justifyContent center] ]
+    div [ css [ displayFlex, alignItems baseline, justifyContent center ] ]
         [ sponsor "eSpark Learning" "/images/sponsors/espark-logo.svg" 200
         , sponsor "Hubtran" "/images/sponsors/hubtran-logo.svg" 200
         ]
+
 
 sponsor : String -> String -> Float -> Html msg
 sponsor name src maxWidthPx =
@@ -473,9 +474,11 @@ sponsor name src maxWidthPx =
             [ Attr.src src
             , Attr.title name
             , Attr.alt name
-            , css [ width (pct 100) ]
-            ] []
+            , css [ width (pct 100), height (px 88) ]
+            ]
+            []
         ]
+
 
 siteFooter : Html Msg
 siteFooter =
