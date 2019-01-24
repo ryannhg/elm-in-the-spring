@@ -86,11 +86,12 @@ view model =
         [ Styles.global
         , navbar
         , hero
-        , pageSection Details model
-        , pageSection Speakers model
-        , pageSection Sponsors model
+        , pageSection Details Nothing model
+        , pageSection Speakers Nothing model
+        , pageSection Sponsors (Just sponsorLogos) model
         , siteFooter
         ]
+
 
 
 
@@ -251,8 +252,8 @@ getTitle section =
                 |> Ui.textOffsetShadow
 
 
-pageSection : Section -> Model -> Html Msg
-pageSection section_ model =
+pageSection : Section -> Maybe (Html Msg) -> Model -> Html Msg
+pageSection section_ extra model =
     let
         title =
             titleOf section_
@@ -268,12 +269,14 @@ pageSection section_ model =
 
         content =
             div [ id id_ ]
-                [ section [ css Styles.pageSection.top, css [ position relative ] ]
-                    [ div [ css Styles.pageSection.container ]
-                        [ h3 [ css Styles.pageSection.title ] [ getTitle section_ ]
-                        ]
+                [ section
+                    [ css Styles.pageSection.top, css [ position relative ] ]
+                    [ div
+                        [ css Styles.pageSection.container ]
+                        [ h3 [ css Styles.pageSection.title ] [ getTitle section_ ] ]
+                    , Maybe.withDefault ( Html.Styled.text "" ) extra
                     , div [ css (Styles.pageSection.contentWrapper isLeftSide) ]
-                        [ div [ css Styles.pageSection.container ]
+                        [ div [ Attr.class "blah", css Styles.pageSection.container ]
                             [ div [ css (Styles.pageSection.content isLeftSide) ]
                                 [ innerContent
                                 ]
@@ -370,7 +373,8 @@ ticketContent model =
                 , href "https://twitter.com/ElmInTheSpring"
                 , target "_blank"
                 ]
-                [ text "@elminthespring" ]
+                [ text "@elminthespring"
+                ]
             , text " on Twitter."
             ]
         ]
@@ -455,6 +459,23 @@ sponsorContent =
             ]
         ]
 
+sponsorLogos : Html msg
+sponsorLogos =
+    div [ css [displayFlex, alignItems baseline, justifyContent center] ]
+        [ sponsor "eSpark Learning" "/images/sponsors/espark-logo.svg" 200
+        , sponsor "Hubtran" "/images/sponsors/hubtran-logo.svg" 200
+        ]
+
+sponsor : String -> String -> Float -> Html msg
+sponsor name src maxWidthPx =
+    div [ css [ maxWidth (px maxWidthPx), margin (rem 1) ] ]
+        [ img
+            [ Attr.src src
+            , Attr.title name
+            , Attr.alt name
+            , css [ width (pct 100) ]
+            ] []
+        ]
 
 siteFooter : Html Msg
 siteFooter =
