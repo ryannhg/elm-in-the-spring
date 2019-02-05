@@ -1,6 +1,7 @@
 port module Main exposing (main)
 
 import Browser
+import Browser.Navigation as Nav
 import Css exposing (..)
 import Css.Global exposing (body, global, html)
 import Css.Media as Media
@@ -8,11 +9,14 @@ import Html
 import Html.Styled exposing (..)
 import Html.Styled.Attributes as Attr exposing (alt, css, href, id, src, target)
 import Html.Styled.Events exposing (onClick, onInput)
+import Route exposing (Route(..))
 import Shared
+import Sponsorship
 import Styles
 import Svg.Styled as Svg
 import Svg.Styled.Attributes as SvgAttr
 import Ui
+import Url
 
 
 
@@ -22,16 +26,24 @@ import Ui
 type alias Model =
     { name : String
     , email : String
+    , key : Nav.Key
+    , route : Route
     }
+
+
+init flags url key =
+    ( Model "" "" key (Route.fromUrl url), Cmd.none )
 
 
 main : Program () Model Msg
 main =
-    Browser.element
-        { init = always ( Model "" "", Cmd.none )
+    Browser.application
+        { init = init
         , update = update
-        , view = view >> toUnstyled
+        , view = view
         , subscriptions = always Sub.none
+        , onUrlRequest = OnUrlRequest
+        , onUrlChange = OnUrlChange
         }
 
 
@@ -48,6 +60,8 @@ type Msg
     = JumpTo String
     | UpdateField Field String
     | SubmitForm
+    | OnUrlRequest Browser.UrlRequest
+    | OnUrlChange Url.Url
 
 
 port outgoing : ( String, String ) -> Cmd msg
@@ -72,26 +86,61 @@ update msg model =
             )
 
         SubmitForm ->
-            ( Model "" ""
+            ( { model | name = "", email = "" }
             , outgoing ( "SUBMIT_FORM", model.email )
             )
+
+        OnUrlChange url ->
+            ( { model | route = Route.fromUrl url }, outgoing ( "JUMP_TO", "topScroll" ) )
+
+        OnUrlRequest urlRequest ->
+            case urlRequest of
+                Browser.Internal url ->
+                    ( model, Cmd.batch [ outgoing ( "JUMP_TO", "topScroll" ), Nav.pushUrl model.key (Url.toString url) ] )
+
+                Browser.External href ->
+                    ( model, Nav.load href )
 
 
 
 -- VIEW
 
 
-view : Model -> Html Msg
+view : Model -> Browser.Document Msg
 view model =
-    div [ css Styles.view ]
-        [ Styles.global
-        , navbar
-        , hero
-        , pageSection Details Nothing model
-        , pageSection Speakers Nothing model
-        , pageSection Sponsors (Just sponsorLogos) model
-        , Shared.siteFooter
-        ]
+    let
+        page markupList =
+            div [ css Styles.view ] <|
+                [ div [ id "topScroll" ] []
+                , Styles.global
+                ]
+                    ++ markupList
+                    ++ [ Shared.siteFooter ]
+    in
+    case model.route of
+        Home ->
+            let
+                homeMarkup =
+                    [ navbar
+                    , hero
+                    , pageSection Details Nothing model
+                    , pageSection Speakers Nothing model
+                    , pageSection Sponsors (Just sponsorLogos) model
+                    ]
+            in
+            { title = "Elm in the Spring 2019"
+            , body = [ homeMarkup |> page |> toUnstyled ]
+            }
+
+        Sponsorship ->
+            { title = "Elm in the Spring 2019 | Sponsorship"
+            , body = [ Sponsorship.markup |> page |> toUnstyled ]
+            }
+
+        NotFound ->
+            { title = "Elm in the Spring"
+            , body = [ toUnstyled <| text "whoops, page not found" ]
+            }
 
 
 
@@ -454,8 +503,9 @@ sponsorContent =
         , p []
             [ text "You or your company can become a sponsor for Elm in the Spring 2019." ]
         , p []
-            [ text "For more info, email "
-            , a [ href "mailto:hello@elminthespring.org" ] [ text "hello@elminthespring.org" ]
+            [ text "For more info, check out "
+            , a [ href "/sponsorship/" ] [ text "becoming a sponsor" ]
+            , text "."
             ]
         ]
 
