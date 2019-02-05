@@ -29,7 +29,7 @@ fromUrl =
     Url.Parser.parse
         (oneOf
             [ map Home top
-            , map Sponsorship (s "sponsorship")
+            , Url.Parser.map Sponsorship (s "sponsorship")
             ]
         )
-        >> Maybe.withDefault NotFound
+        >> Maybe.withDefault Home

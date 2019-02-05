@@ -1,4 +1,4 @@
-module Styles exposing (body, buttonInput, contactForm, footer, global, header, hero, html, input, link, logo, pageSection, view)
+module Styles exposing (body, buttonInput, contactForm, footer, global, header, hero, html, input, link, logo, pageSection, sponsorship, view)
 
 import Css exposing (..)
 import Css.Global
@@ -289,4 +289,11 @@ footer =
         ]
     , left = []
     , right = [ color Ui.theme.greenLight ]
+    }
+
+
+sponsorship =
+    { logo = [ height (px 80) ]
+    , wrapper = [ padding (px 16) ]
+    , hero = [ textAlign center ]
     }
