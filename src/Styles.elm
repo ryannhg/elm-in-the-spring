@@ -294,6 +294,11 @@ footer =
 
 sponsorship =
     { logo = [ height (px 80) ]
-    , wrapper = [ padding (px 16) ]
+    , wrapper =
+        [ width (pct 100)
+        , maxWidth (px 960)
+        , margin2 zero auto
+        , padding2 zero (rem 3)
+        ]
     , hero = [ textAlign center ]
     }

@@ -1,29 +1,3 @@
-/*
-
-html {
-  box-sizing: border-box;
-  font-size: 16px;
-}
-
-*, *:before, *:after {
-  box-sizing: inherit;
-}
-
-body, h1, h2, h3, h4, h5, h6, p, ol, ul {
-  margin: 0;
-  padding: 0;
-  font-weight: normal;
-}
-
-ol, ul {
-  list-style: none;
-}
-
-img {
-  max-width: 100%;
-  height: auto;
-}
-*/
 @font-face {
   font-family: Biko;
   src: url(/fonts/Biko_Regular.otf);
@@ -91,3 +65,78 @@ a {
 .Section-Title { grid-area: Section-Title; }
 
 .Section-Content-Right { grid-area: Section-Content-Right; }
+
+.sponsorship ul {
+  margin: 0;
+}
+
+.grid-container-sponsorship {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  grid-template-areas: "Tier-Icon Tier-Name Tier-Name Tier-Name" "Tier-Icon Tier-Perks Tier-Perks Tier-Perks";
+  padding-bottom: 1.2em;
+}
+
+.grid-container-sponsorship:last-of-type {
+  padding-bottom: 0;
+}
+
+.Tier-Icon {
+  grid-area: Tier-Icon;
+  padding-right: 1em;
+}
+
+.Tier-Name {
+  grid-area: Tier-Name;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.Tier-Perks {
+  grid-area: Tier-Perks;
+  align-self: flex-start;
+}
+
+/* lol this is the icon*/
+.sponsorship a img {
+  position: absolute;
+  margin-top: 20px;
+  left: 20px;
+}
+
+.sponsorship .page-headline {
+  max-width: calc(100vw - 140px);
+  padding: 50px 0 40px;
+  margin: 0 auto;
+}
+
+
+@media all and (max-width: 736px) {
+  .sponsorship {
+    padding: 0 1rem !important;
+  }
+
+  .sponsorship .page-headline {
+    font-size: 2.5rem;
+  }
+
+  /* lol this is the icon*/
+  .sponsorship a img {
+    height: 50px;
+  }
+
+  .grid-container-sponsorship {
+    display: grid;
+    align-items: center;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    grid-template-areas: "Tier-Icon Tier-Name Tier-Name Tier-Name" "Tier-Perks Tier-Perks Tier-Perks Tier-Perks";
+    padding-bottom: 1.2em;
+  }
+
+  .grid-container-sponsorship img {
+    max-width: 100px;
+  }
+}
