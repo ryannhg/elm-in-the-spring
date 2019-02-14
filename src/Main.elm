@@ -512,20 +512,25 @@ sponsorContent =
 
 sponsorLogos : Html msg
 sponsorLogos =
-    div [ css [ displayFlex, alignItems baseline, justifyContent center ] ]
+    div [ css [ displayFlex, flexWrap wrap, alignItems baseline, justifyContent center ] ]
         [ sponsor "eSpark Learning" "/images/sponsors/espark-logo.svg" 200
         , sponsor "Hubtran" "/images/sponsors/hubtran-logo.svg" 200
+        , sponsor "Spantree" "/images/sponsors/spantree-logo.svg" 200
+        , sponsor "NoRedInk" "/images/sponsors/no-red-ink-logo.svg" 200
         ]
 
 
 sponsor : String -> String -> Float -> Html msg
 sponsor name src maxWidthPx =
-    div [ css [ maxWidth (px maxWidthPx), margin (rem 1) ] ]
+    div [ css [ maxWidth (px maxWidthPx), margin (rem 1) ]
+        ]
         [ img
             [ Attr.src src
             , Attr.title name
             , Attr.alt name
-            , css [ width (pct 100), height (px 88) ]
+            , css [ width (pct 100) ]
+            , css [ Media.withMedia [ Media.only Media.screen [ Media.minWidth (px 737) ] ] [ height (px 88) ] ]
+            , css [ Media.withMedia [ Media.only Media.screen [ Media.maxWidth (px 736) ] ] [ height (px 60) ] ]
             ]
             []
         ]
