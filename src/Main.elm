@@ -9,8 +9,12 @@ import Html
 import Html.Styled exposing (..)
 import Html.Styled.Attributes as Attr exposing (alt, css, href, id, src, target)
 import Html.Styled.Events exposing (onClick, onInput)
+import Http
+import HttpBuilder
+import Json.Decode as Decode
 import Route exposing (Route(..))
 import Shared
+import Speaker exposing (Speaker)
 import Sponsorship
 import Styles
 import Svg.Styled as Svg
@@ -28,11 +32,13 @@ type alias Model =
     , email : String
     , key : Nav.Key
     , route : Route
+    , speakers : List Speaker
     }
 
 
+init : a -> Url.Url -> Nav.Key -> ( Model, Cmd Msg )
 init flags url key =
-    ( Model "" "" key (Route.fromUrl url), Cmd.none )
+    ( Model "" "" key (Route.fromUrl url) [], loadSpeakers )
 
 
 main : Program () Model Msg
@@ -45,6 +51,13 @@ main =
         , onUrlRequest = OnUrlRequest
         , onUrlChange = OnUrlChange
         }
+
+
+loadSpeakers : Cmd Msg
+loadSpeakers =
+    HttpBuilder.get "/speaker_data.json"
+        |> HttpBuilder.withExpectJson (Decode.list Speaker.decoder)
+        |> HttpBuilder.send LoadSpeakers
 
 
 
@@ -62,6 +75,8 @@ type Msg
     | SubmitForm
     | OnUrlRequest Browser.UrlRequest
     | OnUrlChange Url.Url
+      -- | ClickOpenSpeakerModal
+    | LoadSpeakers (Result Http.Error (List Speaker))
 
 
 port outgoing : ( String, String ) -> Cmd msg
@@ -100,6 +115,16 @@ update msg model =
 
                 Browser.External href ->
                     ( model, Nav.load href )
+
+        LoadSpeakers (Ok speakers) ->
+            let
+                _ =
+                    Debug.log "model" model
+            in
+            ( { model | speakers = speakers }, Cmd.none )
+
+        LoadSpeakers (Err httpError) ->
+            ( model, Cmd.none )
 
 
 
@@ -522,7 +547,8 @@ sponsorLogos =
 
 sponsor : String -> String -> Float -> Html msg
 sponsor name src maxWidthPx =
-    div [ css [ maxWidth (px maxWidthPx), margin (rem 1) ]
+    div
+        [ css [ maxWidth (px maxWidthPx), margin (rem 1) ]
         ]
         [ img
             [ Attr.src src
