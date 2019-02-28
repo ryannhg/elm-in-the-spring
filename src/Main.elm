@@ -121,7 +121,9 @@ update msg model =
                 _ =
                     Debug.log "model" model
             in
-            ( { model | speakers = speakers }, Cmd.none )
+            ( { model | speakers = speakers }
+            , Cmd.none
+            )
 
         LoadSpeakers (Err httpError) ->
             ( model, Cmd.none )
@@ -203,7 +205,7 @@ contentFor section model =
             ticketContent model
 
         Speakers ->
-            speakerContent
+            speakerContent model
 
         Sponsors ->
             sponsorContent
@@ -284,8 +286,6 @@ hero =
                             [ div [ css Styles.hero.buttons ]
                                 [ div []
                                     [ Ui.btn button [ onClick (JumpTo (idOf Details)) ] [ text "Attend" ] ]
-                                , div [ css [ marginLeft (px 24) ] ]
-                                    [ Ui.btn button [ onClick (JumpTo (idOf Speakers)) ] [ text "Speak" ] ]
                                 ]
                             ]
                         ]
@@ -454,65 +454,92 @@ ticketContent model =
         ]
 
 
-speakerContent : Html Msg
-speakerContent =
-    div []
-        [ h4 [] [ text "Become a speaker" ]
-        , p []
-            [ text "Have a great idea you want to share with the Elm community?"
-            ]
-        , p [ css [ textAlign center ] ]
-            [ Ui.btn a
-                [ href "https://www.papercall.io/elm-in-the-spring-2019"
-                , Attr.target "_blank"
-                ]
-                [ text "Submit your talk" ]
-            ]
-        , p []
-            [ text "Never spoken at a conference before? We're reserving two spots for first-time speakers!"
-            ]
-        , br [] []
-        , h4 [] [ text "Speaker Lineup" ]
-        , div [ css [ marginTop (rem 2) ] ]
-            [ speaker
-                "Richard Feldman"
-                [ ( "twitter", "https://twitter.com/rtfeldman" )
-                , ( "github", "https://github.com/rtfeldman" )
-                ]
-                "/images/speakers/richard-feldman.jpeg"
-                []
-            , speaker
-                "You?"
-                []
-                "/images/speakers/you.jpeg"
-                []
-            ]
-        ]
+speakerContent : Model -> Html Msg
+speakerContent model =
+    div [] (List.map speaker model.speakers)
 
 
-speaker : String -> List ( String, String ) -> String -> List (Html msg) -> Html msg
-speaker name socialLinks image bio =
-    div [ css [ marginTop (rem 2) ] ]
+
+-- [ div []
+--     (List.map speaker model.speakers)
+--
+-- -- [ speaker
+-- --     "Richard Feldman"
+-- --     [ ( "twitter", "https://twitter.com/rtfeldman" )
+-- --     , ( "github", "https://github.com/rtfeldman" )
+-- --     ]
+-- --     "/images/speakers/richard-feldman.jpeg"
+-- --     []
+-- -- , speaker
+-- --     "You?"
+-- --     []
+-- --     "/images/speakers/you.jpeg"
+-- --     []
+-- -- ]
+-- ]
+-- speaker : String -> List ( String, String ) -> String -> List (Html msg) -> Html msg
+
+
+speaker : Speaker -> Html msg
+speaker { name, talkTitle, talkSubtitle, headshotSrc, talkAbstract, bio, social } =
+    div [ css [ marginTop (rem 3), marginLeft (rem 3) ] ]
         [ div [ css [ displayFlex, alignItems center ] ]
-            [ div [ css [ boxShadow3 (px 5) (px 5) Ui.theme.pink ] ]
-                [ img [ css [ width (px 128) ], src image, alt name ] [] ]
+            [ div [ css [ boxShadow3 (px -12) (px 12) Ui.theme.greenLight, border3 (px 7) solid Ui.theme.tealLight ] ]
+                [ img [ css [ width (px 250) ], src headshotSrc, alt name ] [] ]
             , div
                 [ css
-                    [ flex (num 1)
+                    [ displayFlex
+                    , flexDirection column
+                    , justifyContent spaceBetween
+
+                    -- , flex (num 1)
                     , paddingLeft (rem 2)
                     ]
                 ]
-                [ h5 [ css [ fontSize (rem 2) ] ] [ text name ]
-                , if List.isEmpty socialLinks then
-                    text ""
+                [ h4 [ css [ fontSize (rem 2), margin2 (rem 1.5) zero, color Ui.theme.greenLight ] ] [ text name ]
+                , div []
+                    [ h5 [ css [ fontSize (rem 1.5), margin2 (px 10) zero, fontWeight (int 400) ] ] [ text talkTitle ]
+                    , h6 [ css [ fontSize (rem 1.2), margin2 (px 10) zero, fontWeight (int 300) ] ] [ text talkSubtitle ]
+                    ]
 
-                  else
-                    p [ css [ fontSize (rem 1.75), marginTop (rem 1), marginLeft (rem -1) ] ]
-                        (List.map speakerSocialLink socialLinks)
+                -- , h5 [ css [ fontSize (rem 2) ] ] [ text name ]
+                -- , if List.isEmpty socialLinks then
+                --     text ""
+                --
+                --   else
+                --     p [ css [ fontSize (rem 1.75), marginTop (rem 1), marginLeft (rem -1) ] ]
+                --         (List.map speakerSocialLink socialLinks)
                 ]
             ]
-        , div [ css [ marginTop (rem 1) ] ] bio
+
+        -- , div [ css [ marginTop (rem 1) ] ] [ text bio ]
         ]
+
+
+
+-- speaker : String -> List ( String, String ) -> String -> List (Html msg) -> Html msg
+-- speaker name socialLinks image bio =
+--     div [ css [ marginTop (rem 2) ] ]
+--         [ div [ css [ displayFlex, alignItems center ] ]
+--             [ div [ css [ boxShadow3 (px 5) (px 5) Ui.theme.pink ] ]
+--                 [ img [ css [ width (px 128) ], src image, alt name ] [] ]
+--             , div
+--                 [ css
+--                     [ flex (num 1)
+--                     , paddingLeft (rem 2)
+--                     ]
+--                 ]
+--                 [ h5 [ css [ fontSize (rem 2) ] ] [ text name ]
+--                 , if List.isEmpty socialLinks then
+--                     text ""
+--
+--                   else
+--                     p [ css [ fontSize (rem 1.75), marginTop (rem 1), marginLeft (rem -1) ] ]
+--                         (List.map speakerSocialLink socialLinks)
+--                 ]
+--             ]
+--         , div [ css [ marginTop (rem 1) ] ] bio
+--         ]
 
 
 speakerSocialLink : ( String, String ) -> Html msg

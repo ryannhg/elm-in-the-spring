@@ -16,22 +16,21 @@
 }
 
 @import url('https://fonts.googleapis.com/css?family=Hind+Madurai:300,400,500,600,700');
-/* font-family: 'Hind Madurai' */
 
 input::-webkit-input-placeholder {
-  color: #c9818c !important;
+  color: #A56783 !important;
 }
 
 input:-moz-placeholder {
-  color: #c9818c !important;
+  color: #A56783 !important;
 }
 
 input::-moz-placeholder {
-  color: #c9818c !important;
+  color: #A56783 !important;
 }
 
 input:-ms-input-placeholder {
-  color: #c9818c !important;
+  color: #A56783 !important;
 }
 
 input {
@@ -42,6 +41,20 @@ a {
   color: inherit;
 }
 
+::-webkit-selection {
+  background-color: #75D3BE !important;
+  color: white;
+}
+
+::selection {
+  background-color: #75D3BE !important;
+  color: white;
+}
+
+::-moz-selection {
+  background-color: #75D3BE !important;
+  color: white;
+}
 
 
 .grid-container-left {
@@ -139,4 +152,48 @@ a {
   .grid-container-sponsorship img {
     max-width: 100px;
   }
+}
+
+
+/* ****************************************************** */
+/* cursors */
+
+body {
+  cursor: url(images/cursor-auto.png),auto;
+}
+
+
+a, button, input[type="submit"] {
+  cursor: url(images/cursor-pointer.png), pointer;
+}
+
+a:active, button:active, input[type="submit"]:active {
+  cursor: url(images/cursor-pointer-clicked.png), pointer;
+}
+
+dd, li, ol, ul, p, input, h1, h2, h3, h4, h5, h6 {
+  cursor: url(images/cursor-text.png), text;
+}
+
+.preload-cursors {
+  clip: rect(0 0 0 0);
+  position: absolute;
+  overflow: hidden;
+  margin: -.1rem;
+  padding: 0;
+  width: .1rem;
+  height: .1rem;
+  border: 0;
+}
+
+.preload-cursors b {
+  cursor: url(images/cursor-drag-clicked.png), auto;
+}
+
+.preload-cursors a {
+  cursor: url(images/cursor-rock-clicked.png), pointer;
+}
+
+.preload-cursors u {
+  cursor: url(images/cursor-pointer-clicked.png), pointer;
 }

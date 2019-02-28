@@ -35,5 +35,10 @@ siteFooter =
                 , Attr.target "_blank"
                 ]
                 [ text "This site is open-source and written with Elm!" ]
+            , p [ Attr.class "preload-cursors" ]
+                [ b [] [ text "preloading" ]
+                , a [ href "#" ] [ text "cursors" ]
+                , u [] [ text "before use!" ]
+                ]
             ]
         ]

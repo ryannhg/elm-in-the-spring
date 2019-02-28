@@ -105,7 +105,6 @@ link =
     , fontSize inherit
     , padding zero
     , border zero
-    , cursor pointer
     , opacity (num 0.75)
     , hover [ opacity (num 1) ]
     ]

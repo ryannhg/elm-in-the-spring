@@ -98,7 +98,6 @@ btn element =
         , textDecoration none
         , textTransform uppercase
         , backgroundColor transparent
-        , cursor pointer
         , zIndex (int 10)
         , before
             [ property "content" "''"
@@ -166,6 +165,7 @@ angledSection content { baseFillStyle, beforeShape, afterShape } =
                 [ position relative
                 , baseFillStyle
                 , zIndex (int 3)
+                , marginBottom (px -1)
                 ]
 
         wrappedContent =
