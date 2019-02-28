@@ -485,7 +485,11 @@ speaker { name, talkTitle, talkSubtitle, headshotSrc, talkAbstract, bio, social 
         , div
             [ Attr.class "Speaker-Name-Social", css [ color Ui.theme.greenLight ] ]
             [ h4 [ css [ fontSize (rem 2), lineHeight (num 1.2), fontWeight (int 400) ] ] [ text name ]
-            , div [ css [ displayFlex, flexDirection row ] ] (List.map speakerSocialLink social)
+            , div [ css [ displayFlex, flexDirection row, position relative, bottom (px 10) ] ]
+                (social
+                    |> List.sortBy (\s -> Speaker.socialNetworkToString s.network)
+                    |> List.map speakerSocialLink
+                )
             ]
         ]
 
@@ -502,8 +506,6 @@ speakerSocialLink { network, src } =
             , marginRight (px 5)
             , hover [ color Ui.theme.green ]
             , marginBottom (px 10)
-            , position relative
-            , bottom (px 10)
             ]
         ]
         [ i [ Attr.class (getSocialIconClass network) ] [] ]

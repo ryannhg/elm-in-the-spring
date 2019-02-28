@@ -1,4 +1,4 @@
-module Speaker exposing (Social, SocialNetwork(..), Speaker, decoder)
+module Speaker exposing (Social, SocialNetwork(..), Speaker, decoder, socialNetworkToString)
 
 import Json.Decode as Decode exposing (Decoder, int, string)
 import Json.Decode.Pipeline exposing (custom, optional, required)
@@ -48,6 +48,19 @@ decodeSocialNetwork network =
 
         _ ->
             Decode.fail ("unknown network " ++ network)
+
+
+socialNetworkToString : SocialNetwork -> String
+socialNetworkToString socialNetwork =
+    case socialNetwork of
+        Website ->
+            "website"
+
+        Twitter ->
+            "twitter"
+
+        Github ->
+            "github"
 
 
 decoder : Decoder Speaker
