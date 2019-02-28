@@ -1,4 +1,4 @@
-module Speaker exposing (Social, Speaker, decoder)
+module Speaker exposing (Social, SocialNetwork(..), Speaker, decoder)
 
 import Json.Decode as Decode exposing (Decoder, int, string)
 import Json.Decode.Pipeline exposing (custom, optional, required)
@@ -11,15 +11,43 @@ type alias Speaker =
     , headshotSrc : String
     , talkAbstract : String
     , bio : String
-    , social : Social
+    , social : List Social
     }
+
+
+type SocialNetwork
+    = Website
+    | Twitter
+    | Github
 
 
 type alias Social =
-    { twitter : Maybe String
-    , website : Maybe String
-    , github : Maybe String
+    { network : SocialNetwork
+    , src : String
     }
+
+
+socialDecoder : Decoder Social
+socialDecoder =
+    Decode.succeed Social
+        |> required "network" (Decode.string |> Decode.andThen decodeSocialNetwork)
+        |> required "src" Decode.string
+
+
+decodeSocialNetwork : String -> Decoder SocialNetwork
+decodeSocialNetwork network =
+    case network of
+        "website" ->
+            Decode.succeed Website
+
+        "twitter" ->
+            Decode.succeed Twitter
+
+        "github" ->
+            Decode.succeed Github
+
+        _ ->
+            Decode.fail ("unknown network " ++ network)
 
 
 decoder : Decoder Speaker
@@ -31,12 +59,4 @@ decoder =
         |> required "headshot" Decode.string
         |> required "talk_abstract" Decode.string
         |> required "bio" Decode.string
-        |> custom socialDecoder
-
-
-socialDecoder : Decoder Social
-socialDecoder =
-    Decode.succeed Social
-        |> optional "twitter" (Decode.maybe Decode.string) Nothing
-        |> optional "website" (Decode.maybe Decode.string) Nothing
-        |> optional "github" (Decode.maybe Decode.string) Nothing
+        |> optional "social" (Decode.list socialDecoder) []

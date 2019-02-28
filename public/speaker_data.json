@@ -86,7 +86,15 @@
     "talk_abstract": "Many of us are familiar with the situation: you want to refactor some code, but it has no tests! Elm gives us confidence that the types fit, but how can I be sure I haven’t changed or broken behavior? In this talk you’ll learn about a testing workflow that uses types to guarantee refactors.",
     "bio": "Kofi lives in Chicago and writes software, both professionally and for fun. By day, he works at HubTran, using test-driven development wherever he can. By night, he theorizes how to make those tests unnecessary — using declarative systems with strong guarantees.",
     "headshot": "images/speakers/kofi.jpg",
-    "website": "https://kofi.sexy",
-    "twitter": "@hkgumbs"
+    "social": [
+      {
+        "network": "website",
+        "src": "https://kofi.sexy"
+      },
+      {
+        "network": "twitter",
+        "src": "https://twitter.com/@hkgumbs"
+      }
+    ]
   }
 ]

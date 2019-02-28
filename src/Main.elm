@@ -375,6 +375,12 @@ pageSection section_ extra model =
                 |> Ui.angledSection content
 
 
+
+---------------------------------------------------------------------
+-- TICKETS
+---------------------------------------------------------------------
+
+
 ticketContent : Model -> Html Msg
 ticketContent model =
     div []
@@ -454,98 +460,72 @@ ticketContent model =
         ]
 
 
+
+---------------------------------------------------------------------
+-- SPEAKERS
+---------------------------------------------------------------------
+
+
 speakerContent : Model -> Html Msg
 speakerContent model =
     div [] (List.map speaker model.speakers)
 
 
-
--- [ div []
---     (List.map speaker model.speakers)
---
--- -- [ speaker
--- --     "Richard Feldman"
--- --     [ ( "twitter", "https://twitter.com/rtfeldman" )
--- --     , ( "github", "https://github.com/rtfeldman" )
--- --     ]
--- --     "/images/speakers/richard-feldman.jpeg"
--- --     []
--- -- , speaker
--- --     "You?"
--- --     []
--- --     "/images/speakers/you.jpeg"
--- --     []
--- -- ]
--- ]
--- speaker : String -> List ( String, String ) -> String -> List (Html msg) -> Html msg
-
-
 speaker : Speaker -> Html msg
 speaker { name, talkTitle, talkSubtitle, headshotSrc, talkAbstract, bio, social } =
-    div [ css [ marginTop (rem 3), marginLeft (rem 3) ] ]
-        [ div [ css [ displayFlex, alignItems center ] ]
-            [ div [ css [ boxShadow3 (px -12) (px 12) Ui.theme.greenLight, border3 (px 7) solid Ui.theme.tealLight ] ]
-                [ img [ css [ width (px 250) ], src headshotSrc, alt name ] [] ]
-            , div
-                [ css
-                    [ displayFlex
-                    , flexDirection column
-                    , justifyContent spaceBetween
-
-                    -- , flex (num 1)
-                    , paddingLeft (rem 2)
-                    ]
-                ]
-                [ h4 [ css [ fontSize (rem 2), margin2 (rem 1.5) zero, color Ui.theme.greenLight ] ] [ text name ]
-                , div []
-                    [ h5 [ css [ fontSize (rem 1.5), margin2 (px 10) zero, fontWeight (int 400) ] ] [ text talkTitle ]
-                    , h6 [ css [ fontSize (rem 1.2), margin2 (px 10) zero, fontWeight (int 300) ] ] [ text talkSubtitle ]
-                    ]
-
-                -- , h5 [ css [ fontSize (rem 2) ] ] [ text name ]
-                -- , if List.isEmpty socialLinks then
-                --     text ""
-                --
-                --   else
-                --     p [ css [ fontSize (rem 1.75), marginTop (rem 1), marginLeft (rem -1) ] ]
-                --         (List.map speakerSocialLink socialLinks)
-                ]
+    div [ Attr.class "speaker-grid-container", css [ paddingLeft (rem 3), paddingTop (rem 2) ] ]
+        [ div
+            [ Attr.class "Speaker-Headshot", css [ boxShadow3 (px -12) (px 12) Ui.theme.greenLight, border3 (px 7) solid Ui.theme.tealLight ] ]
+            [ img [ css [ width (pct 100) ], src headshotSrc, alt name ] [] ]
+        , div
+            [ Attr.class "Speaker-Talk" ]
+            [ h5 [ css [ fontSize (rem 1.5), margin2 (px 10) zero ] ] [ text talkTitle ]
+            , h6 [ css [ fontSize (rem 1), margin2 (px 10) zero, fontWeight (int 300) ] ] [ text talkSubtitle ]
             ]
-
-        -- , div [ css [ marginTop (rem 1) ] ] [ text bio ]
+        , div
+            [ Attr.class "Speaker-Name-Social", css [ color Ui.theme.greenLight ] ]
+            [ h4 [ css [ fontSize (rem 2), lineHeight (num 1.2), fontWeight (int 400) ] ] [ text name ]
+            , div [ css [ displayFlex, flexDirection row ] ] (List.map speakerSocialLink social)
+            ]
         ]
 
 
-
--- speaker : String -> List ( String, String ) -> String -> List (Html msg) -> Html msg
--- speaker name socialLinks image bio =
---     div [ css [ marginTop (rem 2) ] ]
---         [ div [ css [ displayFlex, alignItems center ] ]
---             [ div [ css [ boxShadow3 (px 5) (px 5) Ui.theme.pink ] ]
---                 [ img [ css [ width (px 128) ], src image, alt name ] [] ]
---             , div
---                 [ css
---                     [ flex (num 1)
---                     , paddingLeft (rem 2)
---                     ]
---                 ]
---                 [ h5 [ css [ fontSize (rem 2) ] ] [ text name ]
---                 , if List.isEmpty socialLinks then
---                     text ""
---
---                   else
---                     p [ css [ fontSize (rem 1.75), marginTop (rem 1), marginLeft (rem -1) ] ]
---                         (List.map speakerSocialLink socialLinks)
---                 ]
---             ]
---         , div [ css [ marginTop (rem 1) ] ] bio
---         ]
+speakerSocialLink : Speaker.Social -> Html msg
+speakerSocialLink { network, src } =
+    a
+        [ href src
+        , target "_blank"
+        , css
+            [ fontSize (rem 1.3)
+            , padding (rem 0.3)
+            , display block
+            , marginRight (px 5)
+            , hover [ color Ui.theme.green ]
+            , marginBottom (px 10)
+            , position relative
+            , bottom (px 10)
+            ]
+        ]
+        [ i [ Attr.class (getSocialIconClass network) ] [] ]
 
 
-speakerSocialLink : ( String, String ) -> Html msg
-speakerSocialLink ( icon, url ) =
-    a [ href url, target "_blank", css [ paddingLeft (rem 1) ] ]
-        [ i [ Attr.class ("fa fa-" ++ icon) ] [] ]
+getSocialIconClass : Speaker.SocialNetwork -> String
+getSocialIconClass network =
+    case network of
+        Speaker.Website ->
+            "fas fa-globe"
+
+        Speaker.Twitter ->
+            "fab fa-twitter"
+
+        Speaker.Github ->
+            "fab fa-github"
+
+
+
+---------------------------------------------------------------------
+-- SPONSORS
+---------------------------------------------------------------------
 
 
 sponsorContent : Html Msg

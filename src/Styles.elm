@@ -54,7 +54,8 @@ global =
             ]
         , Css.Global.h5
             [ fontSize (rem 1.75)
-            , lineHeight (num 1)
+
+            -- , lineHeight (num 1)
             , margin zero
             , firstChild [ marginTop zero ]
             , marginTop (rem 1.5)
@@ -194,17 +195,16 @@ pageSection =
         ]
     , container =
         [ margin2 zero auto
-        , maxWidth (px 960)
         , width (pct 100)
         , padding2 zero (rem 3)
-        , Css.batch [ Media.withMedia [ Media.only Media.screen [ Media.maxWidth (px 480) ] ] [ padding zero ] ]
+        , Css.batch [ Media.withMedia [ Media.only Media.screen [ Media.maxWidth (px 719) ] ] [ padding zero ] ]
         ]
     , title =
         [ textTransform uppercase
         , letterSpacing (px 4)
         , textAlign center
         , margin2 zero (rem -3)
-        , Css.batch [ Media.withMedia [ Media.only Media.screen [ Media.maxWidth (px 480) ] ] [ margin zero ] ]
+        , Css.batch [ Media.withMedia [ Media.only Media.screen [ Media.maxWidth (px 719) ] ] [ margin zero ] ]
         ]
     , contentWrapper =
         \isLeftSide ->
@@ -235,9 +235,9 @@ pageSection =
             , marginTop (rem 2)
             , fontSize (px 20)
             , lineHeight (num 1.4)
-            , padding2 (rem 3) (rem 1)
+            , padding2 (rem 3) (rem 1.7)
             , Css.batch
-                [ Media.withMedia [ Media.only Media.screen [ Media.minWidth (px 481) ] ]
+                [ Media.withMedia [ Media.only Media.screen [ Media.minWidth (px 720) ] ]
                     [ if isLeftSide then
                         paddingLeft zero
 
@@ -281,7 +281,8 @@ footer =
         ]
     , container =
         [ width (pct 100)
-        , maxWidth (px 960)
+
+        -- , maxWidth (px 960)
         , margin2 zero auto
         , displayFlex
         , justifyContent spaceBetween
@@ -295,7 +296,8 @@ sponsorship =
     { logo = [ height (px 80) ]
     , wrapper =
         [ width (pct 100)
-        , maxWidth (px 960)
+
+        -- , maxWidth (px 960)
         , margin2 zero auto
         , padding2 zero (rem 3)
         ]

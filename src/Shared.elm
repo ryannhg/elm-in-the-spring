@@ -24,7 +24,7 @@ siteFooter =
                         , href "https://twitter.com/ElmInTheSpring"
                         , target "_blank"
                         ]
-                        [ i [ Attr.class "fa fa-twitter-square" ] []
+                        [ i [ Attr.class "fab fa-twitter" ] []
                         ]
                     ]
                 ]
