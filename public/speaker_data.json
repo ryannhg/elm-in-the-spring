@@ -55,7 +55,7 @@
     "talk_subtitle": "",
     "talk_abstract": "As a language that compiles to JavaScript, Elm has the potential to be used for building more than front-end applications. In this talk, we’ll explore using Elm to build browser extensions and bookmarklets by reviewing a couple of projects and considering the advantages of using Elm for these kinds of uses. Let's bring the delight of programming Elm to browser-adjacent functionality!",
     "bio": "Emma Cunningham is a formal semanticist turned software engineer who currently is interested in thinking about distributed systems, data pipeline tooling, data visualization, and query optimization. As a former linguist, they often think about how expressive type systems, reliable error messaging, and higher order logic can help solve these concerns in a maintainable and scalable manner. When they’re not cranking out code, Emma practices sleight-of-hand magic and ferments all kinds of things in their hometown of Los Angeles.",
-    "headshot": "images/speakers/emma.png",
+    "headshot": "images/speakers/emma.jpg",
     "social": [
       {
         "network": "twitter",
