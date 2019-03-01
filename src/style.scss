@@ -312,17 +312,26 @@ input[type="submit"]:active,
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  // position: fixed;
-  // top: 50%;
-  // left: 50%;
-  // width: 400px;
-  // height: 200px;
-  // margin-left: -200px;
-  // margin-top: -150px;
   padding: 50px;
-  z-index: 10;
+  z-index: 100;
   box-shadow: 0 0 0 99999px rgba(255, 255, 255, 0.7);
-  // animation: zoomIn 0.3s linear;
+  + header {
+    display: none;
+  }
+  @media all and (max-width: 719px) {
+    display: block;
+    height: 100vh;
+    width: 100vw;
+    top: 0;
+    left: 0;
+    transform: initial;
+    box-shadow: initial;
+    .speaker-modal-content-container {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+  }
 }
 
 .close-modal {
@@ -340,7 +349,6 @@ input[type="submit"]:active,
 .open-modal {
   &:hover {
     color: lighten(#75D3BE, 10%);
-    // color: lighten(currentColor, 10%);
   }
 }
 

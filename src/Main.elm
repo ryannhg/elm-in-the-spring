@@ -579,48 +579,51 @@ speakerModal ({ name, talkTitle, talkSubtitle, headshotSrc, talkAbstract, bio, s
             [ Attr.class "close-modal", onClick ClickCloseSpeakerModal ]
             [ i [ Attr.class "fas fa-times" ] [] ]
         , div
-            [ Attr.class "speaker-modal-grid-container", css [ color Ui.theme.teal ] ]
+            [ Attr.class "speaker-modal-content-container" ]
             [ div
-                [ Attr.class "Speaker-Modal-Headshot" ]
-                [ img [ css [ maxWidth (px 100) ], src headshotSrc, alt name ] [] ]
-            , div
-                [ Attr.class "Speaker-Modal-Name-Social", css [ color Ui.theme.greenLight ] ]
+                [ Attr.class "speaker-modal-grid-container", css [ color Ui.theme.teal ] ]
                 [ div
-                    [ Attr.class "Speaker-Modal-Name" ]
-                    [ h4
-                        [ css [ fontSize (rem 2), lineHeight (num 1.2), fontWeight (int 400) ] ]
-                        [ text name ]
+                    [ Attr.class "Speaker-Modal-Headshot" ]
+                    [ img [ css [ maxWidth (px 100) ], src headshotSrc, alt name ] [] ]
+                , div
+                    [ Attr.class "Speaker-Modal-Name-Social", css [ color Ui.theme.greenLight ] ]
+                    [ div
+                        [ Attr.class "Speaker-Modal-Name" ]
+                        [ h4
+                            [ css [ fontSize (rem 2), lineHeight (num 1.2), fontWeight (int 400) ] ]
+                            [ text name ]
+                        ]
+                    , div
+                        [ Attr.class "Speaker-Modal-Social" ]
+                        [ div
+                            [ css [ displayFlex, flexDirection row, position relative, bottom (px 10) ] ]
+                            (social
+                                |> List.sortBy (\s -> Speaker.socialNetworkToString s.network)
+                                |> List.map speakerSocialLink
+                            )
+                        ]
                     ]
                 , div
-                    [ Attr.class "Speaker-Modal-Social" ]
+                    [ Attr.class "Speaker-Modal-Bio", css [ color Ui.theme.greenLight ] ]
                     [ div
-                        [ css [ displayFlex, flexDirection row, position relative, bottom (px 10) ] ]
-                        (social
-                            |> List.sortBy (\s -> Speaker.socialNetworkToString s.network)
-                            |> List.map speakerSocialLink
-                        )
+                        []
+                        [ text bio ]
                     ]
-                ]
-            , div
-                [ Attr.class "Speaker-Modal-Bio", css [ color Ui.theme.greenLight ] ]
-                [ div
-                    []
-                    [ text bio ]
-                ]
-            , div
-                [ Attr.class "Speaker-Modal-Talk-Title" ]
-                [ h5
-                    [ css [ fontSize (rem 1.5), margin2 (px 10) zero ] ]
-                    [ text talkTitle ]
-                , talkSubtitle
-                    |> Maybe.map (\subtitle -> h6 [ Attr.class "open-modal", css [ fontSize (rem 1), margin2 (px 10) zero, fontWeight (int 300) ] ] [ text subtitle ])
-                    |> Maybe.withDefault (Html.Styled.text "")
-                ]
-            , div
-                [ Attr.class "Speaker-Modal-Abstract" ]
-                [ div
-                    []
-                    [ text talkAbstract ]
+                , div
+                    [ Attr.class "Speaker-Modal-Talk-Title" ]
+                    [ h5
+                        [ css [ fontSize (rem 1.5), margin2 (px 10) zero ] ]
+                        [ text talkTitle ]
+                    , talkSubtitle
+                        |> Maybe.map (\subtitle -> h6 [ Attr.class "open-modal", css [ fontSize (rem 1), margin2 (px 10) zero, fontWeight (int 300) ] ] [ text subtitle ])
+                        |> Maybe.withDefault (Html.Styled.text "")
+                    ]
+                , div
+                    [ Attr.class "Speaker-Modal-Abstract" ]
+                    [ div
+                        []
+                        [ text talkAbstract ]
+                    ]
                 ]
             ]
         ]
