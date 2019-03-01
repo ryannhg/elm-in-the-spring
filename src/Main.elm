@@ -128,10 +128,6 @@ update msg model =
                     ( model, Nav.load href )
 
         LoadSpeakers (Ok speakers) ->
-            let
-                _ =
-                    Debug.log "model" model
-            in
             ( { model | speakers = speakers }
             , Cmd.none
             )
@@ -146,10 +142,6 @@ update msg model =
             )
 
         ClickCloseSpeakerModal ->
-            -- let
-            --     resetLocation viewport =
-            --
-            -- in
             ( { model | speakerModal = Nothing, savedViewport = Nothing }
             , model.savedViewport
                 |> Maybe.map (\vp -> Browser.Dom.setViewport vp.viewport.x vp.viewport.y)
@@ -704,10 +696,6 @@ logo =
         , br [] []
         , strong [ css Styles.logo.bigText ] [ text "SPRING" ]
         ]
-
-
-
---
 
 
 renderIf : Maybe (Html msg) -> Html msg

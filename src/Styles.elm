@@ -54,8 +54,6 @@ global =
             ]
         , Css.Global.h5
             [ fontSize (rem 1.75)
-
-            -- , lineHeight (num 1)
             , margin zero
             , firstChild [ marginTop zero ]
             , marginTop (rem 1.5)
@@ -76,8 +74,6 @@ header =
     { wrapper =
         [ position absolute
         , top zero
-
-        -- , zIndex (int 10)
         , width (pct 100)
         ]
     , top =
@@ -297,8 +293,6 @@ sponsorship =
     { logo = [ height (px 80) ]
     , wrapper =
         [ width (pct 100)
-
-        -- , maxWidth (px 960)
         , margin2 zero auto
         , padding2 zero (rem 3)
         ]
