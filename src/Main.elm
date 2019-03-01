@@ -510,7 +510,7 @@ speakerListing : Speaker -> Html Msg
 speakerListing ({ name, talkTitle, talkSubtitle, headshotSrc, talkAbstract, bio, social } as speaker) =
     div [ Attr.class "speaker-grid-container", css [ paddingLeft (rem 3), paddingTop (rem 2) ] ]
         [ div
-            [ Attr.class "Speaker-Headshot", css [ boxShadow3 (px -12) (px 12) Ui.theme.greenLight, border3 (px 7) solid Ui.theme.tealLight ] ]
+            [ onClick (ClickOpenSpeakerModal speaker), Attr.class "open-modal Speaker-Headshot", css [ boxShadow3 (px -12) (px 12) Ui.theme.greenLight, border3 (px 7) solid Ui.theme.tealLight ] ]
             [ img [ css [ width (pct 100) ], src headshotSrc, alt name ] [] ]
         , div
             [ Attr.class "Speaker-Talk" ]
