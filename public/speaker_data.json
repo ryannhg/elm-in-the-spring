@@ -20,7 +20,7 @@
     "name": "Andrew MacMurray",
     "talk_title": "Building Seeds",
     "talk_subtitle": "A Smartphone Game for the Browser",
-    "talk_abstract": "Three years ago I got inspired to build a game for the browser. Since then it’s lived and died as a React app and re-emerged as an Elm app. My talk is an experience report on this journey - pain points, surprises, the joys of using Elm and a whole lot of learning!",
+    "talk_abstract": "Three years ago, I got inspired to build a game for the browser. Since then, it’s lived and died as a React app and re-emerged as an Elm app. My talk is an experience report on this journey - pain points, surprises, the joys of using Elm and a whole lot of learning!",
     "bio": "Andrew is software crafter working at 8th Light. He's developed a deep love for functional programming and types: it's like writing music and playing Tetris at the same time! His other loves include video games, Rupaul's Drag Race, and minimalism.",
     "headshot": "images/speakers/andrew.jpg",
     "social": [
@@ -37,7 +37,7 @@
   {
     "name": "Brian Hicks",
     "talk_title": "Robot Buttons From Mars",
-    "talk_abstract": "Working with HTML in Elm is a joy: creating little reusable functions like button is so fun! But what happens when options invade? Icons? Sizes? Loading states? In this talk, we introduce options for dealing with the inevitable complexity in your style guide and get back to the joy of creation.",
+    "talk_abstract": "Working with HTML in Elm is a joy: creating little reusable functions like 'button' is so fun! But what happens when options invade? Icons? Sizes? Loading states? In this talk, we introduce options for dealing with the inevitable complexity in your style guide and get back to the joy of creation.",
     "bio": "Brian Hicks is the lead organizer of elm-conf and the author of Mastering Elm: JSON Decoders and elm-particle. He lives in St. Louis with his wife, son, and cat.",
     "headshot": "images/speakers/brian.jpg",
     "social": [
@@ -59,7 +59,7 @@
     "name": "Dan Abrams",
     "talk_title": "Screenplay by Elm",
     "talk_subtitle": "Writing a Specialized WYSIWYG Editor Using Elm-UI and elm/parser",
-    "talk_abstract": "I was unhappy with the existing tools for writing screenplays…but I know how to build my own. Building a web text editor isn’t easy to do: but formats that work with monospaced fonts, like code editors–or screenplays–can work without the nonsense.",
+    "talk_abstract": "I was unhappy with the existing tools for writing screenplays…but I know how to build my own. Building a web text editor isn’t easy to do: but formats that work with monospaced fonts, like code editors– or screenplays– can work without the nonsense.",
     "bio": "Dan is an Elm developer who started his career as a screenwriter. He has written for film, tv, and video games. Dan lives in northern NJ with his fiancé and their dog, and just finished a batch at Recurse Center.",
     "headshot": "images/speakers/dan.jpg",
     "social": [
@@ -146,7 +146,7 @@
     "talk_title": "Guaranteed Refactors",
     "talk_subtitle": "Generating Tests from Types",
     "talk_abstract": "Many of us are familiar with the situation: you want to refactor some code, but it has no tests! Elm gives us confidence that the types fit, but how can I be sure I haven’t changed or broken behavior? In this talk you’ll learn about a testing workflow that uses types to guarantee refactors.",
-    "bio": "Kofi lives in Chicago and writes software, both professionally and for fun. By day, he works at HubTran, using test-driven development wherever he can. By night, he theorizes how to make those tests unnecessary — using declarative systems with strong guarantees.",
+    "bio": "Kofi lives in Chicago and writes software, both professionally and for fun. By day, he works at HubTran, using test-driven development wherever he can. By night, he theorizes how to make those tests unnecessary— using declarative systems with strong guarantees.",
     "headshot": "images/speakers/kofi.jpg",
     "social": [
       {
@@ -180,7 +180,7 @@
   {
     "name": "Noah Zachary Gordon",
     "talk_title": "Conventions for Message Naming",
-    "talk_abstract": "Messages are a fundamental piece of the Elm Architecture, defining exactly how the world can interact with your program. But often we choose message names without precision. In this talk I will outline a set of message naming conventions that can make your code more flexible and resilient to change.",
+    "talk_abstract": "Messages are a fundamental piece of the Elm Architecture, defining exactly how the world can interact with your program. But often we choose message names without precision. In this talk, I will outline a set of message naming conventions that can make your code more flexible and resilient to change.",
     "bio": "Noah is a technologist from Brooklyn, NY, who likes his Elm with a soft-boiled egg and black coffee. He organizes the Elm NYC meetup group and is a Recurse Center alumnus. Prolonged exposure to Noah is not recommended. Consult your primary care physician before seeking Noah.",
     "headshot": "images/speakers/noah.jpg",
     "social": [
