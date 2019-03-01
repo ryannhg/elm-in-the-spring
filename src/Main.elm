@@ -183,10 +183,10 @@ view model =
                     [ div
                         [ Attr.class
                             (if hasModal model then
-                                "modal-open"
+                                "content-wrapper modal-open"
 
                              else
-                                ""
+                                "content-wrapper"
                             )
                         ]
                         [ renderModal model.speakerModal

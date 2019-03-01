@@ -409,3 +409,16 @@ input[type="submit"]:active,
 .Speaker-Modal-Talk-Title { grid-area: Speaker-Modal-Talk-Title; }
 
 .Speaker-Modal-Abstract { grid-area: Speaker-Modal-Abstract; }
+
+
+body {
+  overflow: hidden;
+}
+
+.content-wrapper {
+  overflow: scroll;
+  height:100vh;
+  &.modal-open {
+    overflow:hidden;
+  }
+}

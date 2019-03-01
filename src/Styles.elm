@@ -76,7 +76,8 @@ header =
     { wrapper =
         [ position absolute
         , top zero
-        , zIndex (int 10)
+
+        -- , zIndex (int 10)
         , width (pct 100)
         ]
     , top =

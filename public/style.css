@@ -317,3 +317,12 @@ input[type="submit"]:active,
 
 .Speaker-Modal-Abstract {
   grid-area: Speaker-Modal-Abstract; }
+
+body {
+  overflow: hidden; }
+
+.content-wrapper {
+  overflow: scroll;
+  height: 100vh; }
+  .content-wrapper.modal-open {
+    overflow: hidden; }
