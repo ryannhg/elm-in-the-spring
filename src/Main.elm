@@ -1,6 +1,7 @@
 port module Main exposing (main)
 
 import Browser
+import Browser.Dom
 import Browser.Navigation as Nav
 import Css exposing (..)
 import Css.Global exposing (body, global, html)
@@ -8,13 +9,19 @@ import Css.Media as Media
 import Html
 import Html.Styled exposing (..)
 import Html.Styled.Attributes as Attr exposing (alt, css, href, id, src, target)
-import Html.Styled.Events exposing (onClick, onInput)
+import Html.Styled.Events exposing (..)
+import Http
+import HttpBuilder
+import Json.Decode as Decode
+import Maybe.Extra
 import Route exposing (Route(..))
 import Shared
+import Speaker exposing (Speaker)
 import Sponsorship
 import Styles
 import Svg.Styled as Svg
 import Svg.Styled.Attributes as SvgAttr
+import Task
 import Ui
 import Url
 
@@ -28,11 +35,15 @@ type alias Model =
     , email : String
     , key : Nav.Key
     , route : Route
+    , speakers : List Speaker
+    , speakerModal : Maybe Speaker
+    , savedViewport : Maybe Browser.Dom.Viewport
     }
 
 
+init : a -> Url.Url -> Nav.Key -> ( Model, Cmd Msg )
 init flags url key =
-    ( Model "" "" key (Route.fromUrl url), Cmd.none )
+    ( Model "" "" key (Route.fromUrl url) [] Nothing Nothing, loadSpeakers )
 
 
 main : Program () Model Msg
@@ -47,6 +58,13 @@ main =
         }
 
 
+loadSpeakers : Cmd Msg
+loadSpeakers =
+    HttpBuilder.get "/speaker_data.json"
+        |> HttpBuilder.withExpectJson (Decode.list Speaker.decoder)
+        |> HttpBuilder.send LoadSpeakers
+
+
 
 -- UPDATE
 
@@ -57,11 +75,16 @@ type Field
 
 
 type Msg
-    = JumpTo String
+    = NoOp
+    | JumpTo String
     | UpdateField Field String
     | SubmitForm
     | OnUrlRequest Browser.UrlRequest
     | OnUrlChange Url.Url
+    | ClickOpenSpeakerModal Speaker
+    | ClickCloseSpeakerModal
+    | LoadSpeakers (Result Http.Error (List Speaker))
+    | SaveViewport Browser.Dom.Viewport
 
 
 port outgoing : ( String, String ) -> Cmd msg
@@ -70,6 +93,9 @@ port outgoing : ( String, String ) -> Cmd msg
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
+        NoOp ->
+            ( model, Cmd.none )
+
         JumpTo id ->
             ( model
             , outgoing ( "JUMP_TO", id )
@@ -101,6 +127,31 @@ update msg model =
                 Browser.External href ->
                     ( model, Nav.load href )
 
+        LoadSpeakers (Ok speakers) ->
+            ( { model | speakers = speakers }
+            , Cmd.none
+            )
+
+        LoadSpeakers (Err httpError) ->
+            ( model, Cmd.none )
+
+        ClickOpenSpeakerModal speaker_ ->
+            ( { model | speakerModal = Just speaker_ }
+            , Browser.Dom.getViewport
+                |> Task.perform SaveViewport
+            )
+
+        ClickCloseSpeakerModal ->
+            ( { model | speakerModal = Nothing, savedViewport = Nothing }
+            , model.savedViewport
+                |> Maybe.map (\vp -> Browser.Dom.setViewport vp.viewport.x vp.viewport.y)
+                |> Maybe.map (Task.perform (\_ -> NoOp))
+                |> Maybe.withDefault Cmd.none
+            )
+
+        SaveViewport viewport ->
+            ( { model | savedViewport = Just viewport }, Cmd.none )
+
 
 
 -- VIEW
@@ -121,11 +172,22 @@ view model =
         Home ->
             let
                 homeMarkup =
-                    [ navbar
-                    , hero
-                    , pageSection Details Nothing model
-                    , pageSection Speakers Nothing model
-                    , pageSection Sponsors (Just sponsorLogos) model
+                    [ div
+                        [ Attr.class
+                            (if hasModal model then
+                                "content-wrapper modal-open"
+
+                             else
+                                "content-wrapper"
+                            )
+                        ]
+                        [ renderModal model.speakerModal
+                        , navbar
+                        , hero
+                        , pageSection Details Nothing model
+                        , pageSection Speakers Nothing model
+                        , pageSection Sponsors (Just sponsorLogos) model
+                        ]
                     ]
             in
             { title = "Elm in the Spring 2019"
@@ -178,7 +240,7 @@ contentFor section model =
             ticketContent model
 
         Speakers ->
-            speakerContent
+            speakerContent model
 
         Sponsors ->
             sponsorContent
@@ -259,8 +321,6 @@ hero =
                             [ div [ css Styles.hero.buttons ]
                                 [ div []
                                     [ Ui.btn button [ onClick (JumpTo (idOf Details)) ] [ text "Attend" ] ]
-                                , div [ css [ marginLeft (px 24) ] ]
-                                    [ Ui.btn button [ onClick (JumpTo (idOf Speakers)) ] [ text "Speak" ] ]
                                 ]
                             ]
                         ]
@@ -350,6 +410,12 @@ pageSection section_ extra model =
                 |> Ui.angledSection content
 
 
+
+---------------------------------------------------------------------
+-- TICKETS
+---------------------------------------------------------------------
+
+
 ticketContent : Model -> Html Msg
 ticketContent model =
     div []
@@ -429,71 +495,156 @@ ticketContent model =
         ]
 
 
-speakerContent : Html Msg
-speakerContent =
-    div []
-        [ h4 [] [ text "Become a speaker" ]
-        , p []
-            [ text "Have a great idea you want to share with the Elm community?"
-            ]
-        , p [ css [ textAlign center ] ]
-            [ Ui.btn a
-                [ href "https://www.papercall.io/elm-in-the-spring-2019"
-                , Attr.target "_blank"
+
+---------------------------------------------------------------------
+-- SPEAKERS
+---------------------------------------------------------------------
+
+
+speakerContent : Model -> Html Msg
+speakerContent model =
+    div [] (List.map speakerListing model.speakers)
+
+
+speakerListing : Speaker -> Html Msg
+speakerListing ({ name, talkTitle, talkSubtitle, headshotSrc, talkAbstract, bio, social } as speaker) =
+    div [ Attr.class "speaker-grid-container", css [ paddingLeft (rem 3), paddingTop (rem 2) ] ]
+        [ div
+            [ onClick (ClickOpenSpeakerModal speaker), Attr.class "open-modal Speaker-Headshot", css [ boxShadow3 (px -12) (px 12) Ui.theme.greenLight, border3 (px 7) solid Ui.theme.tealLight ] ]
+            [ img [ css [ width (pct 100) ], src headshotSrc, alt name ] [] ]
+        , div
+            [ Attr.class "Speaker-Talk" ]
+            [ div []
+                [ h5 [ Attr.class "open-modal", onClick (ClickOpenSpeakerModal speaker), css [ fontSize (rem 1.5), margin2 (px 10) zero ] ] [ text talkTitle ]
+                , talkSubtitle
+                    |> Maybe.map (\subtitle -> h6 [ Attr.class "open-modal", onClick (ClickOpenSpeakerModal speaker), css [ fontSize (rem 1), margin2 (px 10) zero, fontWeight (int 300) ] ] [ text subtitle ])
+                    |> Maybe.withDefault (Html.Styled.text "")
                 ]
-                [ text "Submit your talk" ]
             ]
-        , p []
-            [ text "Never spoken at a conference before? We're reserving two spots for first-time speakers!"
-            ]
-        , br [] []
-        , h4 [] [ text "Speaker Lineup" ]
-        , div [ css [ marginTop (rem 2) ] ]
-            [ speaker
-                "Richard Feldman"
-                [ ( "twitter", "https://twitter.com/rtfeldman" )
-                , ( "github", "https://github.com/rtfeldman" )
-                ]
-                "/images/speakers/richard-feldman.jpeg"
-                []
-            , speaker
-                "You?"
-                []
-                "/images/speakers/you.jpeg"
-                []
+        , div
+            [ Attr.class "Speaker-Name-Social", css [ color Ui.theme.greenLight ] ]
+            [ h4 [ css [ fontSize (rem 2), lineHeight (num 1.2), fontWeight (int 400) ] ] [ text name ]
+            , div [ css [ displayFlex, flexDirection row, position relative, bottom (px 10) ] ]
+                (social
+                    |> List.sortBy (\s -> Speaker.socialNetworkToString s.network)
+                    |> List.map speakerSocialLink
+                )
             ]
         ]
 
 
-speaker : String -> List ( String, String ) -> String -> List (Html msg) -> Html msg
-speaker name socialLinks image bio =
-    div [ css [ marginTop (rem 2) ] ]
-        [ div [ css [ displayFlex, alignItems center ] ]
-            [ div [ css [ boxShadow3 (px 5) (px 5) Ui.theme.pink ] ]
-                [ img [ css [ width (px 128) ], src image, alt name ] [] ]
-            , div
-                [ css
-                    [ flex (num 1)
-                    , paddingLeft (rem 2)
+speakerSocialLink : Speaker.Social -> Html msg
+speakerSocialLink { network, src } =
+    a
+        [ href src
+        , target "_blank"
+        , css
+            [ fontSize (rem 1.3)
+            , padding (rem 0.3)
+            , display block
+            , marginRight (px 5)
+            , hover [ color (hex "#F2FF86") ]
+            , marginBottom (px 10)
+            ]
+        ]
+        [ i [ Attr.class (getSocialIconClass network) ] [] ]
+
+
+getSocialIconClass : Speaker.SocialNetwork -> String
+getSocialIconClass network =
+    case network of
+        Speaker.Website ->
+            "fas fa-globe"
+
+        Speaker.Twitter ->
+            "fab fa-twitter"
+
+        Speaker.Github ->
+            "fab fa-github"
+
+
+speakerModal : Speaker -> Html Msg
+speakerModal ({ name, talkTitle, talkSubtitle, headshotSrc, talkAbstract, bio, social } as speaker) =
+    div
+        [ Attr.class "speaker-modal modal" ]
+        [ div
+            [ Attr.class "close-modal", onClick ClickCloseSpeakerModal ]
+            [ i [ Attr.class "fas fa-times" ] [] ]
+        , div
+            [ Attr.class "speaker-modal-content-container" ]
+            [ div
+                [ Attr.class "speaker-modal-grid-container", css [ color Ui.theme.teal ] ]
+                [ div
+                    [ Attr.class "Speaker-Modal-Headshot" ]
+                    [ img [ css [ maxWidth (px 100) ], src headshotSrc, alt name ] [] ]
+                , div
+                    [ Attr.class "Speaker-Modal-Name-Social", css [ color Ui.theme.greenLight ] ]
+                    [ div
+                        [ Attr.class "Speaker-Modal-Name" ]
+                        [ h4
+                            [ css [ fontSize (rem 2), lineHeight (num 1.2), fontWeight (int 400) ] ]
+                            [ text name ]
+                        ]
+                    , div
+                        [ Attr.class "Speaker-Modal-Social" ]
+                        [ div
+                            [ css [ displayFlex, flexDirection row, position relative, bottom (px 10) ] ]
+                            (social
+                                |> List.sortBy (\s -> Speaker.socialNetworkToString s.network)
+                                |> List.map speakerSocialLink
+                            )
+                        ]
+                    ]
+                , div
+                    [ Attr.class "Speaker-Modal-Bio", css [ color Ui.theme.greenLight ] ]
+                    [ div
+                        []
+                        [ text bio ]
+                    ]
+                , div
+                    [ Attr.class "Speaker-Modal-Talk-Title" ]
+                    [ h5
+                        [ css [ fontSize (rem 1.5), margin2 (px 10) zero ] ]
+                        [ text talkTitle ]
+                    , talkSubtitle
+                        |> Maybe.map (\subtitle -> h6 [ Attr.class "open-modal", css [ fontSize (rem 1), margin2 (px 10) zero, fontWeight (int 300) ] ] [ text subtitle ])
+                        |> Maybe.withDefault (Html.Styled.text "")
+                    ]
+                , div
+                    [ Attr.class "Speaker-Modal-Abstract" ]
+                    [ div
+                        []
+                        [ text talkAbstract ]
                     ]
                 ]
-                [ h5 [ css [ fontSize (rem 2) ] ] [ text name ]
-                , if List.isEmpty socialLinks then
-                    text ""
-
-                  else
-                    p [ css [ fontSize (rem 1.75), marginTop (rem 1), marginLeft (rem -1) ] ]
-                        (List.map speakerSocialLink socialLinks)
-                ]
             ]
-        , div [ css [ marginTop (rem 1) ] ] bio
         ]
 
 
-speakerSocialLink : ( String, String ) -> Html msg
-speakerSocialLink ( icon, url ) =
-    a [ href url, target "_blank", css [ paddingLeft (rem 1) ] ]
-        [ i [ Attr.class ("fa fa-" ++ icon) ] [] ]
+renderModal : Maybe Speaker -> Html Msg
+renderModal maybeSpeaker =
+    case maybeSpeaker of
+        Just speaker ->
+            speakerModal speaker
+
+        _ ->
+            Html.Styled.text ""
+
+
+hasModal : Model -> Bool
+hasModal model =
+    case model.speakerModal of
+        Just modal ->
+            True
+
+        Nothing ->
+            False
+
+
+
+---------------------------------------------------------------------
+-- SPONSORS
+---------------------------------------------------------------------
 
 
 sponsorContent : Html Msg
@@ -522,7 +673,8 @@ sponsorLogos =
 
 sponsor : String -> String -> Float -> Html msg
 sponsor name src maxWidthPx =
-    div [ css [ maxWidth (px maxWidthPx), margin (rem 1) ]
+    div
+        [ css [ maxWidth (px maxWidthPx), margin (rem 1) ]
         ]
         [ img
             [ Attr.src src
@@ -544,3 +696,13 @@ logo =
         , br [] []
         , strong [ css Styles.logo.bigText ] [ text "SPRING" ]
         ]
+
+
+renderIf : Maybe (Html msg) -> Html msg
+renderIf maybeSomething =
+    case maybeSomething of
+        Just thing ->
+            thing
+
+        _ ->
+            Html.Styled.text ""
