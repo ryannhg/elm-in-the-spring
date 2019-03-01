@@ -13,6 +13,15 @@
   font-weight: 900;
   src: url(/fonts/Biko_Black.otf); }
 
+body {
+  overflow: hidden; }
+
+.content-wrapper {
+  overflow: scroll;
+  height: 100vh; }
+  .content-wrapper.modal-open {
+    overflow: hidden; }
+
 input::-webkit-input-placeholder {
   color: #A56783 !important; }
 
@@ -31,7 +40,12 @@ input {
 a {
   color: inherit; }
 
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   line-height: 1.2; }
 
 ::-webkit-selection {
@@ -317,12 +331,3 @@ input[type="submit"]:active,
 
 .Speaker-Modal-Abstract {
   grid-area: Speaker-Modal-Abstract; }
-
-body {
-  overflow: hidden; }
-
-.content-wrapper {
-  overflow: scroll;
-  height: 100vh; }
-  .content-wrapper.modal-open {
-    overflow: hidden; }
