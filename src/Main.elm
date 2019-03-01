@@ -1,6 +1,7 @@
 port module Main exposing (main)
 
 import Browser
+import Browser.Dom
 import Browser.Navigation as Nav
 import Css exposing (..)
 import Css.Global exposing (body, global, html)
@@ -8,10 +9,11 @@ import Css.Media as Media
 import Html
 import Html.Styled exposing (..)
 import Html.Styled.Attributes as Attr exposing (alt, css, href, id, src, target)
-import Html.Styled.Events exposing (onClick, onInput)
+import Html.Styled.Events exposing (..)
 import Http
 import HttpBuilder
 import Json.Decode as Decode
+import Maybe.Extra
 import Route exposing (Route(..))
 import Shared
 import Speaker exposing (Speaker)
@@ -19,6 +21,7 @@ import Sponsorship
 import Styles
 import Svg.Styled as Svg
 import Svg.Styled.Attributes as SvgAttr
+import Task
 import Ui
 import Url
 
@@ -33,12 +36,14 @@ type alias Model =
     , key : Nav.Key
     , route : Route
     , speakers : List Speaker
+    , speakerModal : Maybe Speaker
+    , savedViewport : Maybe Browser.Dom.Viewport
     }
 
 
 init : a -> Url.Url -> Nav.Key -> ( Model, Cmd Msg )
 init flags url key =
-    ( Model "" "" key (Route.fromUrl url) [], loadSpeakers )
+    ( Model "" "" key (Route.fromUrl url) [] Nothing Nothing, loadSpeakers )
 
 
 main : Program () Model Msg
@@ -70,13 +75,16 @@ type Field
 
 
 type Msg
-    = JumpTo String
+    = NoOp
+    | JumpTo String
     | UpdateField Field String
     | SubmitForm
     | OnUrlRequest Browser.UrlRequest
     | OnUrlChange Url.Url
-      -- | ClickOpenSpeakerModal
+    | ClickOpenSpeakerModal Speaker
+    | ClickCloseSpeakerModal
     | LoadSpeakers (Result Http.Error (List Speaker))
+    | SaveViewport Browser.Dom.Viewport
 
 
 port outgoing : ( String, String ) -> Cmd msg
@@ -85,6 +93,9 @@ port outgoing : ( String, String ) -> Cmd msg
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
+        NoOp ->
+            ( model, Cmd.none )
+
         JumpTo id ->
             ( model
             , outgoing ( "JUMP_TO", id )
@@ -128,6 +139,27 @@ update msg model =
         LoadSpeakers (Err httpError) ->
             ( model, Cmd.none )
 
+        ClickOpenSpeakerModal speaker_ ->
+            ( { model | speakerModal = Just speaker_ }
+            , Browser.Dom.getViewport
+                |> Task.perform SaveViewport
+            )
+
+        ClickCloseSpeakerModal ->
+            -- let
+            --     resetLocation viewport =
+            --
+            -- in
+            ( { model | speakerModal = Nothing, savedViewport = Nothing }
+            , model.savedViewport
+                |> Maybe.map (\vp -> Browser.Dom.setViewport vp.viewport.x vp.viewport.y)
+                |> Maybe.map (Task.perform (\_ -> NoOp))
+                |> Maybe.withDefault Cmd.none
+            )
+
+        SaveViewport viewport ->
+            ( { model | savedViewport = Just viewport }, Cmd.none )
+
 
 
 -- VIEW
@@ -148,11 +180,22 @@ view model =
         Home ->
             let
                 homeMarkup =
-                    [ navbar
-                    , hero
-                    , pageSection Details Nothing model
-                    , pageSection Speakers Nothing model
-                    , pageSection Sponsors (Just sponsorLogos) model
+                    [ div
+                        [ Attr.class
+                            (if hasModal model then
+                                "modal-open"
+
+                             else
+                                ""
+                            )
+                        ]
+                        [ renderModal model.speakerModal
+                        , navbar
+                        , hero
+                        , pageSection Details Nothing model
+                        , pageSection Speakers Nothing model
+                        , pageSection Sponsors (Just sponsorLogos) model
+                        ]
                     ]
             in
             { title = "Elm in the Spring 2019"
@@ -468,19 +511,23 @@ ticketContent model =
 
 speakerContent : Model -> Html Msg
 speakerContent model =
-    div [] (List.map speaker model.speakers)
+    div [] (List.map speakerListing model.speakers)
 
 
-speaker : Speaker -> Html msg
-speaker { name, talkTitle, talkSubtitle, headshotSrc, talkAbstract, bio, social } =
+speakerListing : Speaker -> Html Msg
+speakerListing ({ name, talkTitle, talkSubtitle, headshotSrc, talkAbstract, bio, social } as speaker) =
     div [ Attr.class "speaker-grid-container", css [ paddingLeft (rem 3), paddingTop (rem 2) ] ]
         [ div
             [ Attr.class "Speaker-Headshot", css [ boxShadow3 (px -12) (px 12) Ui.theme.greenLight, border3 (px 7) solid Ui.theme.tealLight ] ]
             [ img [ css [ width (pct 100) ], src headshotSrc, alt name ] [] ]
         , div
             [ Attr.class "Speaker-Talk" ]
-            [ h5 [ css [ fontSize (rem 1.5), margin2 (px 10) zero ] ] [ text talkTitle ]
-            , h6 [ css [ fontSize (rem 1), margin2 (px 10) zero, fontWeight (int 300) ] ] [ text talkSubtitle ]
+            [ div []
+                [ h5 [ Attr.class "open-modal", onClick (ClickOpenSpeakerModal speaker), css [ fontSize (rem 1.5), margin2 (px 10) zero ] ] [ text talkTitle ]
+                , talkSubtitle
+                    |> Maybe.map (\subtitle -> h6 [ Attr.class "open-modal", onClick (ClickOpenSpeakerModal speaker), css [ fontSize (rem 1), margin2 (px 10) zero, fontWeight (int 300) ] ] [ text subtitle ])
+                    |> Maybe.withDefault (Html.Styled.text "")
+                ]
             ]
         , div
             [ Attr.class "Speaker-Name-Social", css [ color Ui.theme.greenLight ] ]
@@ -504,7 +551,7 @@ speakerSocialLink { network, src } =
             , padding (rem 0.3)
             , display block
             , marginRight (px 5)
-            , hover [ color Ui.theme.green ]
+            , hover [ color (hex "#F2FF86") ]
             , marginBottom (px 10)
             ]
         ]
@@ -522,6 +569,81 @@ getSocialIconClass network =
 
         Speaker.Github ->
             "fab fa-github"
+
+
+speakerModal : Speaker -> Html Msg
+speakerModal ({ name, talkTitle, talkSubtitle, headshotSrc, talkAbstract, bio, social } as speaker) =
+    div
+        [ Attr.class "speaker-modal modal" ]
+        [ div
+            [ Attr.class "close-modal", onClick ClickCloseSpeakerModal ]
+            [ i [ Attr.class "fas fa-times" ] [] ]
+        , div
+            [ Attr.class "speaker-modal-grid-container", css [ color Ui.theme.teal ] ]
+            [ div
+                [ Attr.class "Speaker-Modal-Headshot" ]
+                [ img [ css [ maxWidth (px 100) ], src headshotSrc, alt name ] [] ]
+            , div
+                [ Attr.class "Speaker-Modal-Name-Social", css [ color Ui.theme.greenLight ] ]
+                [ div
+                    [ Attr.class "Speaker-Modal-Name" ]
+                    [ h4
+                        [ css [ fontSize (rem 2), lineHeight (num 1.2), fontWeight (int 400) ] ]
+                        [ text name ]
+                    ]
+                , div
+                    [ Attr.class "Speaker-Modal-Social" ]
+                    [ div
+                        [ css [ displayFlex, flexDirection row, position relative, bottom (px 10) ] ]
+                        (social
+                            |> List.sortBy (\s -> Speaker.socialNetworkToString s.network)
+                            |> List.map speakerSocialLink
+                        )
+                    ]
+                ]
+            , div
+                [ Attr.class "Speaker-Modal-Bio", css [ color Ui.theme.greenLight ] ]
+                [ div
+                    []
+                    [ text bio ]
+                ]
+            , div
+                [ Attr.class "Speaker-Modal-Talk-Title" ]
+                [ h5
+                    [ css [ fontSize (rem 1.5), margin2 (px 10) zero ] ]
+                    [ text talkTitle ]
+                , talkSubtitle
+                    |> Maybe.map (\subtitle -> h6 [ Attr.class "open-modal", css [ fontSize (rem 1), margin2 (px 10) zero, fontWeight (int 300) ] ] [ text subtitle ])
+                    |> Maybe.withDefault (Html.Styled.text "")
+                ]
+            , div
+                [ Attr.class "Speaker-Modal-Abstract" ]
+                [ div
+                    []
+                    [ text talkAbstract ]
+                ]
+            ]
+        ]
+
+
+renderModal : Maybe Speaker -> Html Msg
+renderModal maybeSpeaker =
+    case maybeSpeaker of
+        Just speaker ->
+            speakerModal speaker
+
+        _ ->
+            Html.Styled.text ""
+
+
+hasModal : Model -> Bool
+hasModal model =
+    case model.speakerModal of
+        Just modal ->
+            True
+
+        Nothing ->
+            False
 
 
 
@@ -579,3 +701,17 @@ logo =
         , br [] []
         , strong [ css Styles.logo.bigText ] [ text "SPRING" ]
         ]
+
+
+
+--
+
+
+renderIf : Maybe (Html msg) -> Html msg
+renderIf maybeSomething =
+    case maybeSomething of
+        Just thing ->
+            thing
+
+        _ ->
+            Html.Styled.text ""

@@ -251,18 +251,6 @@ body {
 }
 
 
-a,
-button,
-input[type="submit"] {
-  cursor: url(images/cursor-pointer.png), pointer;
-}
-
-a:active,
-button:active,
-input[type="submit"]:active {
-  cursor: url(images/cursor-pointer-clicked.png), pointer;
-}
-
 dd,
 li,
 ol,
@@ -276,6 +264,23 @@ h4,
 h5,
 h6 {
   cursor: url(images/cursor-text.png), text;
+}
+
+
+a,
+button,
+input[type="submit"],
+.open-modal,
+.close-modal {
+  cursor: url(images/cursor-pointer.png), pointer;
+}
+
+a:active,
+button:active,
+input[type="submit"]:active,
+.open-modal:active,
+.close-modal:active {
+  cursor: url(images/cursor-pointer-clicked.png), pointer;
 }
 
 .preload-cursors {
@@ -300,3 +305,99 @@ h6 {
 .preload-cursors u {
   cursor: url(images/cursor-pointer-clicked.png), pointer;
 }
+
+.speaker-modal {
+  background-color: #20336A;
+  position:fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  // position: fixed;
+  // top: 50%;
+  // left: 50%;
+  // width: 400px;
+  // height: 200px;
+  // margin-left: -200px;
+  // margin-top: -150px;
+  padding: 50px;
+  z-index: 10;
+  box-shadow: 0 0 0 99999px rgba(255, 255, 255, 0.7);
+  // animation: zoomIn 0.3s linear;
+}
+
+.close-modal {
+  text-decoration: none;
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding: 10px 12px;
+  color: lighten(#20336A, 20%);
+  &:hover {
+    color: lighten(lighten(#20336A, 20%), 30%);
+  }
+}
+
+.open-modal {
+  &:hover {
+    color: lighten(#75D3BE, 10%);
+    // color: lighten(currentColor, 10%);
+  }
+}
+
+.modal-open {
+  overflow: hidden;
+}
+
+@keyframes zoomIn {
+  from {
+    opacity: 0;
+    transform: scale3d(0.3, 0.3, 0.3);
+  }
+
+  50% {
+    opacity: 1;
+  }
+}
+
+.zoomIn {
+  animation-name: zoomIn;
+}
+
+// .hide-overflow {
+//   overflow:hidden:
+// }
+
+
+// ********************************************************
+// Speaker Modal
+.speaker-modal-grid-container {
+  display: grid;
+  // row-gap: 1rem;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  grid-template-rows: 1fr 1max-content 1max-content 1max-content;
+  grid-template-areas: "Speaker-Modal-Headshot Speaker-Modal-Name-Social Speaker-Modal-Name-Social Speaker-Modal-Name-Social" "Speaker-Modal-Bio Speaker-Modal-Bio Speaker-Modal-Bio Speaker-Modal-Bio" "Speaker-Modal-Talk-Title Speaker-Modal-Talk-Title Speaker-Modal-Talk-Title Speaker-Modal-Talk-Title" "Speaker-Modal-Abstract Speaker-Modal-Abstract Speaker-Modal-Abstract Speaker-Modal-Abstract";
+}
+
+.Speaker-Modal-Headshot { grid-area: Speaker-Modal-Headshot; }
+
+.Speaker-Modal-Name-Social {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  grid-template-areas: "Speaker-Modal-Name Speaker-Modal-Name Speaker-Modal-Name" "Speaker-Modal-Social Speaker-Modal-Social Speaker-Modal-Social";
+  grid-area: Speaker-Modal-Name-Social;
+}
+
+.Speaker-Modal-Name { grid-area: Speaker-Modal-Name; }
+
+.Speaker-Modal-Social { grid-area: Speaker-Modal-Social; }
+
+.Speaker-Modal-Bio {
+  grid-area: Speaker-Modal-Bio;
+  padding-top: 1rem;
+  padding-bottom: 2rem;
+}
+
+.Speaker-Modal-Talk-Title { grid-area: Speaker-Modal-Talk-Title; }
+
+.Speaker-Modal-Abstract { grid-area: Speaker-Modal-Abstract; }

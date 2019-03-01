@@ -7,7 +7,7 @@ import Json.Decode.Pipeline exposing (custom, optional, required)
 type alias Speaker =
     { name : String
     , talkTitle : String
-    , talkSubtitle : String
+    , talkSubtitle : Maybe String
     , headshotSrc : String
     , talkAbstract : String
     , bio : String
@@ -68,7 +68,7 @@ decoder =
     Decode.succeed Speaker
         |> required "name" Decode.string
         |> required "talk_title" Decode.string
-        |> required "talk_subtitle" Decode.string
+        |> optional "talk_subtitle" (Decode.maybe Decode.string) Nothing
         |> required "headshot" Decode.string
         |> required "talk_abstract" Decode.string
         |> required "bio" Decode.string

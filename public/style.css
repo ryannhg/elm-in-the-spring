@@ -187,16 +187,6 @@ h1, h2, h3, h4, h5, h6 {
 body {
   cursor: url(images/cursor-auto.png), auto; }
 
-a,
-button,
-input[type="submit"] {
-  cursor: url(images/cursor-pointer.png), pointer; }
-
-a:active,
-button:active,
-input[type="submit"]:active {
-  cursor: url(images/cursor-pointer-clicked.png), pointer; }
-
 dd,
 li,
 ol,
@@ -210,6 +200,20 @@ h4,
 h5,
 h6 {
   cursor: url(images/cursor-text.png), text; }
+
+a,
+button,
+input[type="submit"],
+.open-modal,
+.close-modal {
+  cursor: url(images/cursor-pointer.png), pointer; }
+
+a:active,
+button:active,
+input[type="submit"]:active,
+.open-modal:active,
+.close-modal:active {
+  cursor: url(images/cursor-pointer-clicked.png), pointer; }
 
 .preload-cursors {
   clip: rect(0 0 0 0);
@@ -229,3 +233,72 @@ h6 {
 
 .preload-cursors u {
   cursor: url(images/cursor-pointer-clicked.png), pointer; }
+
+.speaker-modal {
+  background-color: #20336A;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  padding: 50px;
+  z-index: 10;
+  box-shadow: 0 0 0 99999px rgba(255, 255, 255, 0.7); }
+
+.close-modal {
+  text-decoration: none;
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding: 10px 12px;
+  color: #3859b8; }
+  .close-modal:hover {
+    color: #a5b5e4; }
+
+.open-modal:hover {
+  color: #9cdfd0; }
+
+.modal-open {
+  overflow: hidden; }
+
+@keyframes zoomIn {
+  from {
+    opacity: 0;
+    transform: scale3d(0.3, 0.3, 0.3); }
+  50% {
+    opacity: 1; } }
+
+.zoomIn {
+  animation-name: zoomIn; }
+
+.speaker-modal-grid-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  grid-template-rows: 1fr 1max-content 1max-content 1max-content;
+  grid-template-areas: "Speaker-Modal-Headshot Speaker-Modal-Name-Social Speaker-Modal-Name-Social Speaker-Modal-Name-Social" "Speaker-Modal-Bio Speaker-Modal-Bio Speaker-Modal-Bio Speaker-Modal-Bio" "Speaker-Modal-Talk-Title Speaker-Modal-Talk-Title Speaker-Modal-Talk-Title Speaker-Modal-Talk-Title" "Speaker-Modal-Abstract Speaker-Modal-Abstract Speaker-Modal-Abstract Speaker-Modal-Abstract"; }
+
+.Speaker-Modal-Headshot {
+  grid-area: Speaker-Modal-Headshot; }
+
+.Speaker-Modal-Name-Social {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  grid-template-areas: "Speaker-Modal-Name Speaker-Modal-Name Speaker-Modal-Name" "Speaker-Modal-Social Speaker-Modal-Social Speaker-Modal-Social";
+  grid-area: Speaker-Modal-Name-Social; }
+
+.Speaker-Modal-Name {
+  grid-area: Speaker-Modal-Name; }
+
+.Speaker-Modal-Social {
+  grid-area: Speaker-Modal-Social; }
+
+.Speaker-Modal-Bio {
+  grid-area: Speaker-Modal-Bio;
+  padding-top: 1rem;
+  padding-bottom: 2rem; }
+
+.Speaker-Modal-Talk-Title {
+  grid-area: Speaker-Modal-Talk-Title; }
+
+.Speaker-Modal-Abstract {
+  grid-area: Speaker-Modal-Abstract; }
