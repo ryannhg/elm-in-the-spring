@@ -15,7 +15,7 @@ type alias Tier =
 
 
 markup =
-    [ div [ Attr.class "sponsorship", css Styles.sponsorship.wrapper ] <|
+    [ div [ Attr.class "content-wrapper sponsorship", css Styles.sponsorship.wrapper ] <|
         [ escape
         , hero
         ]
