@@ -17,6 +17,7 @@ import Maybe.Extra
 import Route exposing (Route(..))
 import Shared
 import Speaker exposing (Speaker)
+import Sponsorship
 import Styles
 import Svg.Styled as Svg
 import Svg.Styled.Attributes as SvgAttr
@@ -208,6 +209,11 @@ view model =
             in
             { title = "Elm in the Spring 2019"
             , body = [ homeMarkup |> page |> toUnstyled ]
+            }
+
+        Sponsorship ->
+            { title = "Elm in the Spring 2019 | Sponsorship"
+            , body = [ Sponsorship.markup |> page |> toUnstyled ]
             }
 
         NotFound ->

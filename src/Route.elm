@@ -7,6 +7,7 @@ import Url.Parser.Query as Query
 
 type Route
     = Home (Maybe String)
+    | Sponsorship
     | NotFound
 
 
@@ -19,6 +20,9 @@ toString route =
         Home Nothing ->
             "/"
 
+        Sponsorship ->
+            "/sponsorship"
+
         NotFound ->
             "/"
 
@@ -29,6 +33,7 @@ fromUrl =
         (oneOf
             [ Url.Parser.map Home (top <?> Query.string "speaker")
             , map (Home Nothing) top
+            , Url.Parser.map Sponsorship (s "sponsorship")
             ]
         )
         >> Maybe.withDefault (Home Nothing)
