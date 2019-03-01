@@ -17,7 +17,6 @@ import Maybe.Extra
 import Route exposing (Route(..))
 import Shared
 import Speaker exposing (Speaker)
-import Sponsorship
 import Styles
 import Svg.Styled as Svg
 import Svg.Styled.Attributes as SvgAttr
@@ -92,6 +91,14 @@ port outgoing : ( String, String ) -> Cmd msg
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
+    let
+        openSpeaker : Speaker -> ( Model, Cmd Msg )
+        openSpeaker speaker_ =
+            ( { model | speakerModal = Just speaker_ }
+            , Browser.Dom.getViewport
+                |> Task.perform SaveViewport
+            )
+    in
     case msg of
         NoOp ->
             ( model, Cmd.none )
@@ -128,18 +135,27 @@ update msg model =
                     ( model, Nav.load href )
 
         LoadSpeakers (Ok speakers) ->
-            ( { model | speakers = speakers }
-            , Cmd.none
-            )
+            let
+                modelWithSpeakers : Model
+                modelWithSpeakers =
+                    { model | speakers = speakers }
+            in
+            case model.route of
+                Home (Just speakerName) ->
+                    speakers
+                        |> List.filter (\speaker_ -> speakerName == String.replace " " "" speaker_.name)
+                        |> List.head
+                        |> Maybe.map (\speaker_ -> openSpeaker speaker_)
+                        |> Maybe.withDefault ( modelWithSpeakers, Cmd.none )
+
+                _ ->
+                    ( modelWithSpeakers, Cmd.none )
 
         LoadSpeakers (Err httpError) ->
             ( model, Cmd.none )
 
         ClickOpenSpeakerModal speaker_ ->
-            ( { model | speakerModal = Just speaker_ }
-            , Browser.Dom.getViewport
-                |> Task.perform SaveViewport
-            )
+            openSpeaker speaker_
 
         ClickCloseSpeakerModal ->
             ( { model | speakerModal = Nothing, savedViewport = Nothing }
@@ -169,7 +185,7 @@ view model =
                     ++ [ Shared.siteFooter ]
     in
     case model.route of
-        Home ->
+        Home _ ->
             let
                 homeMarkup =
                     [ div
@@ -192,11 +208,6 @@ view model =
             in
             { title = "Elm in the Spring 2019"
             , body = [ homeMarkup |> page |> toUnstyled ]
-            }
-
-        Sponsorship ->
-            { title = "Elm in the Spring 2019 | Sponsorship"
-            , body = [ Sponsorship.markup |> page |> toUnstyled ]
             }
 
         NotFound ->
