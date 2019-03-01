@@ -21,7 +21,7 @@
     "talk_title": "Building Seeds",
     "talk_subtitle": "A Smartphone Game for the Browser",
     "talk_abstract": "Three years ago I got inspired to build a game for the browser. Since then it’s lived and died as a React app and re-emerged as an Elm app. My talk is an experience report on this journey - pain points, surprises, the joys of using Elm and a whole lot of learning!",
-    "bio": "Andrew is software crafter working at 8th Light. He's developed a deep love for functional programming and types: it's like writing music and playing Tetris at the same time! His other loves include video games, Rupaul's Drag Race and minimalism.",
+    "bio": "Andrew is software crafter working at 8th Light. He's developed a deep love for functional programming and types: it's like writing music and playing Tetris at the same time! His other loves include video games, Rupaul's Drag Race, and minimalism.",
     "headshot": "images/speakers/andrew.jpg",
     "social": [
       {
@@ -101,7 +101,7 @@
   {
     "name": "Joël Quenneville",
     "talk_title": "A Number by Any Other Name",
-    "talk_abstract": "In 1999 NASA’s Mars probe infamously crashed due to a unit of measure error. 20 years later we still write the same bug. Join me as we leverage Elm’s type system to catch these, get better errors, and improve readability. Along the way we’ll challenge some common assumptions we have around numbers.",
+    "talk_abstract": "In 1999, NASA’s Mars probe infamously crashed due to a unit of measure error. Twenty years later, we still write the same bug. Join me as we leverage Elm’s type system to catch these, get better errors, and improve readability. Along the way we’ll challenge some common assumptions we have around numbers.",
     "bio": "Joël is a software developer at thoughtbot. He's fallen in love with Elm's data modeling tools. Over the past year he's discovered the fun of game jams and built three games in Elm. Outside of programming you can find him buried in a history book or exploring the many neighborhoods of Boston. You can spot him at the conference as that guy with the cool hat. Come say hi!",
     "headshot": "images/speakers/joel.jpg",
     "social": [
