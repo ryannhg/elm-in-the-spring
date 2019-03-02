@@ -1,12 +1,13 @@
 module Route exposing (Route(..), fromUrl, toString)
 
 import Url exposing (Url)
-import Url.Parser exposing ((</>), Parser, map, oneOf, s, top)
+import Url.Parser as Parser exposing ((<?>), Parser, s, top)
 import Url.Parser.Query as Query
 
 
 type Route
     = Home
+    | SpeakerModal (Maybe String)
     | Sponsorship
     | NotFound
 
@@ -17,6 +18,11 @@ toString route =
         Home ->
             "/"
 
+        SpeakerModal maybeString ->
+            maybeString
+                |> Maybe.map (\s -> "?speaker=" ++ s)
+                |> Maybe.withDefault "/"
+
         Sponsorship ->
             "/sponsorship"
 
@@ -26,10 +32,11 @@ toString route =
 
 fromUrl : Url -> Route
 fromUrl =
-    Url.Parser.parse
-        (oneOf
-            [ map Home top
-            , Url.Parser.map Sponsorship (s "sponsorship")
+    Parser.parse
+        (Parser.oneOf
+            [ Parser.map SpeakerModal (top <?> Query.string "speaker")
+            , Parser.map Home top
+            , Parser.map Sponsorship (s "sponsorship")
             ]
         )
         >> Maybe.withDefault Home

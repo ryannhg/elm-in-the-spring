@@ -1,4 +1,4 @@
-module Speaker exposing (Social, SocialNetwork(..), Speaker, decoder, socialNetworkToString)
+module Speaker exposing (Social, SocialNetwork(..), Speaker, decoder, findByNameQuery, socialNetworkToString)
 
 import Json.Decode as Decode exposing (Decoder, int, string)
 import Json.Decode.Pipeline exposing (custom, optional, required)
@@ -73,3 +73,10 @@ decoder =
         |> required "talk_abstract" Decode.string
         |> required "bio" Decode.string
         |> optional "social" (Decode.list socialDecoder) []
+
+
+findByNameQuery : String -> List Speaker -> Maybe Speaker
+findByNameQuery nameQuery speakers =
+    speakers
+        |> List.filter (\speaker -> String.replace " " "" speaker.name == nameQuery)
+        |> List.head
