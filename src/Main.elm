@@ -81,8 +81,6 @@ type Msg
     | SubmitForm
     | OnUrlRequest Browser.UrlRequest
     | OnUrlChange Url.Url
-    | ClickOpenSpeakerModal Speaker
-    | ClickCloseSpeakerModal
     | LoadSpeakers (Result Http.Error (List Speaker))
     | SaveViewport Browser.Dom.Viewport
 
@@ -135,26 +133,32 @@ update msg model =
         LoadSpeakers (Err httpError) ->
             ( model, Cmd.none )
 
-        ClickOpenSpeakerModal speaker_ ->
-            ( { model | speakerModal = Just speaker_ }
-            , Browser.Dom.getViewport
-                |> Task.perform SaveViewport
-            )
-
-        ClickCloseSpeakerModal ->
-            ( { model | speakerModal = Nothing, savedViewport = Nothing }
-            , model.savedViewport
-                |> Maybe.map (\vp -> Browser.Dom.setViewport vp.viewport.x vp.viewport.y)
-                |> Maybe.map (Task.perform (\_ -> NoOp))
-                |> Maybe.withDefault Cmd.none
-            )
-
         SaveViewport viewport ->
             ( { model | savedViewport = Just viewport }, Cmd.none )
 
 
 
 -- VIEW
+
+
+homeMarkup model =
+    [ div
+        [ Attr.class
+            (if hasModal model then
+                "content-wrapper modal-open"
+
+             else
+                "content-wrapper"
+            )
+        ]
+        [ renderModal model.speakerModal
+        , navbar
+        , hero
+        , pageSection Details Nothing model
+        , pageSection Speakers Nothing model
+        , pageSection Sponsors (Just sponsorLogos) model
+        ]
+    ]
 
 
 view : Model -> Browser.Document Msg
@@ -170,29 +174,21 @@ view model =
     in
     case model.route of
         Home ->
-            let
-                homeMarkup =
-                    [ div
-                        [ Attr.class
-                            (if hasModal model then
-                                "content-wrapper modal-open"
-
-                             else
-                                "content-wrapper"
-                            )
-                        ]
-                        [ renderModal model.speakerModal
-                        , navbar
-                        , hero
-                        , pageSection Details Nothing model
-                        , pageSection Speakers Nothing model
-                        , pageSection Sponsors (Just sponsorLogos) model
-                        ]
-                    ]
-            in
             { title = "Elm in the Spring 2019"
-            , body = [ homeMarkup |> page |> toUnstyled ]
+            , body = [ homeMarkup model |> page |> toUnstyled ]
             }
+
+        SpeakerModal maybeSpeakerQuery ->
+            case maybeSpeakerQuery of
+                Just speakerQuery ->
+                    { title = "Elm in the Spring 2019"
+                    , body = [ homeMarkup { model | speakerModal = Speaker.findByNameQuery speakerQuery model.speakers } |> page |> toUnstyled ]
+                    }
+
+                _ ->
+                    { title = "Elm in the Spring 2019"
+                    , body = [ homeMarkup model |> page |> toUnstyled ]
+                    }
 
         Sponsorship ->
             { title = "Elm in the Spring 2019 | Sponsorship"
@@ -510,15 +506,21 @@ speakerListing : Speaker -> Html Msg
 speakerListing ({ name, talkTitle, talkSubtitle, headshotSrc, talkAbstract, bio, social } as speaker) =
     div [ Attr.class "speaker-grid-container", css [ paddingLeft (rem 3), paddingTop (rem 2) ] ]
         [ div
-            [ onClick (ClickOpenSpeakerModal speaker), Attr.class "open-modal Speaker-Headshot", css [ boxShadow3 (px -12) (px 12) Ui.theme.greenLight, border3 (px 7) solid Ui.theme.tealLight ] ]
-            [ img [ css [ width (pct 100) ], src headshotSrc, alt name ] [] ]
+            []
+            [ a [ href ("/?speaker=" ++ String.replace " " "" speaker.name), Attr.class "open-modal Speaker-Headshot", css [ display block, boxShadow3 (px -12) (px 12) Ui.theme.greenLight, border3 (px 7) solid Ui.theme.tealLight ] ]
+                [ img [ css [ width (pct 100) ], src headshotSrc, alt name ] [] ]
+            ]
         , div
             [ Attr.class "Speaker-Talk" ]
-            [ div []
-                [ h5 [ Attr.class "open-modal", onClick (ClickOpenSpeakerModal speaker), css [ fontSize (rem 1.5), margin2 (px 10) zero ] ] [ text talkTitle ]
-                , talkSubtitle
-                    |> Maybe.map (\subtitle -> h6 [ Attr.class "open-modal", onClick (ClickOpenSpeakerModal speaker), css [ fontSize (rem 1), margin2 (px 10) zero, fontWeight (int 300) ] ] [ text subtitle ])
-                    |> Maybe.withDefault (Html.Styled.text "")
+            [ div
+                []
+                [ a
+                    [ href ("/?speaker=" ++ String.replace " " "" speaker.name) ]
+                    [ h5 [ Attr.class "open-modal", css [ fontSize (rem 1.5), margin2 (px 10) zero ] ] [ text talkTitle ]
+                    , talkSubtitle
+                        |> Maybe.map (\subtitle -> h6 [ Attr.class "open-modal", css [ fontSize (rem 1), margin2 (px 10) zero, fontWeight (int 300) ] ] [ text subtitle ])
+                        |> Maybe.withDefault (Html.Styled.text "")
+                    ]
                 ]
             ]
         , div
@@ -567,8 +569,8 @@ speakerModal : Speaker -> Html Msg
 speakerModal ({ name, talkTitle, talkSubtitle, headshotSrc, talkAbstract, bio, social } as speaker) =
     div
         [ Attr.class "speaker-modal modal" ]
-        [ div
-            [ Attr.class "close-modal", onClick ClickCloseSpeakerModal ]
+        [ a
+            [ Attr.class "close-modal", href "/" ]
             [ i [ Attr.class "fas fa-times" ] [] ]
         , div
             [ Attr.class "speaker-modal-content-container" ]
