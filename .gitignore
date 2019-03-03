@@ -2,3 +2,5 @@ node_modules
 elm-stuff
 public/elm.js
 .DS_Store
+.idea
+.vscode

@@ -23,7 +23,8 @@ body {
 }
 
 .content-wrapper {
-  overflow: scroll;
+  overflow:auto;
+  -webkit-overflow-scrolling: touch;
   height: 100vh;
 
   &.modal-open {
@@ -342,6 +343,7 @@ input[type="submit"]:active,
   }
 
   @media all and (max-width: 719px) {
+    overflow-y: auto;
     display: block;
     height: 100vh;
     width: 100vw;
@@ -360,7 +362,7 @@ input[type="submit"]:active,
 
 .close-modal {
   text-decoration: none;
-  position: absolute;
+  position: fixed;
   top: 0;
   right: 0;
   padding: 10px 12px;
