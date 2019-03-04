@@ -184,6 +184,7 @@ angledSection content { baseFillStyle, beforeShape, afterShape } =
                     , width (pct 100)
                     , beforeShape.fill
                     , property "clip-path" beforeShape.clipPath
+                    , property "-webkit-clip-path" beforeShape.clipPath
                     , zIndex (int -8)
                     ]
                 , after
@@ -193,6 +194,7 @@ angledSection content { baseFillStyle, beforeShape, afterShape } =
                     , width (pct 100)
                     , afterShape.fill
                     , property "clip-path" afterShape.clipPath
+                    , property "-webkit-clip-path" afterShape.clipPath
                     , zIndex (int -10)
                     ]
                 ]
