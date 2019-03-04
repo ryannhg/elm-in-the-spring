@@ -24,7 +24,9 @@ body {
 
 .content-wrapper {
   overflow:auto;
+  // rock       // without this, ios safari has no momentum on scroll
   -webkit-overflow-scrolling: touch;
+  // hard place // with this, ios safari the header disappears after scrolling
   height: 100vh;
 
   &.modal-open {
